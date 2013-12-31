@@ -1,0 +1,28 @@
+header.navbar.navbar-default.navbar-static-top
+  div.container
+    div.navbar-header
+      button(type="button", class="navbar-toggle", data-toggle="collapse", data-target=".navbar-collapse")
+        span.icon-bar
+        span.icon-bar
+        span.icon-bar
+      a(class="navbar-brand", href='/') Trang chủ
+    div.navbar-collapse.collapse
+      if(session.user)
+        ul.nav.navbar-nav.navbar-right
+          li.unread-notifications.dropdown
+            a(href="/users/#{session.user.username}/notifications") Home &nbsp;
+              span.badge
+          li.dropdown
+            a.dropdown-toggle(href="/users/#{session.user.username}", data-toggle='dropdown')= session.user.full_name
+              |&nbsp;
+              b.caret
+            ul.dropdown-menu(role='menu')
+              li
+                a(href="/users/#{session.user.username}") Thông tin cá nhân
+              li
+                a(href="/users/#{session.user.username}/edit") Chỉnh sửa Thông tin
+              - if(session.user && session.user.account_type == 'register')
+                li
+                  a(href="/users/#{session.user.username}/change_password") Đổi mật khẩu
+          li
+            button.btn.btn-danger.navbar-btn#new-question(type="button") Đặt câu hỏi

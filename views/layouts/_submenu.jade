@@ -1,0 +1,13 @@
+ul.nav.nav-pills.nav-stacked
+  li
+    a(href='/') Mới nhất
+  li
+    a(href='/open') Chưa được trả lời
+  li
+    a(href="/users/#{session.user.username}/notifications") Notifications
+      span.badge
+  li
+    form(method="POST", action="/sessions/#{session.user.username}", class="navbar-form navbar-left")
+      input(type="hidden", name="_method", value="DELETE")
+      input(type="hidden", name="_csrf", value=token)
+      button(type="submit", class="btn btn-default") Đăng xuất

@@ -1,0 +1,23 @@
+{
+  "name": "application-name",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
+
+  "dependencies": {
+    "express": "3.4.3",
+    "jade": "0.35.0",
+    "mongoose": "3.8.1",
+    "async": "0.1.22",
+    "request": "2.10.0",
+    "connect-mongo": "0.4.0",
+    "sendgrid": "0.4.4",
+    "googleapis": "0.4.6",
+    "facebook-node-sdk": "0.2.0",
+    "diff": "1.0.7",
+    "socket.io": "0.9.16",
+    "escape-html": "1.0.1"
+  }
+}
