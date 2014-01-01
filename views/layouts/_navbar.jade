@@ -1,12 +1,12 @@
-header.navbar.navbar-default.navbar-static-top
-  div.container
-    div.navbar-header
+nav.navbar.navbar-default
+  .container
+    .navbar-header
       button(type="button", class="navbar-toggle", data-toggle="collapse", data-target=".navbar-collapse")
         span.icon-bar
         span.icon-bar
         span.icon-bar
-      a(class="navbar-brand", href='/') Trang chủ
-    div.navbar-collapse.collapse
+      a(class="navbar-brand", href='/') BRAND
+    .navbar-collapse.collapse
       if(session.user)
         ul.nav.navbar-nav.navbar-right
           li.unread-notifications.dropdown

@@ -1,0 +1,87 @@
+@font-face { 
+  font-family: Facebook-Letter-Faces;
+  // IE
+  src: local('Facebook-Letter-Faces'), url('/stylesheets/fonts/facebook.eot');
+  // Non-IE
+  src: url('/stylesheets/fonts/FACEBOLF.OTF');
+}
+
+.border-radius(@border) {
+  -webkit-border-radius: @border;
+  -moz-border-radius: @border;
+  border-radius: @border;
+}
+
+.google-signup-btn {
+  display: inline-block;
+  margin-top: 10px;
+  text-align: center;
+  height: 35px;
+  background: #dd4b39;
+  color: white;
+  width: 100%;
+  .border-radius(5px);
+  white-space: nowrap;
+  &:hover {
+    background: #e74b37;
+    cursor: pointer;
+  }
+  .icon {
+    position: absolute;
+    left: 15px;
+    background: url('/images/google_icon.png') transparent 5px 50% no-repeat;
+    display: inline-block;
+    vertical-align: middle;
+    width: 35px;
+    height: 35px;
+    border-right: #bb3f30 1px solid;
+  }
+  .buttonText {
+    margin-top: 5px;
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 14px;
+    font-weight: bold;
+    /* Use the Roboto font that is loaded in the <head> */
+    font-family: 'Roboto',arial,sans-serif;
+  }
+}
+
+.facebook-signup-btn {
+  display: inline-block;
+  margin-top: 10px;
+  height: 35px;
+  text-align: center;
+  background-color: #4365a9;
+  color: white;
+  width: 100%;
+  .border-radius(5px);
+  white-space: nowrap;
+  &:hover {
+    background: #4f6aa3;
+    cursor: pointer;
+  }
+  .icon {
+    display: inline-block;
+    vertical-align: middle;
+    font-family: 'Facebook-Letter-Faces', Helvetica, sans-serif;
+    position: absolute;
+    left: 15px;
+    font-size: 2em;
+    height: 35px;
+    padding: 0 12px 0 10px;
+    border-right: 1px solid rgba(34,34,34,0.18);
+    &:before {
+      content: "f";
+    }
+  }
+  .buttonText {
+    margin-top: 5px;
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 14px;
+    font-weight: bold;
+    /* Use the Roboto font that is loaded in the <head> */
+    font-family: 'Roboto',arial,sans-serif;
+  }
+}

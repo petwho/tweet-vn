@@ -1,6 +1,6 @@
 // *** BEGIN APPLICATION CONFIGURATION
 
-var  server, dbURL, facebookSDK,
+var  server, dbUrl, facebookSDK,
   express     = require('express'),
   MongoStore  = require('connect-mongo')(express),
   http        = require('http'),
@@ -19,12 +19,12 @@ if ('development' === app.get('env')) {
 }
 
 // connection string
-dbURL = process.env.MONGOLAB_URI;
-require('mongoose').connect(dbURL,  function (err) {
+dbUrl = process.env.MONGOLAB_URI;
+require('mongoose').connect(dbUrl,  function (err) {
   if (err) {
-    console.log('ERROR connecting to: ' + dbURL + '. ' + err);
+    console.log('ERROR connecting to: ' + dbUrl + '. ' + err);
   } else {
-    console.log('Succeeded connected to: ' + dbURL);
+    console.log('Succeeded connected to: ' + dbUrl);
   }
 });
 
@@ -39,7 +39,7 @@ app.configure(function () {
   app.use(express.cookieParser(process.env.COOKIE_SECRET));
   app.use(express.session({
     secret: process.env.SESSION_SECRET,
-    store: new MongoStore({ url: dbURL})
+    store: new MongoStore({ url: dbUrl})
   }));
 
   // facebook authentication middleware
@@ -72,6 +72,7 @@ if ('production' === app.get('env')) {
 
 // * Begin load routes
 require('./routes/index')(app);
+require('./routes/sessions')(app);
 // * End load routes
 
 // start server

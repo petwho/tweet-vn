@@ -1,0 +1,66 @@
+extends ../layouts/login
+block content
+  .row.login.hidden
+    .col-md-offset-4.col-md-4
+      form(role="form", method='POST', action="/sessions")
+        input(type="hidden", name="_csrf", value=token)
+        .form-group
+          label.sr-only(for="email") Email
+          input#email.form-control(name="email", type="email", placeholder="Email")
+        .form-group
+          label.sr-only(for="password") Mật khẩu
+          input#password.form-control(name="password", type="password", placeholder="password")
+        .form-group
+          input(type="checkbox", name="remember", checked = "checked") 
+          | &nbsp; Ghi nhớ 
+        button.btn.btn-default(type="submit") Đăng nhập 
+        | &nbsp;
+        a.forgot-password-btn(href="#forgot-password") Quên mật khẩu?
+  .row.signup.hidden
+    .col-md-offset-4.col-md-4
+      br
+      p.text-center
+        strong Chưa có tài khoản?
+      .form-group
+        a.signup-btn(href='#signup', class="btn btn-primary btn-block", role="button") Đăng ký tài khoản
+      .form-group
+        .google-signup-btn
+          span.icon
+          span.buttonText Google
+      .form-group
+        .facebook-signup-btn
+          span.icon
+          span.buttonText Facebook
+
+  .row.signup-form.hidden
+    .col-md-offset-4.col-md-4
+      form(method="POST", action="/users")
+        input(type="hidden", value=token, name="_csrf")
+
+        .form-group
+          label.control-label(for="full_name") Full Name: 
+          input.form-control#full_name(type="text", name="full_name")
+
+        .form-group
+          label.control-label(for="email") Email: 
+          input.form-control#email(type="email", name="email", title="Địa chỉ email không hợp lệ")
+
+        .form-group
+          label.control-label(for="password") Mật khẩu: 
+          input.form-control#password(type="password", name="password", required='required', pattern=".{6,}", title = "Mật khẩu phải từ 5 ký tự trở lên")
+
+        button.btn.btn-default(type="submit") Đăng ký
+        | &nbsp;
+        a.cancel-register(href="#") Quay lại
+
+  .row.forgot-password-form.hidden
+    .col-md-offset-3.col-md-6
+      form.form-inline(method='POST', action="/users/reset_password")
+        input(type="hidden", name="_csrf", value=token)
+        .row
+          .col-md-8
+              input#email.form-control(name="email", type="email", placeholder="Email")
+          .col-md-4
+              button.btn.btn-success(type="submit") Submit
+              | &nbsp;
+              a.cancel-forgot(href="#") Quay lại
