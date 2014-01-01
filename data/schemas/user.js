@@ -1,16 +1,11 @@
 // ** Begin module scope variables
-var UserSchema, errorMsgMap, activationMsgMap, resetPasswordMsgMap,
+var UserSchema, activationMsgMap, resetPasswordMsgMap,
   mongoose                = require('mongoose'),
   Schema                  = require('mongoose').Schema,
   async                   = require('async'),
-  hash                    = require(__dirname + '/../..' + '/routes/middleware/secure_pass').hash,
+  hash                    = require('../helpers/secure_pass').hash,
   sendgrid                = require('sendgrid')(process.env.SENDGRID_USERNAME, process.env.SENDGRID_PASSWORD),
-  randomString            = require(__dirname + '/..' + '/middleware/random_string');
-
-errorMsgMap = {
-  username  : 'Tên đăng nhập đã được đăng ký',
-  email     : 'Địa chỉ email đã được đăng ký'
-};
+  randomString            = require('../helpers/random_string');
 
 activationMsgMap = {
   "html": "<p>Chào {{username}}.</p><p>Cảm ơn bạn đã đăng ký tài khoản trên  {{url}}</p><p>Vui lòng click đường link sau để kích hoạt tài khoản <a href='{{activate_link}}'>activate</a></p>",
@@ -34,7 +29,7 @@ UserSchema = new mongoose.Schema({
   status    : { type: Number, required: true, default: 1},
   username  : { type: String, required: true, unique: true },
   full_name : { type: String, required: true },
-  email     : { type: String, required: 'Vui lòng nhập email', unique: true},
+  email     : { type: String, required: true, unique: true},
   picture   : String,
 
   following_list : {
@@ -89,21 +84,19 @@ UserSchema.static('errorHandler', function (err, req, res, next) {
   }
 
   if (err.name === 'ValidationError') {
-    Object.keys(err.errors).reverse().map(function (field) {
-      if (field !== 'password_salt') {
-        error_msg_list.push(err.errors[field].message);
-      }
-    });
+    if (err.errors.full_name) {
+      error_msg_list.push('invalid fullname')
+    }
+    if (err.errors.email) {
+      error_msg_list.push('invalid email')
+    }
   }
 
   if (err.code === 11000) {
     message = err.err;
-    indexName = message.match(/(\$[a-zA-Z0-9_]+)/g)[0];
-    suffixes = indexName.match(/(_[0-9]+)/g);
-    suffix = suffixes[suffixes.length - 1];
-
-    message = indexName.substr(1, indexName.indexOf(suffix) - 1);
-    error_msg_list.push(errorMsgMap[message]);
+    if (message.indexOf(req.body.email) !== -1) {
+      error_msg_list.push('duplicate email');
+    }
   }
 
   return res.json({msg: error_msg_list}, 400);

@@ -73,6 +73,7 @@ if ('production' === app.get('env')) {
 // * Begin load routes
 require('./routes/index')(app);
 require('./routes/sessions')(app);
+require('./routes/users')(app);
 // * End load routes
 
 // start server

@@ -6,25 +6,26 @@ define(['backbone'], function (Backbone) {
       'signup'          : 'signup',
       'forgot-password' : 'forgotPassword'
     },
-    hideAll: function () {
+    setup: function () {
       $('.login').addClass('hidden');
       $('.signup').addClass('hidden');
       $('.signup-form').addClass('hidden');
       $('.forgot-password-form').addClass('hidden');
+      $('.message').empty();
     },
     index: function () {
-      this.hideAll();
+      this.setup();
       $('.login').removeClass('hidden');
       $('.signup').removeClass('hidden');
     },
 
     signup: function () {
-      this.hideAll();
+      this.setup();
       $('.signup-form').removeClass('hidden');
     },
 
     forgotPassword: function () {
-      this.hideAll();
+      this.setup();
       $('.forgot-password-form').removeClass('hidden');
     }
   });

@@ -2,22 +2,27 @@ require.config({
   baseUrl: 'javascripts/app/',
   shim: {
     underscore: { exports: '_' },
-    backbone: {
+    backbone  : {
       deps: ['underscore', 'jquery'],
       exports: 'Backbone'
+    },
+    bootstrap : {
+      deps    : ['jquery'],
+      exports : 'bootstrap'
     }
   },
   paths: {
-    jquery: '../libs/jquery/jquery-2.0.3.min',
+    jquery    : '../libs/jquery/jquery-2.0.3.min',
     underscore: '../libs/underscore/underscore-1.5.2.min',
-    backbone: '../libs/backbone/backbone-1.1.0.min',
-    text: '../libs/require/text'
+    backbone  : '../libs/backbone/backbone-1.1.0.min',
+    bootstrap : '../vendor/bootstrap.min',
+    text      : '../libs/require/text'
   }
 });
 
 require([
-  'backbone', 'routers/login', 'views/login'
-], function (Backbone, LoginRouter, LoginView) {
+  'bootstrap', 'backbone', 'routers/login', 'views/login'
+], function (bootstrap, Backbone, LoginRouter, LoginView) {
   new LoginView();
   new LoginRouter();
   Backbone.history.start();
