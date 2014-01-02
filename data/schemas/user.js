@@ -102,7 +102,7 @@ UserSchema.static('errorHandler', function (err, req, res, next) {
   return res.json({msg: error_msg_list}, 400);
 });
 
-UserSchema.static('changeForgottenPassword', function (req, res, next) {
+UserSchema.static('changeForgotPassword', function (req, res, next) {
   var make_hash_password, update_user, password_salt, password_hash,
     self = this;
 
@@ -121,13 +121,17 @@ UserSchema.static('changeForgottenPassword', function (req, res, next) {
   };
 
   update_user = function (next) {
-    self.findOne({'token.reset_password': req.params.token}, function (err, user) {
+    self.findOne({'token.reset_password': req.body.reset_pwd_token}, function (err, user) {
       if (err) { return next(err); }
+
+      if (!user) {
+        return res.json({ msg: 'Invalid password reset token' }, 403);
+      }
 
       delete user.token.reset_password;
 
-      user.password = password_hash;
-      user.password_salt = password_salt;
+      user.password       = password_hash;
+      user.password_salt  = password_salt;
 
       user.save(function (err) {
         if (err) {
@@ -141,7 +145,9 @@ UserSchema.static('changeForgottenPassword', function (req, res, next) {
   async.series([make_hash_password, update_user], function (err, results) {
     if (err) { return next(err); }
 
-    return res.json({msg: 'change password success'}, 200);
+    req.session.message.info.push('Change password successful');
+
+    return res.json({msg: 'Change password successful'}, 200);
   });
 });
 
@@ -173,8 +179,8 @@ UserSchema.static('resetPassword', function (req, res, next) {
       to: req.user.email,
       from: resetPasswordMsgMap.from_email,
       subject: resetPasswordMsgMap.subject,
-      text: resetPasswordMsgMap.text.replace("{{url}}", url).replace("{{reset_password_link}}", url + "/new_password/" + req.user.token.reset_password).replace("{{username}}", req.user.username),
-      html: resetPasswordMsgMap.html.replace("{{url}}", url).replace("{{reset_password_link}}", url + "/new_password/" + req.user.token.reset_password).replace("{{username}}", req.user.username)
+      text: resetPasswordMsgMap.text.replace("{{url}}", url).replace("{{reset_password_link}}", url + "/change-password/" + req.user.token.reset_password).replace("{{username}}", req.user.username),
+      html: resetPasswordMsgMap.html.replace("{{url}}", url).replace("{{reset_password_link}}", url + "/change-password/" + req.user.token.reset_password).replace("{{username}}", req.user.username)
     }, function (err, json) {
       if (err) { return next(err); }
       console.log(json);

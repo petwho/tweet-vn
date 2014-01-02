@@ -50,8 +50,8 @@ app.configure(function () {
   app.use(express.csrf());
 
   app.use(function (req, res, next) {
-    app.locals.session  = req.session;
-    res.locals.token    = req.csrfToken();
+    app.locals.session    = req.session;
+    res.locals.csrfToken  = req.csrfToken();
 
     req.session.message = req.session.message || { error: [], success: [], info: [] };
     app.locals.message  = req.session.message;

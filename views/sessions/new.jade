@@ -4,11 +4,11 @@ block content
     .col-md-offset-4.col-md-4
       form(role="form", method='POST', action="/sessions")
         .form-group
-          label.sr-only(for="email_login") Email
-          input#email_login.form-control(name="email", type="email", placeholder="Email")
+          label(for="email_login") Email
+          input#email_login.form-control(name="email", type="email")
         .form-group
-          label.sr-only(for="password_login") Mật khẩu
-          input#password_login.form-control(name="password", type="password", placeholder="password")
+          label(for="password_login") Mật khẩu
+          input#password_login.form-control(name="password", type="password")
         .form-group
           input(type="checkbox", name="remember", checked = "checked")
           | &nbsp; Ghi nhớ
@@ -62,3 +62,5 @@ block content
               button.btn.btn-success(type="submit") Submit
               | &nbsp;
               a.cancel-forgot(href="#") Quay lại
+
+  script(data-main="/javascripts/app/bootstraps/login", src="/javascripts/libs/require/require-2.1.9.min.js")
