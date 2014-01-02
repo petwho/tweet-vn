@@ -184,8 +184,8 @@ UserSchema.static('resetPassword', function (req, res, next) {
   };
 
   async.series([update_user, email_reset_link], function (err, results) {
-    if (err) {return next(err); }
-    return res.json({msg: 'reset password success'}, 200);
+    if (err) { return next(err); }
+    return res.json({msg: 'Please follow link to reset password we sent you to complete the process.'}, 200);
   });
 });
 

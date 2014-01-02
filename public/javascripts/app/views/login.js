@@ -14,19 +14,49 @@ define(['backbone'], function (Backbone) {
     },
 
     clearForm : function () {
-      this.$fullName.val('');
-      this.$email.val('');
-      this.$password.val('');
+      this.$fullNameSignup.val('');
+      this.$emailSignup.val('');
+      this.$passwordSignup.val('');
+      this.$emailLogin.val('');
+      this.$passwordLogin.val('');
+      this.$emailForgotPwd.val('');
+    },
+
+    successCallback :  function (data, textStatus, jqXHR) {
+      var self = this;
+
+      this.$message.fadeOut(50, function () {
+        self.$message.empty().css({display : 'block'});
+        self.$message.html('<div class="alert alert-info alert-dismissable">'
+          + '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'
+          + data.msg + '</div>');
+      });
+
+      this.clearForm();
+      window.location.hash = '#';
+    },
+
+    errorCallback : function (jqXHR, textStatus, errorThrow) {
+      var self = this;
+
+      this.$message.fadeOut(50, function () {
+        self.$message.empty().css({display : 'block'});
+        self.$message.html('<div class="alert alert-danger alert-dismissable">'
+          + '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'
+          + jqXHR.responseJSON.msg + '</div>');
+      });
     },
 
     events    : {
-      'submit .signup-form form'  : 'createUser',
-      'submit .login form'        : 'login'
+      'submit .signup-form form'      : 'createUser',
+      'submit .login form'            : 'login',
+      'submit .forgot-password-form'  : 'forgotPassword'
     },
 
     createUser: function (e) {
       var self = this;
       e.preventDefault();
+
       $.ajax({
         type  : 'POST',
         url   : '/users',
@@ -37,19 +67,11 @@ define(['backbone'], function (Backbone) {
           _csrf     : this.crsfToken
         },
         success : function (data, textStatus, jqXHR) {
-
-          self.$message.fadeOut(50, function () {
-            self.$message.empty().css({display : 'block'});
-            self.$message.html('<div class="alert alert-info alert-dismissable">'
-              + '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'
-              + data.msg + '</div>');
-          });
-          window.location.hash = '#';
+          self.successCallback(data, textStatus, jqXHR);
         },
         error   : function (jqXHR, textStatus, errorThrow) {
           var i, length,
             html = '';
-
 
           length = jqXHR.responseJSON.msg.length;
 
@@ -80,15 +102,30 @@ define(['backbone'], function (Backbone) {
           password  : this.$passwordLogin.val()
         },
         error : function (jqXHR, textStatus, errorThrow) {
-          self.$message.fadeOut(50, function () {
-            self.$message.empty().css({display : 'block'});
-            self.$message.html('<div class="alert alert-danger alert-dismissable">'
-              + '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'
-              + jqXHR.responseJSON.msg + '</div>');
-          });
+          self.errorCallback(jqXHR, textStatus, errorThrow);
         },
         success : function (data, textStatus, jqXHR) {
           window.location.href = '/';
+        }
+      });
+    },
+
+    forgotPassword : function (e) {
+      var self = this;
+      e.preventDefault();
+
+      $.ajax({
+        type  : 'POST',
+        url   : '/reset-password',
+        data  : {
+          _csrf : this.crsfToken,
+          email : this.$emailForgotPwd.val()
+        },
+        error : function (jqXHR, textStatus, errorThrow) {
+          self.errorCallback(jqXHR, textStatus, errorThrow);
+        },
+        success : function (data, textStatus, jqXHR) {
+          self.successCallback(data, textStatus, jqXHR);
         }
       });
     }

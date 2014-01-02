@@ -1,5 +1,7 @@
 var notLoggedIn = require('./middleware/not_logged_in'),
-  User = require('../data/models/user');
+  loadUser      = require('./middleware/load_user'),
+  User          = require('../data/models/user'),
+  randomString  = require('./middleware/random_string');
 
 module.exports = function (app) {
   app.post('/users', notLoggedIn, function (req, res, next) {
@@ -16,5 +18,9 @@ module.exports = function (app) {
       req.session.message.info.push('Account activated successfully');
       res.redirect('/login');
     });
+  });
+
+  app.post('/reset-password', loadUser.byRequestEmail, function (req, res, next) {
+    User.resetPassword(req, res, next);
   });
 };
