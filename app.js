@@ -52,6 +52,10 @@ app.configure(function () {
   app.use(function (req, res, next) {
     app.locals.session  = req.session;
     res.locals.token    = req.csrfToken();
+
+    req.session.message = req.session.message || { error: [], success: [], info: [] };
+    app.locals.message  = req.session.message;
+
     next();
   });
 
@@ -63,9 +67,9 @@ app.configure(function () {
 if ('production' === app.get('env')) {
   app.use(function (err, req, res, next) {
     if (err.message === 'Forbidden') {
-      return res.json({error: 'forbidden'}, 403);
+      return res.json({msg: 'forbidden'}, 403);
     }
-    res.json({error: 'server error'}, 5000);
+    res.json({msg: 'server error'}, 500);
   });
 }
 // * End error handler in production environment

@@ -6,13 +6,15 @@ define(['backbone'], function (Backbone) {
       'signup'          : 'signup',
       'forgot-password' : 'forgotPassword'
     },
+
     setup: function () {
       $('.login').addClass('hidden');
       $('.signup').addClass('hidden');
       $('.signup-form').addClass('hidden');
       $('.forgot-password-form').addClass('hidden');
-      $('.message').empty();
+      $('.message .router-msg').empty();
     },
+
     index: function () {
       this.setup();
       $('.login').removeClass('hidden');

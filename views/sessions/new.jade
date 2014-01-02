@@ -4,15 +4,15 @@ block content
     .col-md-offset-4.col-md-4
       form(role="form", method='POST', action="/sessions")
         .form-group
-          label.sr-only(for="email") Email
-          input#email.form-control(name="email", type="email", placeholder="Email")
+          label.sr-only(for="email_login") Email
+          input#email_login.form-control(name="email", type="email", placeholder="Email")
         .form-group
-          label.sr-only(for="password") Mật khẩu
-          input#password.form-control(name="password", type="password", placeholder="password")
+          label.sr-only(for="password_login") Mật khẩu
+          input#password_login.form-control(name="password", type="password", placeholder="password")
         .form-group
-          input(type="checkbox", name="remember", checked = "checked") 
-          | &nbsp; Ghi nhớ 
-        button.btn.btn-default(type="submit") Đăng nhập 
+          input(type="checkbox", name="remember", checked = "checked")
+          | &nbsp; Ghi nhớ
+        button.btn.btn-default(type="submit") Đăng nhập
         | &nbsp;
         a.forgot-password-btn(href="#forgot-password") Quên mật khẩu?
   .row.signup.hidden
@@ -36,16 +36,16 @@ block content
       form(method="POST", action="/users")
 
         .form-group
-          label.control-label(for="full_name") Full Name: 
-          input.form-control#full_name(type="text", name="full_name")
+          label.control-label(for="full_name_signup") Full Name:
+          input.form-control#full_name_signup(type="text", name="full_name")
 
         .form-group
-          label.control-label(for="email") Email: 
-          input.form-control#email(type="email", name="email", title="Địa chỉ email không hợp lệ")
+          label.control-label(for="email_signup") Email:
+          input.form-control#email_signup(type="email", name="email", title="Địa chỉ email không hợp lệ")
 
         .form-group
-          label.control-label(for="password") Mật khẩu: 
-          input.form-control#password(type="password", name="password", required='required', pattern=".{6,}", title = "Mật khẩu phải từ 5 ký tự trở lên")
+          label.control-label(for="password_signup") Mật khẩu:
+          input.form-control#password_signup(type="password", name="password", required='required', pattern=".{6,}", title = "Mật khẩu phải từ 5 ký tự trở lên")
 
         button.btn.btn-default(type="submit") Đăng ký
         | &nbsp;
@@ -56,7 +56,8 @@ block content
       form.form-inline(method='POST', action="/users/reset_password")
         .row
           .col-md-8
-              input#email.form-control(name="email", type="email", placeholder="Email")
+            label.sr-only(for="email_forgot_password") Email
+            input#email_forgot_password.form-control(name="email", type="email", placeholder="Email")
           .col-md-4
               button.btn.btn-success(type="submit") Submit
               | &nbsp;

@@ -85,10 +85,10 @@ UserSchema.static('errorHandler', function (err, req, res, next) {
 
   if (err.name === 'ValidationError') {
     if (err.errors.full_name) {
-      error_msg_list.push('invalid fullname')
+      error_msg_list.push('invalid fullname');
     }
     if (err.errors.email) {
-      error_msg_list.push('invalid email')
+      error_msg_list.push('invalid email');
     }
   }
 
@@ -278,7 +278,7 @@ UserSchema.static('oauthSignUp', function (req, res, next) {
 
   create_session_and_send_respond = function (user) {
     req.session.user = user;
-    return res.json({msg: 'signup success'}, 200);
+    return res.json({msg: 'signup success, check email for actiavtion'}, 200);
   };
 
   self.findOne({email: req.body.email}, function (err, user) {
@@ -305,7 +305,11 @@ UserSchema.static('emailSignUp', function (req, res, next) {
 
   // ** Begin password validation
   if (!req.body.password || (req.body.password && (req.body.password.length < 6))) {
-    return res.json({error: 'Password must be at least 6 characters'}, 400);
+    return res.json({msg: ['Password must be at least 6 characters']}, 400);
+  }
+
+  if (!req.body.full_name) {
+    return res.json({msg : ['invalid fullname']}, 400);
   }
 
   make_hash_password = function (next) {
@@ -372,13 +376,13 @@ UserSchema.static('emailSignUp', function (req, res, next) {
   async.series([
     make_hash_password, create_valid_user
   ], function (err, results) {
-    var register_success_msg  = "Đăng ký thành công! Vui lòng kiểm tra Email hướng dẫn kích hoạt tài khoản.";
+    var register_success_msg  = "Account registered successful. Please check your email to activate account";
 
     if (err) { return next(err); }
 
     email_activation();
 
-    return res.json({msg: 'signup success'}, 200);
+    return res.json({msg: register_success_msg}, 200);
   });
 });
 

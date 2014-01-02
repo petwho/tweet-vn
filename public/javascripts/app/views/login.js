@@ -3,15 +3,25 @@ define(['backbone'], function (Backbone) {
     el: 'body',
 
     initialize: function () {
-      this.$fullName  = $('.signup-form input[name="full_name"]');
-      this.$email     = $('.signup-form input[name="email"]');
-      this.$password  = $('.signup-form input[name="password"]');
-      this.$message   = $('.message');
-      this.token      = $('meta[name="csrf-token"').attr('content');
+      this.$fullNameSignup    = $('#full_name_signup');
+      this.$emailSignup       = $('#email_signup');
+      this.$passwordSignup    = $('#password_signup');
+      this.$emailLogin        = $('#email_login');
+      this.$passwordLogin     = $('#password_login');
+      this.$emailForgotPwd    = $('#email_forgot_password');
+      this.$message           = $('.message .router-msg');
+      this.crsfToken          = $('meta[name="csrf-token"').attr('content');
+    },
+
+    clearForm : function () {
+      this.$fullName.val('');
+      this.$email.val('');
+      this.$password.val('');
     },
 
     events    : {
-      'submit .signup-form form' : 'createUser'
+      'submit .signup-form form'  : 'createUser',
+      'submit .login form'        : 'login'
     },
 
     createUser: function (e) {
@@ -21,33 +31,64 @@ define(['backbone'], function (Backbone) {
         type  : 'POST',
         url   : '/users',
         data  : {
-          full_name : this.$fullName.val(),
-          email     : this.$email.val(),
-          password  : this.$password.val(),
-          _csrf     : this.token
+          full_name : this.$fullNameSignup.val(),
+          email     : this.$emailSignup.val(),
+          password  : this.$passwordSignup.val(),
+          _csrf     : this.crsfToken
         },
         success : function (data, textStatus, jqXHR) {
-          self.$message.fadeOut(20, function () {
-            self.$message.empty().css({display : 'block'})
-            self.$message.append('<div class="alert alert-info alert-dismissable">'
+
+          self.$message.fadeOut(50, function () {
+            self.$message.empty().css({display : 'block'});
+            self.$message.html('<div class="alert alert-info alert-dismissable">'
               + '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'
               + data.msg + '</div>');
           });
           window.location.hash = '#';
         },
         error   : function (jqXHR, textStatus, errorThrow) {
-          var i, length;
-          
+          var i, length,
+            html = '';
+
+
           length = jqXHR.responseJSON.msg.length;
 
-          self.$message.fadeOut(20, function () {
-            self.$message.empty().css({display : 'block'})
+          self.$message.fadeOut(50, function () {
+            self.$message.empty().css({display : 'block'});
             for (i = 0; i < length; i++) {
-              self.$message.append('<div class="alert alert-danger alert-dismissable">'
+              html += '<div class="alert alert-danger alert-dismissable">'
                 + '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'
-                + jqXHR.responseJSON.msg[i] + '</div>');
+                + jqXHR.responseJSON.msg[i] + '</div>';
+              self.$message.html(html);
             }
           });
+        }
+      });
+    },
+
+    login: function (e) {
+      var self = this;
+
+      e.preventDefault();
+
+      $.ajax({
+        type: 'POST',
+        url   : '/sessions',
+        data  : {
+          _csrf     : this.crsfToken,
+          email     : this.$emailLogin.val(),
+          password  : this.$passwordLogin.val()
+        },
+        error : function (jqXHR, textStatus, errorThrow) {
+          self.$message.fadeOut(50, function () {
+            self.$message.empty().css({display : 'block'});
+            self.$message.html('<div class="alert alert-danger alert-dismissable">'
+              + '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'
+              + jqXHR.responseJSON.msg + '</div>');
+          });
+        },
+        success : function (data, textStatus, jqXHR) {
+          window.location.href = '/';
         }
       });
     }

@@ -1,0 +1,21 @@
+.message
+  .session-msg
+    - var i
+    - if (message.error.length)
+      .alert.alert-danger.alert-dismissable
+        - for (i = 0; i < message.error.length; i++)
+          button.close(type="button", data-dismiss="alert", aria-hidden="true") &times;
+          li!= message.error[i]
+    - if (message.info.length)
+      .alert.alert-info.alert-dismissable
+        - for (i = 0; i < message.info.length; i++)
+          button.close(type="button", data-dismiss="alert", aria-hidden="true") &times;
+          li!= message.info[i]
+    - if (message.success.length)
+      .alert.alert-success.alert-dismissable
+        - for (i = 0; i < message.success.length; i++)
+          button.close(type="button", data-dismiss="alert", aria-hidden="true") &times;
+          li!= message.success[i]
+  .router-msg
+
+- delete session.message
