@@ -4,7 +4,7 @@ define(['backbone'], function (Backbone) {
 
     initialize : function () {
       this.$message         = $('.message .router-msg');
-      this.crsfToken        = $('meta[name="csrf-token"').attr('content');
+      this.crsfToken        = $('meta[name="csrf-token"]').attr('content');
       this.reset_pwd_token  = $('input[name="reset-pwd-token"]');
       this.password         = $('#password');
       this.password_confirm = $('#password-confirm');

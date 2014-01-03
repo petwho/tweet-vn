@@ -1,4 +1,4 @@
-define(['backbone'], function (Backbone) {
+define(['backbone', 'spinner'], function (Backbone, spinner) {
   var LoginView = Backbone.View.extend({
     el: 'body',
 
@@ -10,7 +10,7 @@ define(['backbone'], function (Backbone) {
       this.$passwordLogin     = $('#password_login');
       this.$emailForgotPwd    = $('#email_forgot_password');
       this.$message           = $('.message .router-msg');
-      this.crsfToken          = $('meta[name="csrf-token"').attr('content');
+      this.crsfToken          = $('meta[name="csrf-token"]').attr('content');
     },
 
     clearForm : function () {
@@ -34,6 +34,7 @@ define(['backbone'], function (Backbone) {
 
       this.clearForm();
       window.location.hash = '#';
+      spinner.stop();
     },
 
     errorCallback : function (jqXHR, textStatus, errorThrow) {
@@ -45,6 +46,7 @@ define(['backbone'], function (Backbone) {
           + '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'
           + jqXHR.responseJSON.msg + '</div>');
       });
+      spinner.stop();
     },
 
     events    : {
@@ -56,7 +58,7 @@ define(['backbone'], function (Backbone) {
     createUser: function (e) {
       var self = this;
       e.preventDefault();
-
+      spinner.start();
       $.ajax({
         type  : 'POST',
         url   : '/users',
@@ -84,6 +86,7 @@ define(['backbone'], function (Backbone) {
               self.$message.html(html);
             }
           });
+          spinner.stop();
         }
       });
     },

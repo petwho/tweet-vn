@@ -12,6 +12,12 @@
   border-radius: @border;
 }
 
+.navbar-default {
+  background-color: #122c4b;
+  border-color: #122c4b;
+  .border-radius(0px);
+}
+
 .google-signup-btn {
   display: inline-block;
   margin-top: 10px;
@@ -84,4 +90,144 @@
     /* Use the Roboto font that is loaded in the <head> */
     font-family: 'Roboto',arial,sans-serif;
   }
+}
+
+#floatingBarsG {
+  position:relative;
+  width:20px;
+  height:25px
+}
+
+.blockG {
+  position:absolute;
+  background-color:#FFFFFF;
+  width:3px;
+  height:8px;
+  -moz-border-radius:3px 3px 0 0;
+  -moz-transform:scale(0.4);
+  -moz-animation-name:fadeG;
+  -moz-animation-duration:0.4s;
+  -moz-animation-iteration-count:infinite;
+  -moz-animation-direction:linear;
+  -webkit-border-radius:3px 3px 0 0;
+  -webkit-transform:scale(0.4);
+  -webkit-animation-name:fadeG;
+  -webkit-animation-duration:0.4s;
+  -webkit-animation-iteration-count:infinite;
+  -webkit-animation-direction:linear;
+  -ms-border-radius:3px 3px 0 0;
+  -ms-transform:scale(0.4);
+  -ms-animation-name:fadeG;
+  -ms-animation-duration:0.4s;
+  -ms-animation-iteration-count:infinite;
+  -ms-animation-direction:linear;
+  -o-border-radius:3px 3px 0 0;
+  -o-transform:scale(0.4);
+  -o-animation-name:fadeG;
+  -o-animation-duration:0.4s;
+  -o-animation-iteration-count:infinite;
+  -o-animation-direction:linear;
+  border-radius:3px 3px 0 0;
+  transform:scale(0.4);
+  animation-name:fadeG;
+  animation-duration:0.4s;
+  animation-iteration-count:infinite;
+  animation-direction:linear;
+}
+
+.rotate(@delay, @rotate) {
+  -moz-animation-delay: @delay;
+  -moz-transform: rotate(@rotate);
+
+  -webkit-animation-delay: @delay;
+  -webkit-transform: rotate(@rotate);
+
+  -ms-animation-delay: @delay;
+  -ms-transform: rotate(@rotate);
+
+  -o-animation-delay: @delay;
+  -o-transform: rotate(@rotate);
+
+  animation-delay:0.15s;
+  transform:rotate(-90deg);
+}
+
+#rotateG_01{
+  top: 9px;
+  left: 0;
+  .rotate(0.15s, -90deg);
+}
+
+#rotateG_02{
+  top: 3px;
+  left: 3px;
+  .rotate(0.2s, -45deg);
+}
+
+#rotateG_03{
+  top: 1px;
+  left: 8px;
+  .rotate(0.25s, 0deg);
+}
+
+#rotateG_04{
+  top: 3px;
+  right: 3px;
+  .rotate(0.3s, 45deg);
+}
+
+#rotateG_05{
+  right:0;
+  top:9px;
+  .rotate(0.35s, 90deg);
+}
+
+#rotateG_06{
+  right:3px;
+  bottom:2px;
+  .rotate(0.4s, 135deg);
+}
+
+#rotateG_07{
+  bottom:0;
+  left:8px;
+  .rotate(0.45s, 180deg);
+}
+
+#rotateG_08{
+  left:3px;
+  bottom:2px;
+  .rotate(0.5s, -135deg);
+}
+
+@-moz-keyframes fadeG {
+  0% { background-color:#000000; }
+  100% { background-color:#FFFFFF; }
+}
+
+@-webkit-keyframes fadeG {
+  0% { background-color:#000000; }
+  100% { background-color:#FFFFFF; }
+}
+
+@-ms-keyframes fadeG {
+  0% { background-color:#000000; }
+  100% { background-color:#FFFFFF; }
+}
+
+@-o-keyframes fadeG {
+  0% { background-color:#000000; }
+  100% { background-color:#FFFFFF; }
+}
+
+@keyframes fadeG {
+  0% { background-color:#000000; }
+  100% { background-color:#FFFFFF; }
+}
+
+.spinner {
+  margin-left: -35px;
+  padding: 15px 15px;
+  margin-top: 7.5px;
+  float: left;
 }
