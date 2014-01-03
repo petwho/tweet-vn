@@ -2,6 +2,14 @@ define(['backbone', 'spinner'], function (Backbone, spinner) {
   var LoginView = Backbone.View.extend({
     el: 'body',
 
+    events    : {
+      'submit .signup-form form'      : 'createUser',
+      'submit .login form'            : 'login',
+      'submit .forgot-password-form'  : 'forgotPassword',
+      'click .google-signup-btn'      : 'googleOauth',
+      'click .facebook-signup-btn'    : 'facebookOauth'
+    },
+
     initialize: function () {
       this.$fullNameSignup    = $('#full_name_signup');
       this.$emailSignup       = $('#email_signup');
@@ -49,12 +57,6 @@ define(['backbone', 'spinner'], function (Backbone, spinner) {
       spinner.stop();
     },
 
-    events    : {
-      'submit .signup-form form'      : 'createUser',
-      'submit .login form'            : 'login',
-      'submit .forgot-password-form'  : 'forgotPassword'
-    },
-
     createUser: function (e) {
       var self = this;
       e.preventDefault();
@@ -91,10 +93,31 @@ define(['backbone', 'spinner'], function (Backbone, spinner) {
       });
     },
 
+    googleOauth: function () {
+      spinner.start();
+
+      $.ajax({
+        type: 'GET',
+        url: '/users/google-oauth',
+        error : function (jqXHR, textStatus, errorThrow) {
+          spinner.stop();
+        },
+        success : function (data, textStatus, jqXHR) {
+          window.location.href = data;
+        }
+      });
+    },
+
+    facebookOauth : function () {
+      spinner.start();
+      window.location.href = '/users/facebook-oauth';
+    },
+
     login: function (e) {
       var self = this;
 
       e.preventDefault();
+      spinner.start();
 
       $.ajax({
         type: 'POST',
@@ -116,6 +139,8 @@ define(['backbone', 'spinner'], function (Backbone, spinner) {
     forgotPassword : function (e) {
       var self = this;
       e.preventDefault();
+
+      spinner.start();
 
       $.ajax({
         type  : 'POST',

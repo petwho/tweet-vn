@@ -284,7 +284,9 @@ UserSchema.static('oauthSignUp', function (req, res, next) {
 
   create_session_and_send_respond = function (user) {
     req.session.user = user;
-    return res.json({msg: 'signup success, check email for actiavtion'}, 200);
+    req.session.message.info.push('Sign up success.');
+
+    return res.redirect('/');
   };
 
   self.findOne({email: req.body.email}, function (err, user) {

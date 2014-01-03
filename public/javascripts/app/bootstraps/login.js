@@ -16,7 +16,7 @@ require.config({
     underscore: '../libs/underscore/underscore-1.5.2.min',
     backbone  : '../libs/backbone/backbone-1.1.0.min',
     bootstrap : '../vendor/bootstrap.min',
-    spinner      : '../libs/spinner',
+    spinner   : '../libs/spinner',
     text      : '../libs/require/text'
   }
 });
