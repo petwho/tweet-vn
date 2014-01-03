@@ -70,19 +70,21 @@ module.exports = function (app) {
   });
 
   app.get('/google-oauth-redirect', function (req, res, next) {
-    var client, get_token, get_user_info;
+    var client, get_token, get_user_info, access_token;
 
     if (!req.query.code) { return res.redirect('/'); }
 
     get_token = function (next) {
-      googleapis.discover('oauth2', 'v2').execute(function (err, result) {
+      googleapis.discover('oauth2', 'v2').execute(function (err, found_client) {
         if (err) { return next(err); }
+
+        client = found_client;
 
         oauth2Client.getToken(req.query.code, function (err, tokens) {
           if (err) { return next(err); }
 
           oauth2Client.credentials = tokens;
-          client = result;
+          access_token = tokens.access_token;
           next();
         });
       });
@@ -99,9 +101,10 @@ module.exports = function (app) {
             return res.redirect('/');
           }
 
-          req.body.email = profile.email;
-          req.body.picture = profile.picture;
-          req.body.full_name = profile.name;
+          req.body.email        = profile.email;
+          req.body.picture      = profile.picture;
+          req.body.full_name    = profile.name;
+          req.body.token        = { oauth : access_token };
           req.body.sign_up_type = 'google';
           next();
         });
@@ -117,10 +120,10 @@ module.exports = function (app) {
     var get_user_info, get_user_photo, user;
 
     get_user_info = function (next) {
-      req.facebook.api('/me', function (err, found_user) {
+      req.facebook.api('/me', function (err, user_obj) {
         if (err) { return next(err); }
 
-        user = found_user;
+        user = user_obj;
         req.body.email        = user.email;
         req.body.sign_up_type = 'facebook';
         req.body.full_name    = user.first_name + ' ' + user.last_name;
@@ -134,7 +137,7 @@ module.exports = function (app) {
           req.body.picture = JSON.parse(body).data ? JSON.parse(body).data.url : undefined;
         }
 
-        req.body.oauth_token = req.facebook.accessToken;
+        req.body.token = { oauth : req.facebook.accessToken };
         next();
       });
     };
