@@ -1,5 +1,5 @@
 require.config({
-  baseUrl: 'javascripts/app/',
+  baseUrl: '/javascripts/app/',
   shim: {
     underscore: { exports: '_' },
     backbone  : {

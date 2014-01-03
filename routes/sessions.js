@@ -10,17 +10,24 @@ module.exports = function (app) {
   });
 
   app.post('/sessions', notLoggedIn, function (req, res, next) {
-    var check_email, check_password, user;
+    var check_email, check_password, check_signup_type, user;
 
     check_email = function (next) {
       User.findOne({email: req.body.email}, function (err, found_user) {
         if (err) { return next(err); }
 
-        if (!found_user) { return res.json({msg: 'incorrect email'}, 403)};
+        if (!found_user) { return res.json({msg: 'incorrect email'}, 403); }
 
         user = found_user;
         next();
       });
+    };
+
+    check_signup_type = function (next) {
+      if (user.signup_type !== 'email') {
+        return res.json(400, {msg : 'Please login using Google account'});
+      }
+      next();
     };
 
     check_password = function (next) {
@@ -44,7 +51,7 @@ module.exports = function (app) {
       });
     };
 
-    async.series([check_email, check_password], function (err, results) {
+    async.series([check_email, check_signup_type, check_password], function (err, results) {
       if (err) { return next(err); }
       req.session.message.info.push('login success');
       return res.json({msg : 'login success'}, 200);
