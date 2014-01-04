@@ -59,7 +59,6 @@ define(['jquery', 'backbone'], function ($, Backbone) {
       }
 
       this.setupView();
-      this.$sugestTopics.show();
       this.$prev.show();
       this.$submit.show();
       this.$questionTopics.show();
@@ -78,29 +77,39 @@ define(['jquery', 'backbone'], function ($, Backbone) {
       this.timer = setTimeout(this.searchTopicCallback(this), 100);
     },
 
-    clearSuggestion : function () {
-      this.$sugestTopics.empty();
+    clearSuggestTopics : function () {
+      this.$sugestTopics.hide().find('ul').empty();
     },
 
     searchTopicCallback : function (that) {
       var self = that,
         term = self.$questionTopics.val();
 
-      if (!term.trim()) {
-        return self.clearSuggestion();
-      }
+      self.clearSuggestTopics();
+
+      if (!term.trim()) { return; }
 
       $.ajax({
         type  : 'GET',
-        url   : '/topics/search?term=' + term,
+        url   : '/topics/search?name=' + term,
         error : function (jqXHR, textStatus, errorThrow) {
 
         },
-        success : function (data, textStatus, jqXHR) {
+        success : function (topics, textStatus, jqXHR) {
+          var i,
+            length = topics.length;
 
+          if (length !== 0) {
+            for (i = 0; i < length; i++) {
+              self.$sugestTopics.find('ul').append('<li>'
+                + '<div class="picture"><img width="25", height="25", src="' + topics[i].picture + '"></div>'
+                + '<span>' + topics[i].name + '</span><br>'
+                + '<span class="followers">' + topics[i].follower_count + ' followers</span>');
+            }
+            self.$sugestTopics.show();
+          }
         }
       });
-      // self.$sugestTopics.html(term);
     }
   });
 

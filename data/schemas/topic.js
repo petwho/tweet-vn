@@ -8,7 +8,7 @@ TopicSchema = new Schema({
   parent          : { type: Schema.Types.ObjectId, ref: 'Topics', sparse: true },
   description     : String,
   picture         : String,
-  follower_count  : Number,
+  follower_count  : { type: Number, default: 0 },
   created_at      : { type: Date, default: Date.now },
   updated_at      : { type: Date, default: Date.now }
 });

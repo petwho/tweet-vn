@@ -14,8 +14,8 @@ module.exports = function (app) {
     return res.render('topics/index');
   });
 
-  app.get('topics/search', loggedIn, function (req, res, next) {
-    Topic.find({name: {$regex: req.params.name, $options: 'i'}}, function (err, topics) {
+  app.get('/topics/search', loggedIn, function (req, res, next) {
+    Topic.find({name: {$regex: req.query.name, $options: 'i'}}, '_id name picture follower_count').exec(function (err, topics) {
       if (err) { return next(err); }
       res.json(200, topics);
     });
