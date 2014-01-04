@@ -10,10 +10,28 @@ block content
           input.form-control(type="text", name="name", required)
         .form-group
           label(for="type") Type
-          select.form-control(name="type", required)
+          select.form-control(name="is_parent", required)
+            option
             option(value="0") Child
             option(value="1") Parent
+        .form-group
+          label(for="parent") Parent
+          select.form-control(name="parent", disabled)
+            - for (var i = 0; i < parents.length; i++)
+              option(value!= parents[i]._id)!= parents[i].name
         .form-group
           label(for="picture") Picture
           input.form-control(type="url", name="picture", required, placeholder="Paste in a url")
         button.btn.btn-primary(type="submit") Submit
+
+  script(src="/javascripts/libs/jquery/jquery-2.0.3.min.js")
+  script.
+    $(function () {
+      $('select[name="is_parent"]').on('change', function (e) {
+        if ($(e.target).val() != 1) {
+          $('select[name="parent"]').prop('disabled', false);
+        } else {
+          $('select[name="parent"]').prop('disabled', true);
+        }
+      });
+    });

@@ -1,11 +1,10 @@
-var mongoose    = require('mongoose'),
-  Schema        = mongoose.Schema,
-  AnswerSchema  = require('./answer'),
-  VoteSchema;
+var VoteSchema,
+  Schema        = require('mongoose').Schema,
+  AnswerSchema  = require('./answer');
 
 VoteSchema = new Schema({
-  user    : { type: mongoose.Schema.Types.ObjectId, ref : 'User' },
-  answer  : { type: mongoose.Schema.Types.ObjectId, ref : 'Answer' },
+  user    : { type: Schema.Types.ObjectId, ref : 'User' },
+  answer  : { type: Schema.Types.ObjectId, ref : 'Answer' },
   type    : { type: String, enum: ['+1', '-1'] } // +1: upvote, -1: downvote, 
 });
 

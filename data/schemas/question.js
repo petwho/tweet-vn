@@ -1,4 +1,4 @@
-var
+var QuestionSchema,
   Schema      = require('mongoose').Schema,
   async       = require('async'),
   escape      = require('escape-html'),
@@ -6,8 +6,7 @@ var
   LogSchema   = require('./log'),
   UserSchema  = require('./user'),
   User        = require('../models/user'),
-  TopicSchema = require('./topic'),
-  QuestionSchema;
+  TopicSchema = require('./topic');
 
 // ------------- BEGIN TOdO 28-13-2013 trankhanh - String length validation disabled ---------------
 // function minLength(length) {
@@ -25,14 +24,13 @@ QuestionSchema = new Schema({
   topics            : [TopicSchema],
   follower_id_list  : [UserSchema],
 
-  title             : { type : String,                required  : true },
-  author            : { type : Schema.Types.ObjectId, required  : true },
-  detail            : { type : String,                sparse    : true },
+  title             : { type: String,                 required: true },
+  author            : { type: Schema.Types.ObjectId,  required: true, ref: 'User' },
+  detail            : { type: String,                 sparse  : true },
 
-  status            : { type : Boolean, default   : 0 }, // 0: open quesiton, 1: answered question
-  // vote_count        : { type : Number,  required  : true, default : 0 },
-  created_at        : { type : Date,    required  : true, default : Date.now },
-  updated_at        : { type : Date,    required  : true, default : Date.now }
+  is_open           : { type: Boolean,  default : 0 },
+  created_at        : { type: Date,     required: true, default: Date.now },
+  updated_at        : { type: Date,     required: true, default: Date.now }
 });
 
 QuestionSchema.static('filterInputs', function (reqBody) {
@@ -43,8 +41,8 @@ QuestionSchema.static('filterInputs', function (reqBody) {
   delete reqBody.updated_at;
 });
 
-QuestionSchema.pre('save', function(next) {
-  if ( !this.isNew ) {
+QuestionSchema.pre('save', function (next) {
+  if (!this.isNew) {
     this.updated_at = new Date();
   }
   next();

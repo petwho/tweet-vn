@@ -1,12 +1,11 @@
 var AnswerSchema,
-  mongoose    = require('mongoose'),
-  Schema      = mongoose.Schema,
+  Schema      = require('mongoose').Schema,
   LogSchema   = require('./log'),
   VoteSchema  = require('./vote');
 
 AnswerSchema = new Schema({
-  author      : { type: mongoose.Schema.Types.ObjectId, ref : 'User' },
-  question    : { type: mongoose.Schema.Types.ObjectId, ref : 'Question' },
+  author      : { type: Schema.Types.ObjectId, ref : 'User' },
+  question    : { type: Schema.Types.ObjectId, ref : 'Question' },
   logs        : [LogSchema],
   vote_list   : [VoteSchema],
 

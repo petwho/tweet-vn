@@ -8,22 +8,28 @@ nav.navbar.navbar-default
       span.spinner
       a(class="navbar-brand", href='/') BRAND
     .navbar-collapse.collapse
-      if(session.user)
+      if (session.user)
         ul.nav.navbar-nav.navbar-right
           li.unread-notifications.dropdown
             a(href="/users/#{session.user.username}/notifications") Home &nbsp;
               span.badge
           li.dropdown
-            a.dropdown-toggle(href="/users/#{session.user.username}", data-toggle='dropdown')= session.user.full_name
-              |&nbsp;
-              b.caret
+            - if (session.user.picture)
+              a.dropdown-toggle(href="/users/#{session.user.username}", data-toggle='dropdown')
+                img(src!=session.user.picture, width="28", height="28")
+                |&nbsp;
+                b.caret
+            - else
+              a.dropdown-toggle(href="/users/#{session.user.username}", data-toggle='dropdown')= session.user.full_name
+                |&nbsp;
+                b.caret
             ul.dropdown-menu(role='menu')
               li
                 a(href="/users/#{session.user.username}") Thông tin cá nhân
               li
                 a(href="/users/#{session.user.username}/edit") Chỉnh sửa Thông tin
-              - if(session.user && session.user.account_type == 'register')
+              - if (session.user && session.user.account_type == 'register')
                 li
                   a(href="/users/#{session.user.username}/change_password") Đổi mật khẩu
           li
-            button.btn.btn-danger.navbar-btn#new-question(type="button") Đặt câu hỏi
+            button.btn.btn-danger.navbar-btn#add-question(type="button") Đặt câu hỏi

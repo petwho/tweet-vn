@@ -1,10 +1,8 @@
-var
-  mongoose      = require('mongoose'), 
-  Schema        = require('mongoose').Schema,
-  LogSchema;
+var LogSchema,
+  Schema = require('mongoose').Schema;
 
 LogSchema = new Schema({
-  content: String,
+  content   : String,
   created_at: { type: Date, default: Date.now }
 });
 

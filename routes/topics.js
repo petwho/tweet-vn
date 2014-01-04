@@ -14,12 +14,29 @@ module.exports = function (app) {
     return res.render('topics/index');
   });
 
+  app.get('topics/search', loggedIn, function (req, res, next) {
+    Topic.find({name: {$regex: req.params.name, $options: 'i'}}, function (err, topics) {
+      if (err) { return next(err); }
+      res.json(200, topics);
+    });
+  });
+
   app.get('/topics/new', loggedIn, function (req, res, next) {
-    return res.render('topics/new');
+    Topic.find({ is_parent: true }, '_id name').exec(function (err, parents) {
+      return res.render('topics/new', { parents: parents });
+    });
   });
 
   app.post('/topics', loggedIn, function (req, res, next) {
     Topic.filterInputs(req.body);
+
+    Topic.findById(req.body.parent, function (err, topic) {
+      if (err) { return next(err); }
+      if (!topic) {
+        req.session.message.error.push('Invalid parent topic.');
+        return res.redirect('back');
+      }
+    });
 
     Topic.create(req.body, function (err, topic) {
       if (err) {

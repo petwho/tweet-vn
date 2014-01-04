@@ -1,6 +1,4 @@
-// ** Begin module scope variables
 var UserSchema, activationMsgMap, resetPasswordMsgMap,
-  mongoose                = require('mongoose'),
   Schema                  = require('mongoose').Schema,
   async                   = require('async'),
   hash                    = require('../helpers/secure_pass').hash,
@@ -24,7 +22,7 @@ resetPasswordMsgMap = {
 };
 // ** End module scope variables
 
-UserSchema = new mongoose.Schema({
+UserSchema = new Schema({
   // (1): registered, (2): [1] + activated, (3): [2] + followed topic, (4): [3] + followed users
   status    : { type: Number, required: true, default: 1},
   username  : { type: String, required: true, unique: true },
@@ -33,13 +31,13 @@ UserSchema = new mongoose.Schema({
   picture   : String,
 
   following_list : {
-    user     : [{ type : mongoose.Schema.Types.ObjectId, ref : 'User' }],
-    topic    : [{ type : mongoose.Schema.Types.ObjectId, ref : 'Topic' }],
-    question : [{ type : mongoose.Schema.Types.ObjectId, ref : 'Question' }]
+    user     : [{ type : Schema.Types.ObjectId, ref : 'User' }],
+    topic    : [{ type : Schema.Types.ObjectId, ref : 'Topic' }],
+    question : [{ type : Schema.Types.ObjectId, ref : 'Question' }]
   },
 
-  activity_list       : [{ type : mongoose.Schema.Types.ObjectId, ref : 'Activity' }],
-  notification_list   : [{ type : mongoose.Schema.Types.ObjectId, ref : 'Notification' }],
+  activity_list       : [{ type : Schema.Types.ObjectId, ref : 'Activity' }],
+  notification_list   : [{ type : Schema.Types.ObjectId, ref : 'Notification' }],
 
   password      : String,
   password_salt : String,

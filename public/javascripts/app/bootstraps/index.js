@@ -22,6 +22,7 @@ require.config({
 });
 
 require([
-  'bootstrap', 'backbone'
-], function (bootstrap, Backbone) {
+  'bootstrap', 'backbone', 'share/views/add_question'
+], function (bootstrap, Backbone, AddQuestion) {
+  new AddQuestion;
 });

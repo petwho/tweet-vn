@@ -1,10 +1,11 @@
-var request   = require('request'),
-  Schema      = require('mongoose').Schema,
-  TopicSchema;
+var TopicSchema,
+  request     = require('request'),
+  Schema      = require('mongoose').Schema;
 
 TopicSchema = new Schema({
-  name            : { type: String,   required: "Name is required", unique  : true },
-  type            : { type: Boolean,  required: true }, // 0: child, 1: parent
+  name            : { type: String,   required: true, unique  : true },
+  is_parent       : { type: Boolean,  required: true },
+  parent          : { type: Schema.Types.ObjectId, ref: 'Topics', sparse: true },
   description     : String,
   picture         : String,
   follower_count  : Number,

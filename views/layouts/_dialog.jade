@@ -1,0 +1,25 @@
+#question-modal.modal(tabindex="-1", role="dialog", aria-hidden="true")
+  .modal-dialog
+    .modal-content
+      .modal-header
+        button.close(type="button", data-dismiss="modal", aria-hidden="true") &times;
+        h4.modal-title Modal title
+      .modal-body
+        .notice
+        form
+          .form-group
+            textarea.q-title.form-control(rows="5")
+            input.q-topics.form-control(type="text")
+            .suggest-topics
+              ul
+                li
+                  div.pic
+                    img(src="https://lh4.googleusercontent.com/-JJ44B64PAmk/AAAAAAAAAAI/AAAAAAAAABo/loxFT7oQ86s/photo.jpg", width="25", height="25")
+                  span Test
+                  br
+                  span.followers 19230 followers
+      .modal-footer
+        button.btn.btn-default.cancel(type="button", data-dismiss="modal") Close
+        button.btn.btn-default.prev(type="button") Back
+        button.btn.btn-default.next(type="button") Next
+        button.btn.btn-default.submit(type="button") Add Question
