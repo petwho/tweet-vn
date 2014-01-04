@@ -1,0 +1,19 @@
+extends ../layouts/login
+
+block content
+  .row
+    .col-md-4.col-md-offset-4
+      form(method="POST", action="/topics")
+        input(type="hidden", name="_csrf", value!=csrfToken)
+        .form-group
+          label(for="name") Name
+          input.form-control(type="text", name="name", required)
+        .form-group
+          label(for="type") Type
+          select.form-control(name="type", required)
+            option(value="0") Child
+            option(value="1") Parent
+        .form-group
+          label(for="picture") Picture
+          input.form-control(type="url", name="picture", required, placeholder="Paste in a url")
+        button.btn.btn-primary(type="submit") Submit
