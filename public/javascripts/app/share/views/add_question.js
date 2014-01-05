@@ -1,4 +1,4 @@
-define(['jquery', 'backbone'], function ($, Backbone) {
+define(['jquery', 'backbone', 'spinner'], function ($, Backbone, spinner) {
   var AddQuestion = Backbone.View.extend({
     el: 'body',
 
@@ -14,7 +14,7 @@ define(['jquery', 'backbone'], function ($, Backbone) {
       this.$questionTitle   = $('#question-modal .q-title');
       this.$questionTopics  = $('#question-modal .q-topics');
       this.$notice          = $('#question-modal .notice');
-      this.$sugestTopics    = $('#question-modal .suggest-topics');
+      this.$searchResults   = $('#question-modal .search-results');
 
       this.$cancel  = $('#question-modal .cancel');
       this.$prev    = $('#question-modal .prev');
@@ -31,7 +31,7 @@ define(['jquery', 'backbone'], function ($, Backbone) {
     setupView: function () {
       this.$questionTitle.hide();
       this.$questionTopics.hide();
-      this.$sugestTopics.hide();
+      this.$searchResults.hide();
       this.$notice.hide();
 
       this.$cancel.hide();
@@ -65,6 +65,8 @@ define(['jquery', 'backbone'], function ($, Backbone) {
       this.$questionTopics.show();
     },
 
+
+
     prev : function () {
       this.setupView();
       this.$cancel.show();
@@ -80,7 +82,7 @@ define(['jquery', 'backbone'], function ($, Backbone) {
     },
 
     clearSuggestTopics : function () {
-      this.$sugestTopics.hide().find('ul').empty();
+      this.$searchResults.hide().find('ul').empty();
     },
 
     searchTopicCallback : function (that) {
@@ -91,24 +93,26 @@ define(['jquery', 'backbone'], function ($, Backbone) {
 
       if (!term.trim()) { return; }
 
+      spinner.start();
       $.ajax({
         type  : 'GET',
         url   : '/topics/search?name=' + term,
         error : function (jqXHR, textStatus, errorThrow) {
-
+          spinner.stop();
         },
         success : function (topics, textStatus, jqXHR) {
           var i,
             length = topics.length;
 
+          spinner.stop();
           if (length !== 0) {
             for (i = 0; i < length; i++) {
-              self.$sugestTopics.find('ul').append('<li>'
+              self.$searchResults.find('ul').append('<li>'
                 + '<div class="picture"><img width="25", height="25", src="' + topics[i].picture + '"></div>'
                 + '<span>' + topics[i].name + '</span><br>'
                 + '<span class="followers">' + topics[i].follower_count + ' followers</span>');
             }
-            self.$sugestTopics.show();
+            self.$searchResults.show();
           }
         }
       });
