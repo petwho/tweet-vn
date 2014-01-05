@@ -2,11 +2,11 @@ var loggedIn  = require('./middleware/logged_in.js'),
   Topic       = require('../data/models/topic.js');
 
 module.exports = function (app) {
-  var parents, loadParents;
+  var sub_topics, loadSubTopics;
 
-  loadParents = function (req, res, next) {
-    Topic.find({ is_parent: true }, '_id name').exec(function (err, returned_parents) {
-      parents = returned_parents;
+  loadSubTopics = function (req, res, next) {
+    Topic.find({ is_primary: false }, '_id name').exec(function (err, returned_topics) {
+      sub_topics = returned_topics;
       next();
     });
   };
@@ -30,20 +30,29 @@ module.exports = function (app) {
     });
   });
 
-  app.get('/topics/new', [loggedIn, loadParents], function (req, res, next) {
-    return res.render('topics/new', { parents : parents });
+  app.get('/topics/new', [loggedIn, loadSubTopics], function (req, res, next) {
+    console.log(sub_topics)
+    return res.render('topics/new', { sub_topics : sub_topics });
   });
 
-  app.post('/topics', loggedIn, function (req, res, next) {
+  app.post('/topics', [loggedIn, loadSubTopics], function (req, res, next) {
+    var i,
+      topic_id_list = [];
+
     Topic.filterInputs(req.body);
 
-    Topic.findById(req.body.parent, function (err, topic) {
-      if (err) { return next(err); }
-      if (!topic) {
-        req.session.message.error.push('Invalid parent topic.');
+    // ** Begin validate sub-topics
+    for (i = 0; i < sub_topics; i++) {
+      topic_id_list.push(sub_topics[i]._id);
+    }
+
+    for (i = 0; i < req.body.sub_topics; i++) {
+      if (topic_id_list.indexOf(req.body.sub_topics[i]) !== -1) {
+        req.session.message.error.push('Invalid sub-topic.');
         return res.redirect('back');
       }
-    });
+    }
+    // ** End of validate sub-topics
 
     Topic.create(req.body, function (err, topic) {
       if (err) {
@@ -59,9 +68,9 @@ module.exports = function (app) {
     });
   });
 
-  app.get('/topics/:id/edit', [loggedIn, loadParents], function (req, res, next) {
+  app.get('/topics/:id/edit', [loggedIn, loadSubTopics], function (req, res, next) {
     Topic.findById(req.params.id, function (err, topic) {
-      return res.render('topics/edit', { topic: topic, parents : parents });
+      return res.render('topics/edit', { topic: topic, sub_topics : sub_topics });
     });
   });
 

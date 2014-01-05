@@ -5,7 +5,7 @@ var TopicSchema,
 TopicSchema = new Schema({
   name            : { type: String,   required: true, unique  : true },
   is_primary      : { type: Boolean,  required: true },
-  children        : [{ type: Schema.Types.ObjectId, ref: 'Topics', sparse: true }],
+  sub_topics      : [{ type: Schema.Types.ObjectId, ref: 'Topics', sparse: true }],
   related_words   : { type: Array },
   description     : String,
   picture         : String,
