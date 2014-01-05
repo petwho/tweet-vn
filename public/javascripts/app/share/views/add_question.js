@@ -48,6 +48,7 @@ define(['jquery', 'backbone'], function ($, Backbone) {
       this.$questionTitle.show();
 
       this.$modal.modal();
+      this.$questionTitle.focus();
       $('#question-modal .modal-dialog').css({ marginTop: ($(window).height() - $('#question-modal .modal-dialog').height()) / 2 + 'px'});
     },
 
@@ -69,6 +70,7 @@ define(['jquery', 'backbone'], function ($, Backbone) {
       this.$cancel.show();
       this.$next.show();
       this.$questionTitle.show();
+      this.$questionTitle.focus();
     },
 
     searchTopic : function () {
