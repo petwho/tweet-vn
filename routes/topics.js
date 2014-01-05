@@ -31,7 +31,6 @@ module.exports = function (app) {
   });
 
   app.get('/topics/new', [loggedIn, loadSubTopics], function (req, res, next) {
-    console.log(sub_topics)
     return res.render('topics/new', { sub_topics : sub_topics });
   });
 
