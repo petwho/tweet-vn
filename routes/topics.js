@@ -2,6 +2,15 @@ var loggedIn  = require('./middleware/logged_in.js'),
   Topic       = require('../data/models/topic.js');
 
 module.exports = function (app) {
+  var parents, loadParents;
+
+  loadParents = function (req, res, next) {
+    Topic.find({ is_parent: true }, '_id name').exec(function (err, returned_parents) {
+      parents = returned_parents;
+      next();
+    });
+  };
+
   app.get('/topics/list', loggedIn, function (req, res, next) {
     Topic.find({}, function (err, topics) {
       if (err) { return next(err); }
@@ -21,10 +30,8 @@ module.exports = function (app) {
     });
   });
 
-  app.get('/topics/new', loggedIn, function (req, res, next) {
-    Topic.find({ is_parent: true }, '_id name').exec(function (err, parents) {
-      return res.render('topics/new', { parents: parents });
-    });
+  app.get('/topics/new', [loggedIn, loadParents], function (req, res, next) {
+    return res.render('topics/new', { parents : parents });
   });
 
   app.post('/topics', loggedIn, function (req, res, next) {
@@ -46,6 +53,23 @@ module.exports = function (app) {
         }
         return next(err);
       }
+
+      req.session.message.info.push('Good job! :D.<span class="pull-right">Hate to see me? Why not ;-) <strong>-----></strong><span>');
+      return res.redirect('/topics/index');
+    });
+  });
+
+  app.get('/topics/:id/edit', [loggedIn, loadParents], function (req, res, next) {
+    Topic.findById(req.params.id, function (err, topic) {
+      return res.render('topics/edit', { topic: topic, parents : parents });
+    });
+  });
+
+  app.put('/topics/:id', [loggedIn], function (req, res, next) {
+    Topic.filterInputs(req.body);
+
+    Topic.update({ _id: req.params.id }, req.body, function (err, topic) {
+      if (err) { return next(err); }
 
       req.session.message.info.push('Good job! :D.<span class="pull-right">Hate to see me? Why not ;-) <strong>-----></strong><span>');
       return res.redirect('/topics/index');
