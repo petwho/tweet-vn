@@ -16,7 +16,7 @@ nav.navbar.navbar-default
           li.dropdown
             - if (session.user.picture)
               a.dropdown-toggle(href="/users/#{session.user.username}", data-toggle='dropdown')
-                img(src!=session.user.picture, width="28", height="28")
+                img.user-picture(src!=session.user.picture, width="28", height="28")
                 |&nbsp;
                 b.caret
             - else
