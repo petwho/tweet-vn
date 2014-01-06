@@ -32,7 +32,24 @@ module.exports = function (app) {
       next();
     });
   };
+
+  app.get('/questions/list', [loggedIn], function (req, res, next) {
+    var scrollcount = (req.query.scrollcount || 0) * 10;
+
+    Question.find({}).skip(scrollcount).limit(10)
+      .populate('answers')
+      .populate({
+        path  : 'topics',
+        select: 'name picture follower_count'
+      })
+      .exec(function (err, questions) {
+        return res.json(200, questions);
+      });
+  });
+
   app.post('/questions', [loggedIn, loadUser.bySession, validateTopics], function (req, res, next) {
+    Question.filterInputs(req.body);
+
     req.body.author = req.body.following_list = req.user._id;
 
     Question.create(req.body, function (err, question) {
