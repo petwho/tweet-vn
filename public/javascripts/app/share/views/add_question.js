@@ -1,4 +1,8 @@
-define(['jquery', 'backbone', 'spinner'], function ($, Backbone, spinner) {
+define([
+  'jquery', 'backbone', 'spinner',
+  'text!templates/add_question/search_topic.html',
+  'text!templates/add_question/suggest_topic.html'
+], function ($, Backbone, spinner, searchTopictemplate, suggestTopictemplate) {
   var AddQuestion = Backbone.View.extend({
     el: 'body',
 
@@ -6,12 +10,13 @@ define(['jquery', 'backbone', 'spinner'], function ($, Backbone, spinner) {
       'click #add-question': 'addQuestion',
       'click #question-modal .next' : 'next',
       'click #question-modal .prev' : 'prev',
-      'keyup #question-modal .search-input' : 'searchTopic'
+      'keyup #question-modal .search-input' : 'searchTopic',
+      'click #question-modal .search-results > ul > li' : 'addTopic'
     },
 
     initialize: function () {
       this.$modal           = $('#question-modal');
-      this.$titleBox        = $('#question-modal .title-box'),
+      this.$titleBox        = $('#question-modal .title-box');
       this.$questionTitle   = $('#question-modal .q-title');
       this.$notice          = $('#question-modal .notice');
       this.$topicBox        = $('#question-modal .topic-box');
@@ -102,18 +107,10 @@ define(['jquery', 'backbone', 'spinner'], function ($, Backbone, spinner) {
               }
             }
           }
-          Object.keys(stat_list).map(function (key) {
-            if (stat_list[key] !== 0) {
-              for (i = 0; i < topics_length; i++) {
-                if (topics[i].related_words.indexOf(key) !== -1) {
-                  self.$suggestTopics.append('<div class="checkbox"><label>'
-                    + '<input type="checkbox" name="topic" value="' + topics[i]._id + '" checked>'
-                    + '<span class="name">' + topics[i].name + '</span>'
-                    + '<span class="followers">' + topics[i].follower_count + ' followers</span>');
-                }
-              }
-            }
-          });
+          // render suggest topic list
+          self.$suggestTopics.append(_.template($(suggestTopictemplate).html())({
+            topics : topics, stat_list: stat_list
+          }));
           spinner.stop();
         }
       });
@@ -154,22 +151,20 @@ define(['jquery', 'backbone', 'spinner'], function ($, Backbone, spinner) {
           spinner.stop();
         },
         success : function (topics, textStatus, jqXHR) {
-          var i,
-            length = topics.length;
-
           self.clearSearchResults();
           spinner.stop();
-          if (length !== 0) {
-            for (i = 0; i < length; i++) {
-              self.$searchResults.find('ul').append('<li>'
-                + '<div class="picture"><img width="25", height="25", src="' + topics[i].picture + '"></div>'
-                + '<span>' + topics[i].name + '</span><br>'
-                + '<span class="followers">' + topics[i].follower_count + ' followers</span>');
-            }
+          if (topics.length !== 0) {
+            self.$searchResults.find('ul').append(_.template($(searchTopictemplate).html())({
+              topics: topics
+            }));
             self.$searchResults.show();
           }
         }
       });
+    },
+
+    addTopic: function (e) {
+      $(e.target);
     }
   });
 

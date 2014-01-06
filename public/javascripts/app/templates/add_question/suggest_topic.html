@@ -1,0 +1,17 @@
+<script type="text/template">
+  <% _.map(stat_list, function (val, key) { %>
+    <% if (val !== 0) { %>
+      <% _.each(topics, function (topic) { %>
+        <% if (topic.related_words.indexOf(key) !== -1) { %>
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" name="topic" value="<%= topic._id %>" checked>
+              <span class="name"><%= topic.name %></span>
+              <span class="followers"><%= topic.follower_count %> followers</span>
+            </label>
+          </div>
+        <% } %>
+      <% }) %>
+    <% } %>
+  <% }) %>
+</script>
