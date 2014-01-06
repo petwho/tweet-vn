@@ -1,6 +1,8 @@
 var QuestionSchema,
   Schema      = require('mongoose').Schema,
+  Answer      = require('../models/answer'),
   async       = require('async'),
+  escapeHtml  = require('escape-html'),
   escape      = require('escape-html');
 
 // ------------- BEGIN TOdO 28-13-2013 trankhanh - String length validation disabled ---------------
@@ -15,6 +17,7 @@ var QuestionSchema,
 // ------------- END TODO 28-13-2013 trankhanh - String length validation disabled ---------------
 
 QuestionSchema = new Schema({
+  answers           : [{ type: Schema.Types.ObjectId, ref: 'Answer' }],
   logs              : [{ type: Schema.Types.ObjectId, ref: 'Log' }],
   topics            : [{ type: Schema.Types.ObjectId, ref: 'Topic' }],
   follower_list     : [{ type: Schema.Types.ObjectId, ref: 'User' }],
@@ -34,6 +37,10 @@ QuestionSchema.static('filterInputs', function (reqBody) {
   delete reqBody.status;
   delete reqBody.created_at;
   delete reqBody.updated_at;
+  reqBody.title = escapeHtml(reqBody.title);
+  if ((reqBody.detail !== undefined) && (typeof reqBody === 'string')) {
+    reqBody.detail = escapeHtml(reqBody.detail);
+  }
 });
 
 QuestionSchema.pre('save', function (next) {
