@@ -1,0 +1,24 @@
+<script type="text/template">
+  <div class="row">
+    <div class="col-sm-1">
+      <img width="25" height="25" src="<%= topics[0].picture %>">
+    </div>
+    <div class="col-sm-11">
+      <div class="light-gray">Question added to topic <%= topics[0].name %></div>
+      <div>
+        <a class="question-link" href="/questions/<%= _id %>" target="blank"><%= title %></a>
+      </div>
+      <% if (answers.length == 0) { %>
+        <div class="fake-input" data-fake-editor-id="<%= _id %>">
+          <img src="" width="35" height="35">
+          <input type="text" value="<%= follower_list.length %> people are waiting for answer">
+        </div>
+        <textarea class="hidden ec_<%= _id %>"></textarea>
+      <% } %>
+      <div class="item-action-bar">
+        <a class="follow-question" href="#follow">Follow</a>
+        <a href="/questions/<%= _id %>" class="answer-count" target="blank"><%= answers.length %> Answers</a>
+      </div>
+    </div>
+  </div>
+</script>
