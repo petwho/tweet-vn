@@ -9,6 +9,9 @@ require.config({
     bootstrap : {
       deps    : ['jquery'],
       exports : 'bootstrap'
+    },
+    tinymce   : {
+      exports : 'tinymce'
     }
   },
   paths: {
@@ -16,13 +19,16 @@ require.config({
     underscore: '../libs/underscore/underscore-1.5.2.min',
     backbone  : '../libs/backbone/backbone-1.1.0.min',
     bootstrap : '../vendor/bootstrap.min',
+    tinymce   : '../vendor/tinymce/tinymce.min',
     spinner   : '../libs/spinner',
     text      : '../libs/require/text'
   }
 });
 
 require([
-  'bootstrap', 'backbone', 'share/views/add_question'
-], function (bootstrap, Backbone, AddQuestion) {
-  new AddQuestion;
+  'bootstrap', 'backbone', 'share/views/add_question',
+  'views/app_question'
+], function (bootstrap, Backbone, AddQuestionView, AppQuestionView) {
+  new AddQuestionView;
+  new AppQuestionView;
 });
