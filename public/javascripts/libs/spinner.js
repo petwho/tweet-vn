@@ -89,6 +89,7 @@ define(['jquery'], function () {
 
   function start(el) {
     config(el);
+    $el.show();
     spin();
   }
 

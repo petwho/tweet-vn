@@ -8,14 +8,16 @@ define([
     el: 'body',
 
     events: {
-      'click #add-question': 'addQuestion',
-      'click #question-modal .next' : 'next',
-      'click #question-modal .prev' : 'prev',
+      'click #add-question'           : 'addQuestion',
+      'click #question-modal .next'   : 'next',
+      'click #question-modal .prev'   : 'prev',
+      'click #question-modal .submit' : 'submit',
       'keyup #question-modal .search-input' : 'searchTopic',
       'click #question-modal .search-results > ul > li' : 'addTopic'
     },
 
     initialize: function () {
+      this.csrfToken        = $('meta[name="csrf-token"]').attr('content');
       this.$modal           = $('#question-modal');
       this.$titleBox        = $('#question-modal .title-box');
       this.$questionTitle   = $('#question-modal .q-title');
@@ -30,10 +32,11 @@ define([
       this.$prev    = $('#question-modal .prev');
       this.$next    = $('#question-modal .next');
       this.$submit  = $('#question-modal .submit');
+      this.$form    = $('#question-modal form');
       this.timer    = null;
       this.topics   = [];
 
-      $('#question-modal form').on('submit', function (e) {
+      this.$form.on('submit', function (e) {
         e.preventDefault();
       });
     },
@@ -68,7 +71,6 @@ define([
         return;
       }
       this.suggestTopicsFunc();
-      spinner.start();
       this.setupView();
       this.$prev.show();
       this.$submit.show();
@@ -81,6 +83,8 @@ define([
 
     suggestTopicsFunc : function () {
       var self = this;
+
+      spinner.start();
       $.ajax({
         type  : 'GET',
         url   : '/topics/list',
@@ -93,6 +97,7 @@ define([
             stat_list     = {},
             topics_length = topics.length;
 
+          spinner.stop();
           self.topics = topics;
 
           for (i = 0; i < topics_length; i++) {
@@ -111,7 +116,6 @@ define([
           self.$topicList.append(_.template($(suggestTemplate).html())({
             topics : topics, stat_list: stat_list
           }));
-          spinner.stop();
         }
       });
     },
@@ -134,12 +138,12 @@ define([
       this.$searchResults.hide().find('ul').empty();
     },
 
-    searchTopicCallback : function (that) {
-      var self = that,
-        term = self.$searchInput.val();
+    searchTopicCallback : function (self) {
+      var that = self,
+        term = that.$searchInput.val();
 
       if (!term.trim()) {
-        self.clearSearchResults();
+        that.clearSearchResults();
         return;
       }
 
@@ -151,13 +155,13 @@ define([
           spinner.stop();
         },
         success : function (topics, textStatus, jqXHR) {
-          self.clearSearchResults();
+          that.clearSearchResults();
           spinner.stop();
           if (topics.length !== 0) {
-            self.$searchResults.find('ul').append(_.template($(searchTemplate).html())({
+            that.$searchResults.find('ul').append(_.template($(searchTemplate).html())({
               topics: topics
             }));
-            self.$searchResults.show();
+            that.$searchResults.show();
           }
         }
       });
@@ -172,6 +176,26 @@ define([
       topic.follower_count  = $target.find('.followers').data('followers');
 
       this.$topicList.append(_.template($(newTemplate).html())(topic));
+    },
+
+    submit: function (e) {
+      spinner.start();
+      // console.log(self.$form.find('input[name="topics"]').html())
+      $.ajax({
+        type  : 'POST',
+        url   : '/questions',
+        data  : {
+          _csrf   : this.csrfToken,
+          title   : this.$form.find('textarea[name="title"]').val(),
+          topics  : this.$form.find('input:checkbox:checked[name="topics"]').map(function() { return $(this).val(); }).get()
+        },
+        error: function () {
+
+        },
+        success: function () {
+
+        }
+      });
     }
   });
 

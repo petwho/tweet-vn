@@ -5,7 +5,7 @@
         <% if (topic.related_words.indexOf(key) !== -1) { %>
           <div class="checkbox">
             <label>
-              <input type="checkbox" name="topic" value="<%= topic._id %>" checked>
+              <input type="checkbox" name="topics" value="<%= topic._id %>" checked>
               <span class="name"><%= topic.name %></span>
               <span class="followers"><%= topic.follower_count %> followers</span>
             </label>
