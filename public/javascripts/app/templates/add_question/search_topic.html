@@ -4,8 +4,8 @@
       <div class="picture">
         <img width="25" height="25" src="<%= topic.picture %>">
       </div>
-      <span class="name"><%= topic.name %></span><br>
-      <span class="followers"><%= topic.follower_count %></span>
+      <span class="name" data-name="<%= topic.name %>"><%= topic.name %></span><br>
+      <span class="followers" data-followers="<%= topic.follower_count %>"><%= topic.follower_count %> followers</span>
     </li>
   <% }) %>
 </script>

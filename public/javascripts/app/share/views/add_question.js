@@ -1,8 +1,9 @@
 define([
   'jquery', 'backbone', 'spinner',
   'text!templates/add_question/search_topic.html',
-  'text!templates/add_question/suggest_topic.html'
-], function ($, Backbone, spinner, searchTopictemplate, suggestTopictemplate) {
+  'text!templates/add_question/suggest_topic.html',
+  'text!templates/add_question/new_topic.html'
+], function ($, Backbone, spinner, searchTemplate, suggestTemplate, newTemplate) {
   var AddQuestion = Backbone.View.extend({
     el: 'body',
 
@@ -21,7 +22,7 @@ define([
       this.$notice          = $('#question-modal .notice');
       this.$topicBox        = $('#question-modal .topic-box');
       this.$searchInput     = $('#question-modal .search-input');
-      this.$suggestTopics   = $('.suggest-topics');
+      this.$topicList       = $('.topic-list');
       this.$searchResults   = $('#question-modal .search-results');
 
       this.$cancel  = $('#question-modal .cancel');
@@ -61,7 +62,7 @@ define([
     },
 
     next : function () {
-      if (!this.$questionTitle.val() || this.$questionTitle.val().length < 10) {
+      if (!this.$questionTitle.val() || this.$questionTitle.val().trim().length < 10) {
         this.$notice.html('<strong>This question needs more details.</strong>');
         this.$notice.show();
         return;
@@ -93,7 +94,6 @@ define([
             topics_length = topics.length;
 
           self.topics = topics;
-          self.$suggestTopics.empty();
 
           for (i = 0; i < topics_length; i++) {
             for (j = 0; j < topics[i].related_words.length; j++) {
@@ -108,7 +108,7 @@ define([
             }
           }
           // render suggest topic list
-          self.$suggestTopics.append(_.template($(suggestTopictemplate).html())({
+          self.$topicList.append(_.template($(suggestTemplate).html())({
             topics : topics, stat_list: stat_list
           }));
           spinner.stop();
@@ -154,7 +154,7 @@ define([
           self.clearSearchResults();
           spinner.stop();
           if (topics.length !== 0) {
-            self.$searchResults.find('ul').append(_.template($(searchTopictemplate).html())({
+            self.$searchResults.find('ul').append(_.template($(searchTemplate).html())({
               topics: topics
             }));
             self.$searchResults.show();
@@ -164,7 +164,14 @@ define([
     },
 
     addTopic: function (e) {
-      $(e.target);
+      var topic = {},
+        $target = $(e.currentTarget);
+
+      topic._id             = $target.data('topic-id');
+      topic.name            = $target.find('.name').data('name');
+      topic.follower_count  = $target.find('.followers').data('followers');
+
+      this.$topicList.append(_.template($(newTemplate).html())(topic));
     }
   });
 
