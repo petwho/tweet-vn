@@ -13,6 +13,18 @@
   border-radius: @border;
 }
 
+.light-gray {
+  color: #999;
+}
+
+.link-text {
+  color: #19558d;
+}
+
+.question-link {
+  .link-text;
+  font-weight: bold;
+}
 // ** End functions definition
 
 // ** Begin navbar
@@ -209,5 +221,26 @@
 
       }
     }
+  }
+}
+
+.fake-input {
+  background: #eee;
+  padding: 5px;
+  width: 270px;
+  .border-radius(5px);
+
+  input {
+    padding: 8px;
+    margin: 0 0 0 35px;
+    width: 225px;
+    color: #999;
+    border: 0;
+    border-color: #538dc2;
+  }
+
+  img {
+    position: absolute;
+    float: right;
   }
 }
