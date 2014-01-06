@@ -70,7 +70,7 @@ define([
         this.$notice.show();
         return;
       }
-      this.suggestTopicsFunc();
+      this.suggestTopics();
       this.setupView();
       this.$prev.show();
       this.$submit.show();
@@ -81,9 +81,9 @@ define([
       this.$searchInput.focus();
     },
 
-    suggestTopicsFunc : function () {
-      var self = this;
-
+    suggestTopics : function () {
+      var that = this;
+      this.$topicList.find('.suggest-topic').remove();
       spinner.start();
       $.ajax({
         type  : 'GET',
@@ -98,7 +98,7 @@ define([
             topics_length = topics.length;
 
           spinner.stop();
-          self.topics = topics;
+          that.topics = topics;
 
           for (i = 0; i < topics_length; i++) {
             for (j = 0; j < topics[i].related_words.length; j++) {
@@ -106,14 +106,14 @@ define([
               if (stat_list[word] === undefined) {
                 stat_list[word] = 0;
               }
-              matched_list = self.$questionTitle.val().match(new RegExp(word, 'gi'));
+              matched_list = that.$questionTitle.val().match(new RegExp(word, 'gi'));
               if (matched_list) {
                 stat_list[word] += matched_list.length;
               }
             }
           }
           // render suggest topic list
-          self.$topicList.append(_.template($(suggestTemplate).html())({
+          that.$topicList.append(_.template($(suggestTemplate).html())({
             topics : topics, stat_list: stat_list
           }));
         }
@@ -179,8 +179,8 @@ define([
     },
 
     submit: function (e) {
+      var that = this;
       spinner.start();
-      // console.log(self.$form.find('input[name="topics"]').html())
       $.ajax({
         type  : 'POST',
         url   : '/questions',
@@ -190,10 +190,15 @@ define([
           topics  : this.$form.find('input:checkbox:checked[name="topics"]').map(function() { return $(this).val(); }).get()
         },
         error: function () {
-
+          spinner.stop();
         },
         success: function () {
-
+          spinner.stop();
+          that.$questionTitle.val('');
+          that.$searchInput.val('');
+          that.$searchResults.empty();
+          that.$topicList.empty();
+          that.$modal.modal('hide');
         }
       });
     }
