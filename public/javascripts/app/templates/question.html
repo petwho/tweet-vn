@@ -9,11 +9,21 @@
         <a class="question-link" href="/questions/<%= _id %>" target="blank"><%= title %></a>
       </div>
       <% if (answers.length == 0) { %>
-        <div class="fake-input" data-fake-editor-id="<%= _id %>">
-          <img src="" width="35" height="35">
-          <input type="text" value="<%= follower_list.length %> people are waiting for answer">
+        <div class="inline-answer">
+          <div class="fake-editor" data-editor="<%= _id %>">
+            <img src="" width="35" height="35">
+            <input type="text" value="<%= follower_list.length %> people are waiting for answer">
+          </div>
+          <div class="answer-text hidden">
+            <textarea class="hidden eid_<%= _id %>"></textarea>
+            <div class="inline-editor-btn">
+              <div class="pull-right">
+                <button class="cancel-btn">Cancel</button>
+                <button class="submit-btn">Add Answer</button>
+              </div>
+            </div>
+          </div>
         </div>
-        <textarea class="hidden ec_<%= _id %>"></textarea>
       <% } %>
       <div class="item-action-bar">
         <a class="follow-question" href="#follow">Follow</a>
