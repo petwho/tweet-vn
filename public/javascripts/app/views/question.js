@@ -57,8 +57,8 @@ define([
         menubar: false,
         statusbar: false,
         min_height: 50,
-        autoresize_min_height: 49,
-        autoresize_bottom_margin: 1
+        autoresize_min_height: 50,
+        autoresize_bottom_margin: 20
       });
     },
 
