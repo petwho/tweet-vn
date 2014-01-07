@@ -7,12 +7,18 @@ define(['jquery'], function () {
     $spinner_0, $spinner_1, $spinner_2, $spinner_3, $el,
     spin_num = 11;
 
-  function config(el) {
+  function config(map) {
     var i;
 
-    // default element to /.spinner/ if no arguments are found
-    if (!el) { el = '.spinner'; }
-    $el = $(el);
+    // setting up default configuration if no arguments are found
+    if (typeof map !== 'object') { map = {}; }
+    if (typeof map.el !== 'string') { map.el = '.spinner'; }
+    if (typeof map.translateX !== 'string') { map.translateX = '4px'; }
+    if (typeof map.width !== 'string') { map.width = '6px'; }
+    if (typeof map.bgColor !== 'string') {
+      map.bgColor = 'rgb(255, 255, 255)';
+    }
+    $el = $(map.el);
 
     // return if spinner already exist
     if ($el.html() !== '') { return; }
@@ -20,21 +26,21 @@ define(['jquery'], function () {
     // add html to spinner
     $el.append('<div role="progressbar" class="spin-js"></div>');
 
-    $(el + ' > div').css({ position: 'relative', width: '0px', zIndex: 2000000000 });
+    $(map.el + ' > div').css({ position: 'relative', width: '0px', zIndex: 2000000000 });
 
     for (i = 0; i < spin_num; i++) {
-      $(el + ' > div').append('<div><div></div></div>');
+      $(map.el + ' > div').append('<div><div></div></div>');
     }
 
     for (i = 1; i < spin_num + 1; i++) {
-      $(el + ' > div > div:nth-child(' + i + ') > div').css({
-        position                : 'absolute',
-        width                   : '6px',
+      $(map.el + ' > div > div:nth-child(' + i + ') > div').css({
+        backgroundColor         : map.bgColor,
+        width                   : map.width,
         height                  : '2px',
-        backgroundColor         : 'rgb(255, 255, 255)',
+        transform               : 'rotate(' + 327 / (spin_num - 1) * (i - 1) + 'deg) translate(' + map.translateX + ', 0px)',
+        position                : 'absolute',
         boxShadow               : 'rgba(0, 0, 0, 0.0980392) 0px 0px 1px',
         transformOrigin         : '0% 50%',
-        transform               : 'rotate(' + 327 / (spin_num - 1) * (i - 1) + 'deg) translate(4px, 0px)',
         borderTopLeftRadius     : '1px',
         borderTopRightRadius    : '1px',
         borderBottomRightRadius : '1px',
@@ -87,8 +93,8 @@ define(['jquery'], function () {
     timeout_id = setTimeout(spin, 100);
   }
 
-  function start(el) {
-    config(el);
+  function start(map) {
+    config(map);
     $el.show();
     spin();
   }

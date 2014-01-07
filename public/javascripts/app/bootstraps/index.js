@@ -25,10 +25,16 @@ require.config({
   }
 });
 
+require(['spinner'], function (spinner) {
+  spinner.start({ el: '.feed-spinner', bgColor: '#333', width: '12px', translateX: '7px'});
+});
+
 require([
-  'bootstrap', 'backbone', 'share/views/add_question',
+  'bootstrap', 'backbone', 'spinner',
+  'share/views/add_question',
   'views/app_question'
-], function (bootstrap, Backbone, AddQuestionView, AppQuestionView) {
+], function (bootstrap, Backbone, spinner, AddQuestionView, AppQuestionView) {
   new AddQuestionView;
   new AppQuestionView;
+  spinner.stop();
 });

@@ -25,6 +25,27 @@
   .link-text;
   font-weight: bold;
 }
+
+.form-btn(@border-color, @border-bottom-color) {
+  text-shadow: none;
+  border: 1px solid #bbb;
+  border-color: @border-color;
+  border-bottom: 1px solid @border-bottom-color;
+  .border-radius(3px);  font-weight: bold;
+  font-size: .9em;
+}
+
+.submit-btn {
+  background: #19558d;
+  color: #fff;
+  .form-btn(#062c50, #003);
+}
+
+.cancel-btn {
+  background: linear-gradient(to bottom, #fefefe 0, #e0e0e0 70%);
+  color: #333;
+  .form-btn(#999, #777);
+}
 // ** End functions definition
 
 // ** Begin navbar
@@ -112,11 +133,15 @@
 // ** End social signup button
 
 // ** Begin spinner
-.spinner {
+.navbar-header .spinner {
   margin-left: -35px;
   padding: 15px 15px;
   margin-top: 7.5px;
   float: left;
+}
+
+.feed-spinner .spin-js {
+  margin-top: 250px;
 }
 
 // ** Begin modal box
@@ -224,10 +249,21 @@
   }
 }
 
-.fake-input {
+.inline-answer {
   background: #eee;
-  padding: 5px;
   width: 270px;
+  padding: 5px 5px;
+}
+
+.inline-answer.wide {
+  width: 100%;
+}
+
+.mce-panel {
+  display: none;
+}
+
+.fake-editor {
   .border-radius(5px);
 
   input {
@@ -243,4 +279,9 @@
     position: absolute;
     float: right;
   }
+}
+
+.inline-editor-btn {
+  margin-top: 10px;
+  min-height: 20px;
 }
