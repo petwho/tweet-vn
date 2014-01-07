@@ -27,8 +27,8 @@ define([
       if ($('head style[name="tinymce"]').length === 0) {
         $('head').append('<style name="tinymce">' + skinCSS + '</style>');
       }
-      tinyMCE.activeEditor.dom.add(tinyMCE.activeEditor.getBody(), 'style', { type : 'text/css' }, contentCSS);
-      tinyMCE.activeEditor.dom.add(tinyMCE.activeEditor.getBody(), 'style', { type : 'text/css' }, contentInlineCSS);
+      tinyMCE.activeEditor.dom.add(tinyMCE.activeEditor.dom.select('head'), 'style', { type : 'text/css' }, contentCSS);
+      tinyMCE.activeEditor.dom.add(tinyMCE.activeEditor.dom.select('head'), 'style', { type : 'text/css' }, contentInlineCSS);
 
       self.$inlineAnswer.addClass('wide');
 
