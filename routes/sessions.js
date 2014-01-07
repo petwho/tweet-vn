@@ -24,7 +24,7 @@ module.exports = function (app) {
     };
 
     check_signup_type = function (next) {
-      if (user.signup_type !== 'email') {
+      if (user.sign_up_type !== 'email') {
         return res.json(400, {msg : 'Please login using Google account'});
       }
       next();
