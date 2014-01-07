@@ -34,7 +34,7 @@ require([
   'share/views/add_question',
   'views/app_question'
 ], function (bootstrap, Backbone, spinner, AddQuestionView, AppQuestionView) {
-  new AddQuestionView;
-  new AppQuestionView;
+  new AddQuestionView();
+  new AppQuestionView();
   spinner.stop();
 });
