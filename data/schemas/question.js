@@ -1,6 +1,7 @@
 var QuestionSchema,
   Schema      = require('mongoose').Schema,
   Answer      = require('../models/answer'),
+  LogSchema   = require('./log'),
   async       = require('async'),
   escapeHtml  = require('escape-html'),
   escape      = require('escape-html');
@@ -17,8 +18,8 @@ var QuestionSchema,
 // ------------- END TODO 28-13-2013 trankhanh - String length validation disabled ---------------
 
 QuestionSchema = new Schema({
+  logs              : [LogSchema],
   answers           : [{ type: Schema.Types.ObjectId, ref: 'Answer' }],
-  logs              : [{ type: Schema.Types.ObjectId, ref: 'Log' }],
   topics            : [{ type: Schema.Types.ObjectId, ref: 'Topic' }],
   follower_list     : [{ type: Schema.Types.ObjectId, ref: 'User' }],
 
