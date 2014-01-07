@@ -21,9 +21,14 @@ AnswerSchema.pre('save', function (next) {
   next();
 });
 
-AnswerSchema.static('sanitizeContent', function (reqBody) {
-  // Remove script tag from html
-  if (reqBody.content.replace(/(\s|\n)/g, "")) {
+AnswerSchema.static('filterInputs', function (reqBody) {
+  delete reqBody.author;
+  delete reqBody.logs;
+  delete reqBody.vote_list;
+  delete reqBody.created_at;
+  delete reqBody.updated_at;
+  // remove script tag from html
+  if ((typeof reqBody.content === 'string') && reqBody.content.replace(/(\s|\n)/g, "")) {
     reqBody.content = reqBody.content.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
   }
 });
