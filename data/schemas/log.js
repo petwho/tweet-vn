@@ -5,8 +5,8 @@ LogSchema = new Schema({
   user                    : { type: Schema.Types.ObjectId,  ref: 'User' },
   question                : { type: Schema.Types.ObjectId,  ref: 'Question',  sparse: true },
   answer                  : { type: Schema.Types.ObjectId,  ref: 'Answer',    sparse: true },
-  reverted_by_revision    : { type: Schema.Types.ObjectId,  ref: 'Log',       sparse: true },
-  revert_of_revision      : { type: Schema.Types.ObjectId,  ref: 'Log',       sparse: true },
+  revert_of               : { type: Schema.Types.ObjectId,  ref: 'Log',       sparse: true },
+  reverted_by             : { type: Schema.Types.ObjectId,  ref: 'Log',       sparse: true },
   content                 : { type: String,                 required: true },
   // status code description
   //  * 1: added      - (for both)
