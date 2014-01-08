@@ -118,7 +118,7 @@ module.exports = function (app) {
 
       topic_list  = req.session.user.following_list.topic;
       topic_list  = topic_list.slice(0, topic_list.length);
-      index       = topic_list.indexOf(req.body._id.toString());
+      index       = topic_list.indexOf(req.body._id);
 
       if (req.body.is_following === false) {
         if (index === -1) {
@@ -145,8 +145,4 @@ module.exports = function (app) {
       return res.json(200, req.body);
     });
   });
-
-  app.get('/test', function (req, res) {
-    res.send(req.session.user.following_list.topic.indexOf('52c8c07159af22bd11000001').toString());
-  })
 };
