@@ -1,8 +1,8 @@
 define([
-  'jquery', 'backbone',
+  'jquery', 'backbone', 'spinner',
   'collections/questions',  'views/question',
   'collections/answers',    'models/answer',  'views/answer',
-], function ($, Backbone, Questions, QuestionView, Answers, Answer, AnswerView) {
+], function ($, Backbone, spinner, Questions, QuestionView, Answers, Answer, AnswerView) {
   var AppView = Backbone.View.extend({
     el: '#feed-items',
 
@@ -13,7 +13,11 @@ define([
       this.listenTo(this.questions, 'add',        this.addQuestion);
       this.listenTo(this.answers,   'add',        this.addAnswer);
       this.listenTo(this.questions, 'add:answer', this.answer);
-      this.questions.fetch();
+      this.questions.fetch({
+        success: function () {
+          spinner.stop();
+        }
+      });
       this.answers.fetch();
     },
 

@@ -30,11 +30,10 @@ require(['spinner'], function (spinner) {
 });
 
 require([
-  'bootstrap', 'backbone', 'spinner',
+  'bootstrap', 'backbone',
   'share/views/add_question',
   'views/apps/index'
-], function (bootstrap, Backbone, spinner, AddQuestionView, AppView) {
+], function (bootstrap, Backbone, AddQuestionView, AppView) {
   new AddQuestionView();
   new AppView();
-  spinner.stop();
 });

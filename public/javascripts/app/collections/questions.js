@@ -1,8 +1,8 @@
 define([ 'backbone', 'models/question'], function (Backbone, Question) {
-  var QuestionsCollection = Backbone.Collection.extend({
+  var Questions = Backbone.Collection.extend({
     model : Question,
     url   : '/questions/list'
   });
 
-  return QuestionsCollection;
+  return Questions;
 })
