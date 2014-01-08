@@ -287,3 +287,74 @@
   margin-top: 10px;
   min-height: 20px;
 }
+
+.topic-card.not-following {
+  &:hover {
+    background-color: #e9f1f7;
+  }
+}
+
+.topic-card.is-following {
+  background-color: #eeeeee;
+}
+
+.topic-card {
+
+  .border-radius(3px);
+  float: left;
+  margin: 0 5px 5px 0;
+  padding: 10px;
+  min-height: 100px;
+  cursor: pointer;
+  
+  .img-col {
+    float: left;
+    width: 100px;
+    margin: 0 10px 0 0;
+  }
+
+  .topic-col {
+    float: left;
+    width: 155px;
+    margin: 0 5px 5px 0;
+  }
+
+  .topic-info {
+    margin-bottom: 10px;
+    min-height: 65px;
+  }
+
+  .followers {
+    color: #999;
+    font-size: 11px;
+  }
+
+  .name {
+    color: #333;;
+    font-size: 1em;
+    line-height: 1.2em;
+    margin-bottom: 3px;
+    margin-top: 0px;
+    font-weight: bold;
+  }
+
+  .follow-btn {
+    .border-radius(3px);
+    background-color: #c3dd82;
+    border-color: #8cb332 #8cb332 #648517;
+    color: #406a24;
+    text-shadow: 0 1px #d4ed95;
+  }
+
+  .unfollow-btn {
+    background: none repeat scroll 0 0 #eaeaea;
+    border: 0 none;
+    color: #999999;
+    padding-bottom: 4px;
+    padding-top: 4px;
+    &:hover {
+      background: #999;
+      color: #fff;
+    }
+  }
+}
