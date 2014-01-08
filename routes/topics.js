@@ -1,5 +1,7 @@
 var loggedIn  = require('./middleware/logged_in.js'),
-  Topic       = require('../data/models/topic.js');
+  Topic       = require('../data/models/topic.js'),
+  User        = require('../data/models/user.js'),
+  async       = require('async');
 
 module.exports = function (app) {
   var sub_topics, loadSubTopics;
@@ -12,10 +14,24 @@ module.exports = function (app) {
   };
 
   app.get('/topics/list', loggedIn, function (req, res, next) {
-    Topic.find({}, function (err, topics) {
+    Topic.find({}, '-related_words -created_at -updated_at').exec(function (err, topics) {
+      var i, topic_obj, topic_obj_list;
+      topic_obj_list = [];
+
       if (err) { return next(err); }
 
-      return res.json(200, topics);
+      for (i = 0; i < topics.length; i++) {
+        topic_obj = topics[i].toObject();
+        if (req.session.user.following_list.topic.indexOf(topic_obj._id.toString()) !== -1) {
+          topic_obj.is_following = true;
+        } else {
+          topic_obj.is_following = false;
+        }
+
+        topic_obj_list.push(topic_obj);
+      }
+
+      return res.json(200, topic_obj_list);
     });
   });
 
@@ -83,4 +99,54 @@ module.exports = function (app) {
       return res.redirect('/topics/index');
     });
   });
+
+  app.put('/topics/:id/follow', loggedIn, function (req, res, next) {
+    var validate_topic, update_user;
+
+    validate_topic = function (next) {
+      Topic.findById(req.body._id, function (err, topic) {
+        if (err) { return next(err); }
+
+        if (!topic) { return res.json(400, { msg: 'invalid topic' }); }
+
+        next();
+      });
+    };
+
+    update_user = function (next) {
+      var topic_list, index;
+
+      topic_list  = req.session.user.following_list.topic;
+      topic_list  = topic_list.slice(0, topic_list.length);
+      index       = topic_list.indexOf(req.body._id.toString());
+
+      if (req.body.is_following === false) {
+        if (index === -1) {
+          topic_list.push(req.body._id);
+        }
+        req.body.is_following = true;
+      } else {
+        if (index !== -1) {
+          topic_list.splice(index, 1);
+        }
+        req.body.is_following = false;
+      }
+
+      User.update({ _id: req.session.user._id }, { 'following_list.topic': topic_list }, function (err, number_affected, raw) {
+        if (err) { return next(err); }
+        req.session.user.following_list.topic = topic_list;
+        next();
+      });
+    };
+
+    async.series([ validate_topic, update_user ], function (err, results) {
+      if (err) { return next(err); }
+
+      return res.json(200, req.body);
+    });
+  });
+
+  app.get('/test', function (req, res) {
+    res.send(req.session.user.following_list.topic.indexOf('52c8c07159af22bd11000001').toString());
+  })
 };
