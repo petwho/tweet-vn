@@ -1,10 +1,10 @@
 var QuestionSchema,
-  Schema      = require('mongoose').Schema,
-  Answer      = require('../models/answer'),
-  LogSchema   = require('./log'),
-  async       = require('async'),
-  escapeHtml  = require('escape-html'),
-  escape      = require('escape-html');
+  Schema        = require('mongoose').Schema,
+  AnswerSchema  = require('./answer'),
+  LogSchema     = require('./log'),
+  async         = require('async'),
+  escapeHtml    = require('escape-html'),
+  escape        = require('escape-html');
 
 // ------------- BEGIN TOdO 28-13-2013 trankhanh - String length validation disabled ---------------
 // function minLength(length) {
@@ -19,7 +19,7 @@ var QuestionSchema,
 
 QuestionSchema = new Schema({
   logs              : [LogSchema],
-  answers           : [{ type: Schema.Types.ObjectId, ref: 'Answer' }],
+  answers           : [AnswerSchema],
   topics            : [{ type: Schema.Types.ObjectId, ref: 'Topic' }],
   follower_list     : [{ type: Schema.Types.ObjectId, ref: 'User' }],
 
