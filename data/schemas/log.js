@@ -3,7 +3,9 @@ var LogSchema,
 
 LogSchema = new Schema({
   user                    : { type: Schema.Types.ObjectId,  ref: 'User' },
+  // question that is being logged
   question                : { type: Schema.Types.ObjectId,  ref: 'Question',  sparse: true },
+  // answer that is being logged
   answer                  : { type: Schema.Types.ObjectId,  ref: 'Answer',    sparse: true },
   revert_of               : { type: Schema.Types.ObjectId,  ref: 'Log',       sparse: true },
   reverted_by             : { type: Schema.Types.ObjectId,  ref: 'Log',       sparse: true },
@@ -14,7 +16,7 @@ LogSchema = new Schema({
   //  * 3: reverted   - (for both: editor revert their own edits)
   //  * 4: accepted   - (for answer: suggested answer edits)
   //  * 5: discarded  - (for answer: discarded suggested edits)
-  status              : { type: Number },
+  status              : { type: Number, required: true },
   created_at          : { type: Date, default: Date.now },
   updated_at          : { type: Date, default: Date.now },
 });
