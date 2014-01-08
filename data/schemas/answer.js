@@ -4,10 +4,11 @@ var AnswerSchema,
   VoteSchema  = require('./vote');
 
 AnswerSchema = new Schema({
-  author      : { type: Schema.Types.ObjectId, ref : 'User' },
-  question    : { type: Schema.Types.ObjectId, ref : 'Question' },
-  logs        : [LogSchema],
-  vote_list   : [VoteSchema],
+  author      : { type: Schema.Types.ObjectId, ref: 'User' },
+  question    : { type: Schema.Types.ObjectId, ref: 'Question' },
+  topics      : { type: Schema.Types.ObjectId, ref: 'Topic' }
+  logs        : [ LogSchema ],
+  vote_list   : [ VoteSchema ],
 
   content     : { type: String, required: true },
   created_at  : { type: Date,   default: Date.now },
