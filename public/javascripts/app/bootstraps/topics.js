@@ -22,6 +22,11 @@ require.config({
 });
 
 require([
-  'bootstrap', 'backbone'
-], function (bootstrap, Backbone) {
+  'bootstrap', 'backbone', 'spinner',
+  'views/apps/topics', 'routers/topics'
+], function (bootstrap, Backbone, spinner, AppView, TopicsRouter) {
+  spinner.start({ el: '.topic-spinner', bgColor: '#333', width: '12px', translateX: '7px'})
+  new AppView();
+  new TopicsRouter();
+  Backbone.history.start();
 });

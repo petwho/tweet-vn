@@ -1,10 +1,9 @@
 define([
   'jquery', 'backbone',
   'collections/questions',  'views/question',
-  'collections/answers',    'views/answers',
-  'models/answer',          'views/answer'
-], function ($, Backbone, Questions, QuestionView, Answers, AnswersView, Answer, AnswerView) {
-  var AppQuestionsAndAnswersView = Backbone.View.extend({
+  'collections/answers',    'models/answer',  'views/answer',
+], function ($, Backbone, Questions, QuestionView, Answers, Answer, AnswerView) {
+  var AppView = Backbone.View.extend({
     el: '#feed-items',
 
     initialize: function () {
@@ -37,5 +36,5 @@ define([
     }
   });
 
-  return AppQuestionsAndAnswersView;
+  return AppView;
 });
