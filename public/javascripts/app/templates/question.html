@@ -1,34 +1,32 @@
-<script type="text/template">
-  <div class="row">
-    <div class="col-sm-1">
-      <img width="25" height="25" src="<%= topics[0].picture %>">
+<div class="row">
+  <div class="col-sm-1">
+    <img width="25" height="25" src="<%= topics[0].picture %>">
+  </div>
+  <div class="col-sm-11">
+    <div class="light-gray">Question added to topic <%= topics[0].name %></div>
+    <div>
+      <a class="question-link" href="/questions/<%= _id %>" target="blank"><%= title %></a>
     </div>
-    <div class="col-sm-11">
-      <div class="light-gray">Question added to topic <%= topics[0].name %></div>
-      <div>
-        <a class="question-link" href="/questions/<%= _id %>" target="blank"><%= title %></a>
-      </div>
-      <% if (answers.length == 0) { %>
-        <div class="inline-answer">
-          <div class="fake-editor" data-editor="<%= _id %>">
-            <img src="" width="35" height="35">
-            <input type="text" value="<%= follower_list.length %> people are waiting for answer">
-          </div>
-          <div class="answer-text hidden">
-            <textarea class="hidden eid_<%= _id %>"></textarea>
-            <div class="inline-editor-btn">
-              <div class="pull-right">
-                <button class="cancel-btn">Cancel</button>
-                <button class="submit-btn">Add Answer</button>
-              </div>
+    <% if (answers.length == 0) { %>
+      <div class="inline-answer">
+        <div class="fake-editor" data-editor="<%= _id %>">
+          <img src="" width="35" height="35">
+          <input type="text" value="<%= follower_list.length %> people are waiting for answer">
+        </div>
+        <div class="answer-text hidden">
+          <textarea class="hidden eid_<%= _id %>"></textarea>
+          <div class="inline-editor-btn">
+            <div class="pull-right">
+              <button class="cancel-btn">Cancel</button>
+              <button class="submit-btn">Add Answer</button>
             </div>
           </div>
         </div>
-      <% } %>
-      <div class="item-action-bar">
-        <a class="follow-question" href="#follow">Follow</a>
-        <a href="/questions/<%= _id %>" class="answer-count" target="blank"><%= answers.length %> Answers</a>
       </div>
+    <% } %>
+    <div class="item-action-bar">
+      <a class="follow-question" href="#follow">Follow</a>
+      <a href="/questions/<%= _id %>" class="answer-count" target="blank"><%= answers.length %> Answers</a>
     </div>
   </div>
-</script>
+</div>
