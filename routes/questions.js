@@ -37,7 +37,6 @@ module.exports = function (app) {
     var scrollcount = (req.query.scrollcount || 0) * 10;
 
     Question.find({}).skip(scrollcount).limit(10)
-      .populate('answers')
       .populate({
         path  : 'topics',
         select: 'name picture follower_count'
@@ -47,10 +46,10 @@ module.exports = function (app) {
       });
   });
 
-  app.post('/questions', [loggedIn, loadUser.bySession, validateTopics], function (req, res, next) {
+  app.post('/questions', [loggedIn, validateTopics], function (req, res, next) {
     Question.filterInputs(req.body);
 
-    req.body.author = req.body.following_list = req.user._id;
+    req.body.author = req.body.following_list = req.session.user._id;
 
     Question.create(req.body, function (err, question) {
       if (err) { return next(err); }
