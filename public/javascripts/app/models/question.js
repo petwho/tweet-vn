@@ -1,10 +1,7 @@
-define([
-  'underscore',
-  'backbone'
-], function (_, Backbone) {
+define([ 'backbone' ], function (Backbone) {
   var Model = Backbone.Model.extend({
 
   });
 
   return Model;
-})
+});

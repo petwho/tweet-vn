@@ -32,9 +32,9 @@ require(['spinner'], function (spinner) {
 require([
   'bootstrap', 'backbone', 'spinner',
   'share/views/add_question',
-  'views/app_question'
-], function (bootstrap, Backbone, spinner, AddQuestionView, AppQuestionView) {
+  'views/apps/questions_and_answers'
+], function (bootstrap, Backbone, spinner, AddQuestionView, AppQuestionsAndAnswersView) {
   new AddQuestionView();
-  new AppQuestionView();
+  new AppQuestionsAndAnswersView();
   spinner.stop();
 });
