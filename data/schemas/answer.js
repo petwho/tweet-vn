@@ -1,7 +1,8 @@
 var AnswerSchema,
   Schema      = require('mongoose').Schema,
   LogSchema   = require('./log'),
-  VoteSchema  = require('./vote');
+  VoteSchema  = require('./vote'),
+  escapeHtml    = require('escape-html');
 
 AnswerSchema = new Schema({
   author      : { type: Schema.Types.ObjectId, ref: 'User' },
@@ -29,8 +30,8 @@ AnswerSchema.static('filterInputs', function (reqBody) {
   delete reqBody.created_at;
   delete reqBody.updated_at;
   // remove script tag from html
-  if ((typeof reqBody.content === 'string') && reqBody.content.replace(/(\s|\n)/g, "")) {
-    reqBody.content = reqBody.content.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+  if ((typeof reqBody.content === 'string') && reqBody.content.trim()) {
+    reqBody.content = escapeHtml(reqBody.content);
   }
 });
 

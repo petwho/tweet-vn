@@ -38,8 +38,12 @@ QuestionSchema.static('filterInputs', function (reqBody) {
   delete reqBody.status;
   delete reqBody.created_at;
   delete reqBody.updated_at;
-  reqBody.title = escapeHtml(reqBody.title);
-  if ((reqBody.detail !== undefined) && (typeof reqBody === 'string')) {
+
+  if ((typeof reqBody.title === 'string') && reqBody.title.trim()) {
+    reqBody.title = escapeHtml(reqBody.title);
+  }
+
+  if ((typeof reqBody.detail === 'string') && reqBody.detail.trim()) {
     reqBody.detail = escapeHtml(reqBody.detail);
   }
 });
