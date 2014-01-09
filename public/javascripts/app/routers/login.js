@@ -1,9 +1,9 @@
 define(['backbone'], function (Backbone) {
   var LoginRouter = Backbone.Router.extend({
     routes: {
-      ''                : 'index',
       'signup'          : 'signup',
-      'forgot-password' : 'forgotPassword'
+      'forgot-password' : 'forgotPassword',
+      '*other'          : 'index'
     },
 
     setup: function () {
