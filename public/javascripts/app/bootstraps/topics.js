@@ -27,7 +27,9 @@ require([ 'spinner' ], function (spinner) {
 
 require([
   'bootstrap', 'backbone',
-  'views/apps/topics'
-], function (bootstrap, Backbone, AppView) {
-  new AppView();
+  'views/apps/topics',
+  'routers/topics'
+], function (bootstrap, Backbone, appView, Workspace) {
+  new Workspace();
+  Backbone.history.start();
 });
