@@ -21,12 +21,13 @@ require.config({
   }
 });
 
+require([ 'spinner' ], function (spinner) {
+  spinner.start({el: '.topic-spinner', bgColor: '#333', width: '12px', translateX: '7px'});
+});
+
 require([
-  'bootstrap', 'backbone', 'spinner',
-  'views/apps/topics', 'routers/topics'
-], function (bootstrap, Backbone, spinner, AppView, TopicsRouter) {
-  spinner.start({ el: '.topic-spinner', bgColor: '#333', width: '12px', translateX: '7px'})
+  'bootstrap', 'backbone',
+  'views/apps/topics'
+], function (bootstrap, Backbone, AppView) {
   new AppView();
-  new TopicsRouter();
-  Backbone.history.start();
 });
