@@ -15,7 +15,7 @@ module.exports = function (app) {
 
   app.get('/topics/list', loggedIn, function (req, res, next) {
     setTimeout(function () {
-      Topic.find({}, '-related_words -created_at -updated_at').exec(function (err, topics) {
+      Topic.find({}, '-created_at -updated_at').exec(function (err, topics) {
         var i, topic_obj, topic_obj_list;
         topic_obj_list = [];
 
