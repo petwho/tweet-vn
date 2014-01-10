@@ -1,0 +1,20 @@
+<% if(is_following) { %>
+  <div class="topic-card is-following">
+<% } else { %>
+  <div class="topic-card not-following">
+<% } %>
+  <div class="img-col">
+    <img width="100" height="100" src="<%= picture %>">
+  </div>
+  <div class="topic-col">
+    <div class="topic-info">
+      <h2 class="name"><%= name %></h2>
+      <div class="followers"><%= follower_count %> Followers</div>
+    </div>
+    <% if(!is_following) { %>
+      <button class="btn btn-sm follow-btn" data-follow=false>Follow</button>
+    <% } else { %>
+      <button class="btn btn-sm unfollow-btn" data-follow=true>Unfollow</button>
+    <% } %>
+  </div>
+</div>

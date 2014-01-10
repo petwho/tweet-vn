@@ -1,0 +1,15 @@
+<% if (typeof primary_topic_remain !== 'undefined') { %>
+  <% if (primary_topic_remain > 0) { %>
+    Choose <%= primary_topic_remain %> More Topics to Continue
+  <% } else { %>
+    Save & Continue
+  <% } %>
+<% } %>
+
+<% if (typeof sub_topic_remain !== 'undefined') { %>
+  <% if (sub_topic_remain > 0) { %>
+      Choose <%= sub_topic_remain %> More Topics to Continue
+  <% } else { %>
+    Save & Continue
+  <% } %>
+<% } %>

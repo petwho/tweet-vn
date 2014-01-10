@@ -24,7 +24,10 @@ module.exports = function (app) {
 
     create_answer = function (next) {
       Answer.filterInputs(req.body);
+
       req.body.author = req.session.user._id;
+      req.body.topics = question.topics;
+
       Answer.create(req.body, function (err, returned_answer) {
         if (err) { return next(err); }
         answer = returned_answer;
@@ -67,6 +70,15 @@ module.exports = function (app) {
     ], function (err, results) {
       if (err) { return next(err); }
       res.json(200, answer);
+    });
+  });
+
+  app.get('/answers/list', loggedIn, function (req, res, next) {
+    var following_topics = req.session.user.following_list.topic;
+
+    Answer.find({ $in: { topics: following_topics } }, function (err, answers) {
+      if (err) { return next(err); }
+      res.json(200, err);
     });
   });
 };

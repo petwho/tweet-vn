@@ -14,25 +14,27 @@ module.exports = function (app) {
   };
 
   app.get('/topics/list', loggedIn, function (req, res, next) {
-    Topic.find({}, '-related_words -created_at -updated_at').exec(function (err, topics) {
-      var i, topic_obj, topic_obj_list;
-      topic_obj_list = [];
+    setTimeout(function () {
+      Topic.find({}, '-related_words -created_at -updated_at').exec(function (err, topics) {
+        var i, topic_obj, topic_obj_list;
+        topic_obj_list = [];
 
-      if (err) { return next(err); }
+        if (err) { return next(err); }
 
-      for (i = 0; i < topics.length; i++) {
-        topic_obj = topics[i].toObject();
-        if (req.session.user.following_list.topic.indexOf(topic_obj._id.toString()) !== -1) {
-          topic_obj.is_following = true;
-        } else {
-          topic_obj.is_following = false;
+        for (i = 0; i < topics.length; i++) {
+          topic_obj = topics[i].toObject();
+          if (req.session.user.following_list.topic.indexOf(topic_obj._id.toString()) !== -1) {
+            topic_obj.is_following = true;
+          } else {
+            topic_obj.is_following = false;
+          }
+
+          topic_obj_list.push(topic_obj);
         }
 
-        topic_obj_list.push(topic_obj);
-      }
-
-      return res.json(200, topic_obj_list);
-    });
+        return res.json(200, topic_obj_list);
+      });
+    }, 1000);
   });
 
   app.get('/topics/index', loggedIn, function (req, res, next) {

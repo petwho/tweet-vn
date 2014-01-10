@@ -4,18 +4,37 @@ block content
   .row
     .col-sm-6.col-sm-offset-6
       .topic-spinner
-  .row.col-sm-10.col-sm-offset-1
-    .col-sm-4
-      div.step
-        div.img-circle 1
-    .col-sm-4
-      div.step
-        div.img-circle 2
-    .col-sm-4
-      div.step
-        div.img-circle 3
-  .row.col-sm-10.col-sm-offset-1#topic-list
-    .col-sm-4
-    .col-sm-4
-    .col-sm-4
+  .row#welcome-flow.hidden
+    .col-sm-10.col-sm-offset-1
+      .step-line
+      .headline
+        .steps.step-1
+          .img-circle 1
+          h2 Choose your interests
+        .steps.step-2
+          .img-circle 2
+          h2 Follow related topics
+        .steps.step-3
+          .img-circle 3
+          h2 Find Your Friends
+    .col-sm-10.col-sm-offset-1
+      .instruction
+        .steps.step-1
+          h1 Pick at least 5 topics below to get started.
+          a.next-step(href="#step-2", role="button")
+        .steps.step-2
+          h1 Almost done! Here are more topic recommendations based on those you just selected.
+          a.next-step(href="#step-3", role="button")
+        .steps.step-3
+          h1 All steps has been completed.
+          a.next-step(href="/", role="button") Go to home page
+      .row.topic-list
+        .col-sm-4
+        .col-sm-4
+        .col-sm-4
+      .row.instruction.instruction-bottom
+        .steps.step-1
+          a.next-step(href="#step-2", role="button") Choose <span class="counter">5</span> More Topics to Continue
+        .steps.step-2
+          a.next-step(href="#step-3", role="button") Choose <span class="counter">5</span> More Topics to Continue
   script(data-main="/javascripts/app/bootstraps/topics.js", src="/javascripts/libs/require/require-2.1.9.min.js")
