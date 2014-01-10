@@ -27,5 +27,4 @@ require([
   new LoginView();
   new LoginRouter();
   Backbone.history.start();
-  $('.spinner-large').remove();
 });

@@ -32,5 +32,4 @@ require([
 ], function (bootstrap, Backbone, AddQuestionView, AppView) {
   new AddQuestionView();
   new AppView();
-  $('.spinner-large').remove();
 });

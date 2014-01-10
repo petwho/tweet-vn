@@ -38,6 +38,8 @@ define([
       appView.$('.topic-list .col-sm-4').empty();
       this.$headSteps.children().removeClass('current');
       this.$instSteps.hide();
+      $('.spinner-large').remove();
+      appView.$el.removeClass('hidden');
     },
 
     updateFollowing: function (self) {
@@ -83,24 +85,28 @@ define([
     },
 
     step1: function () {
-      var that = this;
+      var filter,
+        that = this;
 
-      this.setupView();
-      this.$headline.find('.step-1').children().addClass('current');
-      this.$instruction.find('.step-1').show();
+      filter = function (self) {
+        var that = self;
+
+        that.setupView();
+        that.$headline.find('.step-1').children().addClass('current');
+        that.$instruction.find('.step-1').show();
+
+        that.updateFollowing(that);
+        appView.topics.trigger('addPrimaryTopic', appView.topics);
+      }
 
       // check collections length
       if (appView.topics.length !== 0) {
-        this.updateFollowing(that);
-        return appView.topics.trigger('addPrimaryTopic', appView.topics);
+        return filter(this);
       }
 
       appView.topics.fetch({
         success: function () {
-          appView.topics.trigger('addPrimaryTopic', appView.topics);
-          spinner.stop();
-          appView.$el.removeClass('hidden');
-          that.updateFollowing(that);
+          filter(that);
         }
       });
     },
@@ -114,13 +120,14 @@ define([
         if (!self.validateFollowingPrimaryTopic()) {
           return self.navigate('#step-1', { trigger: true });
         }
+
+        that.setupView();
+        that.$headline.find('.step-2').children().addClass('current');
+        that.$instruction.find('.step-2').show();
         appView.topics.trigger('addSubTopic', appView.topics);
         that.updateFollowing(that);
       };
 
-      this.setupView();
-      this.$headline.find('.step-2').children().addClass('current');
-      this.$instruction.find('.step-2').show();
 
       // check topics collection length
       if (appView.topics.length !== 0) {
@@ -130,8 +137,6 @@ define([
       appView.topics.fetch({
         success: function () {
           filter(that);
-          spinner.stop();
-          appView.$el.removeClass('hidden');
           that.updateFollowing(that);
         }
       });
@@ -141,13 +146,13 @@ define([
       var filter,
         that = this;
 
-      this.setupView();
-      this.$headline.find('.step-3').children().addClass('current');
-
       filter = function (self) {
         if (!self.validateFollowingSubTopic() || !self.validateFollowingPrimaryTopic()) {
           return self.navigate('#step-2', { trigger: true });
         }
+
+        that.setupView();
+        that.$headline.find('.step-3').children().addClass('current');
         that.updateFollowing(that);
       };
 
@@ -162,8 +167,6 @@ define([
           if (!$('head style[name="topic"]').length) {
             $('head').append("<style name='topic'>" + topicCSS + "</style>");
           }
-          spinner.stop();
-          appView.$el.removeClass('hidden');
           that.updateFollowing(that);
         }
       });

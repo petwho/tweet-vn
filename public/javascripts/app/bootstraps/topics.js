@@ -27,5 +27,4 @@ require([
   'routers/topics'
 ], function (bootstrap, Backbone, appView, workspace) {
   Backbone.history.start();
-  $('.spinner-large').remove();
 });

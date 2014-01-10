@@ -15,7 +15,7 @@ define([
       this.listenTo(this.questions, 'add:answer', this.answer);
       this.questions.fetch({
         success: function () {
-          spinner.stop();
+          $('.spinner-large').remove();
         }
       });
       this.answers.fetch();
