@@ -89,10 +89,10 @@ define([
     },
 
     step1: function () {
-      var filter,
+      var filter_callback,
         that = this;
 
-      filter = function (self) {
+      filter_callback = function (self) {
         var that = self;
 
         that.setupView();
@@ -105,22 +105,22 @@ define([
 
       // check collections length
       if (appView.topics.length !== 0) {
-        return filter(this);
+        return filter_callback(this);
       }
 
       appView.topics.fetch({
         success: function () {
-          filter(that);
+          filter_callback(that);
         }
       });
     },
 
     step2: function () {
-      var filter,
+      var filter_callback,
         that = this;
 
       // ** validate user following topics
-      filter = function (self) {
+      filter_callback = function (self) {
         if (!self.validateFollowingPrimaryTopic()) {
           return self.navigate('#step-1', { trigger: true });
         }
@@ -135,21 +135,21 @@ define([
 
       // check topics collection length
       if (appView.topics.length !== 0) {
-        return filter(that);
+        return filter_callback(that);
       }
 
       appView.topics.fetch({
         success: function () {
-          filter(that);
+          filter_callback(that);
         }
       });
     },
 
     step3: function () {
-      var filter,
+      var filter_callback,
         that = this;
 
-      filter = function (self) {
+      filter_callback = function (self) {
         if (!self.validateFollowingSubTopic() || !self.validateFollowingPrimaryTopic()) {
           return self.navigate('#step-2', { trigger: true });
         }
@@ -162,7 +162,7 @@ define([
 
       // check topics collection length
       if (appView.topics.length !== 0) {
-        return filter(that);
+        return filter_callback(that);
       }
 
       appView.topics.fetch({
@@ -170,7 +170,7 @@ define([
           if (!$('head style[name="topic"]').length) {
             $('head').append("<style name='topic'>" + topicCSS + "</style>");
           }
-          filter(that);
+          filter_callback(that);
         }
       });
     }
