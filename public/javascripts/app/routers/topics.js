@@ -56,6 +56,7 @@ define([
         self.$headline.find('.step-2').addClass('clickable');
 
         self.$instruction.find('.step-1 a').addClass('clickable');
+
         if (self.validateFollowingSubTopic()) {
           self.$headline.find('.step-1').addClass('clickable');
           self.$headline.find('.step-2').addClass('clickable');
@@ -63,6 +64,7 @@ define([
 
           self.$instruction.find('.step-1 a').addClass('clickable');
           self.$instruction.find('.step-2 a').addClass('clickable');
+          self.$instruction.find('.step-3 a').addClass('clickable');
         }
       }
 
@@ -74,6 +76,8 @@ define([
       self.$instruction.find('.step-2 a').text(self.template({
         sub_topic_remain: 5 - appView.topics.followingSubTopicCount().length
       }));
+
+      self.$instruction.find('.step-3 a').text(self.template());
     },
 
     validateFollowingPrimaryTopic: function () {
@@ -137,7 +141,6 @@ define([
       appView.topics.fetch({
         success: function () {
           filter(that);
-          that.updateFollowing(that);
         }
       });
     },
@@ -153,6 +156,7 @@ define([
 
         that.setupView();
         that.$headline.find('.step-3').children().addClass('current');
+        that.$instruction.find('.step-3').show();
         that.updateFollowing(that);
       };
 
@@ -163,11 +167,10 @@ define([
 
       appView.topics.fetch({
         success: function () {
-          filter(that);
           if (!$('head style[name="topic"]').length) {
             $('head').append("<style name='topic'>" + topicCSS + "</style>");
           }
-          that.updateFollowing(that);
+          filter(that);
         }
       });
     }
