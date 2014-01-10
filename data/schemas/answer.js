@@ -7,7 +7,7 @@ var AnswerSchema,
 AnswerSchema = new Schema({
   author      : { type: Schema.Types.ObjectId, ref: 'User' },
   question    : { type: Schema.Types.ObjectId, ref: 'Question' },
-  topics      : { type: Schema.Types.ObjectId, ref: 'Topic' },
+  topics      : [{ type: Schema.Types.ObjectId, ref: 'Topic' }],
   logs        : [ LogSchema ],
   vote_list   : [ VoteSchema ],
 
