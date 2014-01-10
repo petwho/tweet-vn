@@ -25,10 +25,6 @@ require.config({
   }
 });
 
-require(['spinner'], function (spinner) {
-  spinner.start({ el: '.feed-spinner', bgColor: '#333', width: '12px', translateX: '7px'});
-});
-
 require([
   'bootstrap', 'backbone',
   'share/views/add_question',
@@ -36,4 +32,5 @@ require([
 ], function (bootstrap, Backbone, AddQuestionView, AppView) {
   new AddQuestionView();
   new AppView();
+  $('.spinner-large').remove();
 });

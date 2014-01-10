@@ -21,14 +21,11 @@ require.config({
   }
 });
 
-require([ 'spinner' ], function (spinner) {
-  spinner.start({el: '.topic-spinner', bgColor: '#333', width: '12px', translateX: '7px'});
-});
-
 require([
   'bootstrap', 'backbone',
   'views/apps/topics',
   'routers/topics'
 ], function (bootstrap, Backbone, appView, workspace) {
   Backbone.history.start();
+  $('.spinner-large').remove();
 });
