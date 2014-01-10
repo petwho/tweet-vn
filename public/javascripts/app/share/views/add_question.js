@@ -65,23 +65,33 @@ define([
     },
 
     next : function () {
+      var that = this;
+
       if (!this.$questionTitle.val() || this.$questionTitle.val().trim().length < 10) {
         this.$notice.html('<strong>This question needs more details.</strong>');
         this.$notice.show();
         return;
       }
-      this.suggestTopics();
-      this.setupView();
-      this.$prev.show();
-      this.$submit.show();
-      this.$topicBox.show();
-      if (this.$searchResults.find('ul > li').length === 0) {
-        this.$searchResults.hide();
-      }
-      this.$searchInput.focus();
+
+      this.suggestTopics({
+        error: function () {
+          spinner.stop();
+        },
+        success: function () {
+          spinner.stop();
+          that.setupView();
+          that.$prev.show();
+          that.$submit.show();
+          that.$topicBox.show();
+          if (that.$searchResults.find('ul > li').length === 0) {
+            that.$searchResults.hide();
+          }
+          that.$searchInput.focus();
+        }
+      });
     },
 
-    suggestTopics : function () {
+    suggestTopics : function (options) {
       var that = this;
       this.$topicList.find('.suggest-topic').remove();
       spinner.start();
@@ -89,7 +99,7 @@ define([
         type  : 'GET',
         url   : '/topics/list',
         error : function (jqXHR, textStatus, errorThrow) {
-          spinner.stop();
+          if (typeof options.error !== 'undefined') { options.error(); }
         },
         success : function (topics, textStatus, jqXHR) {
           var i, j, word, matched_list,
@@ -97,7 +107,6 @@ define([
             stat_list     = {},
             topics_length = topics.length;
 
-          spinner.stop();
           that.topics = topics;
 
           for (i = 0; i < topics_length; i++) {
@@ -116,6 +125,8 @@ define([
           that.$topicList.append(_.template($(suggestTemplate).html())({
             topics : topics, stat_list: stat_list
           }));
+
+          if (typeof options.success !== 'undefined') { options.success(); }
         }
       });
     },
