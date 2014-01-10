@@ -29,7 +29,6 @@ require([
   'bootstrap', 'backbone',
   'views/apps/topics',
   'routers/topics'
-], function (bootstrap, Backbone, appView, Workspace) {
-  new Workspace();
+], function (bootstrap, Backbone, appView, workspace) {
   Backbone.history.start();
 });
