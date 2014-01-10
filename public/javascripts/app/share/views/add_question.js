@@ -1,14 +1,15 @@
 define([
   'jquery', 'backbone', 'spinner',
+  'models/question', 'collections/questions',
   'text!templates/add_question/search_topic.html',
   'text!templates/add_question/suggest_topic.html',
   'text!templates/add_question/new_topic.html'
-], function ($, Backbone, spinner, searchTemplate, suggestTemplate, newTemplate) {
+], function ($, Backbone, spinner, Question, questions, searchTemplate, suggestTemplate, newTemplate) {
   var AddQuestion = Backbone.View.extend({
     el: 'body',
 
     events: {
-      'click #add-question'           : 'addQuestion',
+      'click #add-question'           : 'showDialog',
       'click #question-modal .next'   : 'next',
       'click #question-modal .prev'   : 'prev',
       'click #question-modal .submit' : 'submit',
@@ -52,7 +53,7 @@ define([
       this.$submit.hide();
     },
 
-    addQuestion: function () {
+    showDialog: function () {
       this.setupView();
 
       this.$cancel.show();
@@ -61,7 +62,9 @@ define([
 
       this.$modal.modal();
       this.$questionTitle.focus();
-      $('#question-modal .modal-dialog').css({ marginTop: ($(window).height() - $('#question-modal .modal-dialog').height()) / 2 + 'px'});
+      $('#question-modal .modal-dialog').css({
+        marginTop: ($(window).height() - $('#question-modal .modal-dialog').height()) / 2 + 'px'
+      });
     },
 
     next : function () {
@@ -99,7 +102,7 @@ define([
         type  : 'GET',
         url   : '/topics/list',
         error : function (jqXHR, textStatus, errorThrow) {
-          if (typeof options.error !== 'undefined') { options.error(); }
+          if (options.error !== undefined) { options.error(); }
         },
         success : function (topics, textStatus, jqXHR) {
           var i, j, word, matched_list,
@@ -123,10 +126,11 @@ define([
           }
           // render suggest topic list
           that.$topicList.append(_.template($(suggestTemplate).html())({
-            topics : topics, stat_list: stat_list
+            topics : topics,
+            stat_list: stat_list
           }));
 
-          if (typeof options.success !== 'undefined') { options.success(); }
+          if (options.success !== undefined) { options.success(); }
         }
       });
     },
@@ -159,6 +163,7 @@ define([
       }
 
       spinner.start();
+
       $.ajax({
         type  : 'GET',
         url   : '/topics/search?name=' + term,
@@ -190,16 +195,17 @@ define([
     },
 
     submit: function (e) {
-      var that = this;
+      var  question,
+        that = this;
       spinner.start();
-      $.ajax({
-        type  : 'POST',
-        url   : '/questions',
-        data  : {
-          _csrf   : this.csrfToken,
-          title   : this.$form.find('textarea[name="title"]').val(),
-          topics  : this.$form.find('input:checkbox:checked[name="topics"]').map(function() { return $(this).val(); }).get()
-        },
+
+      question = new Question();
+
+      question.save({
+        _csrf   : this.csrfToken,
+        title   : this.$form.find('textarea[name="title"]').val(),
+        topics  : this.$form.find('input:checkbox:checked[name="topics"]').map(function () { return $(this).val(); }).get()
+      }, {
         error: function () {
           spinner.stop();
         },
@@ -210,7 +216,9 @@ define([
           that.$searchResults.empty();
           that.$topicList.empty();
           that.$modal.modal('hide');
-        }
+          questions.add(question);
+        },
+        wait: true
       });
     }
   });

@@ -2,13 +2,13 @@ define([
   'jquery', 'backbone', 'spinner',
   'collections/questions',  'views/question',
   'collections/answers',    'models/answer',  'views/answer',
-], function ($, Backbone, spinner, Questions, QuestionView, Answers, Answer, AnswerView) {
+], function ($, Backbone, spinner, questions, QuestionView, Answers, Answer, AnswerView) {
   var AppView = Backbone.View.extend({
     el: '#feed-items',
 
     initialize: function () {
       this.csrfToken  = $('meta[name="csrf-token"]').attr('content');
-      this.questions  = new Questions;
+      this.questions  = questions;
       this.answers    = new Answers;
       this.listenTo(this.questions, 'add',        this.addQuestion);
       this.listenTo(this.answers,   'add',        this.addAnswer);

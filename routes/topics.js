@@ -42,6 +42,10 @@ module.exports = function (app) {
   });
 
   app.get('/topics/search', loggedIn, function (req, res, next) {
+    if (!req.query.name) {
+      return res.json(200, {});
+    }
+
     Topic.find({name: {$regex: req.query.name, $options: 'i'}}, '_id name picture follower_count').exec(function (err, topics) {
       if (err) { return next(err); }
       res.json(200, topics);

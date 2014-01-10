@@ -4,5 +4,5 @@ define([ 'backbone', 'models/question'], function (Backbone, Question) {
     url   : '/questions/list'
   });
 
-  return Questions;
+  return new Questions;
 })
