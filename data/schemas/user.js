@@ -36,8 +36,8 @@ UserSchema = new Schema({
     questions : [{ type : Schema.Types.ObjectId, ref : 'Question' }]
   },
 
-  activity_list       : [{ type : Schema.Types.ObjectId, ref : 'Activity' }],
-  notification_list   : [{ type : Schema.Types.ObjectId, ref : 'Notification' }],
+  activities       : [{ type : Schema.Types.ObjectId, ref : 'Activity' }],
+  notifications   : [{ type : Schema.Types.ObjectId, ref : 'Notification' }],
 
   password      : String,
   password_salt : String,
@@ -63,9 +63,9 @@ UserSchema.pre('save', function (next) {
 });
 
 UserSchema.static('filterInputs', function (req_body) {
-  delete req_body.activity_list;
+  delete req_body.activities;
   delete req_body.following;
-  delete req_body.notification_list;
+  delete req_body.notifications;
   delete req_body.sign_up_type;
   delete req_body.status;
   delete req_body.token;
