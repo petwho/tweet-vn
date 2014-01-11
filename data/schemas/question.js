@@ -16,13 +16,13 @@ var QuestionSchema,
 // ------------- END TODO 28-13-2013 trankhanh - String length validation disabled ---------------
 
 QuestionSchema = new Schema({
-  logs              : [{ type: Schema.Types.ObjectId, ref: 'Log' }],
-  answers           : [{ type: Schema.Types.ObjectId, ref: 'Answer' }],
-  topics            : [{ type: Schema.Types.ObjectId, ref: 'Topic' }],
-  followers         : [{ type: Schema.Types.ObjectId, ref: 'User' }],
+  log_ids           : [{ type: Schema.Types.ObjectId, ref: 'Log' }],
+  answer_ids        : [{ type: Schema.Types.ObjectId, ref: 'Answer' }],
+  topic_ids         : [{ type: Schema.Types.ObjectId, ref: 'Topic' }],
+  follower_ids      : [{ type: Schema.Types.ObjectId, ref: 'User' }],
+  user_id           : { type: Schema.Types.ObjectId,  required: true, ref: 'User' },
 
   title             : { type: String,                 required: true },
-  user_id           : { type: Schema.Types.ObjectId,  required: true, ref: 'User' },
   detail            : { type: String,                 sparse  : true },
 
   is_open           : { type: Boolean,  default : 0 },
@@ -31,9 +31,9 @@ QuestionSchema = new Schema({
 });
 
 QuestionSchema.static('filterInputs', function (reqBody) {
-  delete reqBody.logs;
-  delete reqBody.answers;
-  delete reqBody.followers;
+  delete reqBody.log_ids;
+  delete reqBody.answer_ids;
+  delete reqBody.follower_ids;
   delete reqBody.user_id;
   delete reqBody.status;
   delete reqBody.created_at;

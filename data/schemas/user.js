@@ -31,13 +31,13 @@ UserSchema = new Schema({
   picture   : String,
 
   following : {
-    users     : [{ type : Schema.Types.ObjectId, ref : 'User' }],
-    topics    : [{ type : Schema.Types.ObjectId, ref : 'Topic' }],
-    questions : [{ type : Schema.Types.ObjectId, ref : 'Question' }]
+    user_ids     : [{ type : Schema.Types.ObjectId, ref : 'User' }],
+    topic_ids    : [{ type : Schema.Types.ObjectId, ref : 'Topic' }],
+    question_ids : [{ type : Schema.Types.ObjectId, ref : 'Question' }]
   },
 
-  activities       : [{ type : Schema.Types.ObjectId, ref : 'Activity' }],
-  notifications   : [{ type : Schema.Types.ObjectId, ref : 'Notification' }],
+  activity_ids       : [{ type : Schema.Types.ObjectId, ref : 'Activity' }],
+  notification_ids   : [{ type : Schema.Types.ObjectId, ref : 'Notification' }],
 
   password      : String,
   password_salt : String,
@@ -63,9 +63,9 @@ UserSchema.pre('save', function (next) {
 });
 
 UserSchema.static('filterInputs', function (req_body) {
-  delete req_body.activities;
+  delete req_body.activity_ids;
   delete req_body.following;
-  delete req_body.notifications;
+  delete req_body.notification_ids;
   delete req_body.sign_up_type;
   delete req_body.status;
   delete req_body.token;

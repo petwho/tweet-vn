@@ -22,28 +22,29 @@ block content
           .col-sm-10
             .row
               .col-sm-4
-                - if (topic.is_primary && (topic.sub_topics.length !== 0))
-                  - var i, sub_topic_id_list = []
+                - if (topic.is_primary && (topic.subtopic_ids.length !== 0))
+                  - var i, subtopic_id_list = []
 
-                  - for (i = 0; i < sub_topics.length; i++)
-                    - sub_topic_id_list.push(sub_topics[i]._id)
+                  - for (i = 0; i < subtopics.length; i++)
+                    - subtopic_id_list.push(subtopics[i]._id)
 
-                  - for (i = 0; i < sub_topics.length; i++)
+                  - for (i = 0; i < subtopics.length; i++)
                     .checkbox
                       label
-                        - if (topic.sub_topics.indexOf(sub_topic_id_list[i]) !== -1)
-                          input(type="checkbox", name="sub_topics", value!= sub_topics[i]._id, checked, disabled)
-                          span!= sub_topics[i].name
+                        - if (topic.subtopic_ids.indexOf(subtopic_id_list[i]) !== -1)
+                          input(type="checkbox", name="subtopic_ids", value!= subtopics[i]._id, checked, disabled)
+                          span!= subtopics[i].name
                         - else
-                          input(type="checkbox", name="sub_topics", value!= sub_topics[i]._id, disabled)
-                          span!= sub_topics[i].name
-                          span!= topic.sub_topics[j]
+                          input(type="checkbox", name="subtopic_ids", value!= subtopics[i]._id, disabled)
+                          span!= subtopics[i].name
+                          span!= topic.subtopic_ids[j]
                 - else
-                  - for (i = 0; i < sub_topics.length; i++)
-                    .checkbox
-                      label
-                        input(type="checkbox", name="sub_topics", value!= sub_topics[i]._id, disabled)
-                        span!= sub_topics[i].name
+                  - for (i = 0; i < subtopics.length; i++)
+                    if (subtopics[i].name !== topic.name)
+                      .checkbox
+                        label
+                          input(type="checkbox", name="subtopic_ids", value!= subtopics[i]._id, disabled)
+                          span!= subtopics[i].name
         .form-group
           label.control-label.col-sm-2(for="related_words") Related Words
           .col-sm-4
@@ -60,7 +61,7 @@ block content
   script.
     $(function () {
       var $is_primary  = $('select[name="is_primary"]'),
-        $sub_topic_inputs = $('input[name="sub_topics"]'),
+        $sub_topic_inputs = $('input[name="subtopic_ids"]'),
         $sub_topic_group  = $('.sub-topic-group');
 
       $is_primary.on('change', function (e) {

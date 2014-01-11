@@ -202,9 +202,9 @@ define([
       question = new Question();
 
       question.save({
-        _csrf   : this.csrfToken,
-        title   : this.$form.find('textarea[name="title"]').val(),
-        topics  : this.$form.find('input:checkbox:checked[name="topics"]').map(function () { return $(this).val(); }).get()
+        _csrf     : this.csrfToken,
+        title     : this.$form.find('textarea[name="title"]').val(),
+        topic_ids : this.$form.find('input:checkbox:checked[name="topics"]').map(function () { return $(this).val(); }).get()
       }, {
         error: function () {
           spinner.stop();

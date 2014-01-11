@@ -2,13 +2,14 @@ var loggedIn  = require('./middleware/logged_in.js'),
   Topic       = require('../data/models/topic.js'),
   User        = require('../data/models/user.js'),
   async       = require('async');
+  util        = require('util');
 
 module.exports = function (app) {
-  var sub_topics, loadSubTopics;
+  var subtopics, loadSubTopics;
 
   loadSubTopics = function (req, res, next) {
     Topic.find({ is_primary: false }, '_id name').exec(function (err, returned_topics) {
-      sub_topics = returned_topics;
+      subtopics = returned_topics;
       next();
     });
   };
@@ -53,7 +54,7 @@ module.exports = function (app) {
   });
 
   app.get('/topics/new', [loggedIn, loadSubTopics], function (req, res, next) {
-    return res.render('topics/new', { sub_topics : sub_topics });
+    return res.render('topics/new', { subtopics : subtopics });
   });
 
   app.post('/topics', [loggedIn, loadSubTopics], function (req, res, next) {
@@ -63,12 +64,12 @@ module.exports = function (app) {
     Topic.filterInputs(req.body);
 
     // ** Begin validate sub-topics
-    for (i = 0; i < sub_topics; i++) {
-      topic_id_list.push(sub_topics[i]._id);
+    for (i = 0; i < subtopics; i++) {
+      topic_id_list.push(subtopics[i]._id);
     }
 
-    for (i = 0; i < req.body.sub_topics; i++) {
-      if (topic_id_list.indexOf(req.body.sub_topics[i]) !== -1) {
+    for (i = 0; i < req.body.subtopic_ids; i++) {
+      if (topic_id_list.indexOf(req.body.subtopic_ids[i]) !== -1) {
         req.session.message.error.push('Invalid sub-topic.');
         return res.redirect('back');
       }
@@ -91,12 +92,16 @@ module.exports = function (app) {
 
   app.get('/topics/:id/edit', [loggedIn, loadSubTopics], function (req, res, next) {
     Topic.findById(req.params.id, function (err, topic) {
-      return res.render('topics/edit', { topic: topic, sub_topics : sub_topics });
+      return res.render('topics/edit', { topic: topic, subtopics : subtopics });
     });
   });
 
   app.put('/topics/:id', [loggedIn], function (req, res, next) {
     Topic.filterInputs(req.body);
+
+    if (req.body.subtopic_ids === undefined) {
+      req.body.subtopic_ids = [];
+    }
 
     Topic.update({ _id: req.params.id }, req.body, function (err, topic) {
       if (err) { return next(err); }

@@ -21,11 +21,11 @@ block content
           .col-sm-10
             .row
               .col-sm-4
-                - for (var i = 0; i < sub_topics.length; i++)
+                - for (var i = 0; i < subtopics.length; i++)
                   .checkbox
                     label
-                      input(type="checkbox", name="sub_topics", value!= sub_topics[i]._id, disabled)
-                      span!= sub_topics[i].name
+                      input(type="checkbox", name="subtopic_ids", value!= subtopics[i]._id, disabled)
+                      span!= subtopics[i].name
         .form-group
           label.control-label.col-sm-2(for="related_words") Related Words
           .col-sm-4
@@ -42,7 +42,7 @@ block content
   script.
     $(function () {
       var $is_primary     = $('select[name="is_primary"]'),
-        $sub_topic_inputs = $('input[name="sub_topics"]'),
+        $sub_topic_inputs = $('input[name="subtopic_ids"]'),
         $sub_topic_group  = $('.sub-topic-group');
 
       $is_primary.on('change', function (e) {

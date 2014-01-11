@@ -25,8 +25,8 @@ module.exports = function (app) {
     create_answer = function (next) {
       Answer.filterInputs(req.body);
 
-      req.body.user_id  = req.session.user._id;
-      req.body.topic_ids   = question.topics;
+      req.body.user_id    = req.session.user._id;
+      req.body.topic_ids  = question.topic_ids;
 
       Answer.create(req.body, function (err, returned_answer) {
         if (err) { return next(err); }
@@ -37,7 +37,7 @@ module.exports = function (app) {
 
     create_log = function (next) {
       log.user_id = req.session.user._id;
-      log.answer_id = answer;
+      log.answer_id = answer._id;
       log.content = req.body.content;
       log.status = 1;
 
@@ -49,7 +49,7 @@ module.exports = function (app) {
     };
 
     add_log_to_answer = function (next) {
-      answer.logs = [log];
+      answer.log_ids = log._id;
       answer.save(function (err, answer, number_affected) {
         if (err) { return next(err); }
         next();
@@ -57,8 +57,8 @@ module.exports = function (app) {
     };
 
     update_question_log_and_answer = function (next) {
-      question.logs.push(log._id);
-      question.answers.push(answer._id);
+      question.log_ids.push(log._id);
+      question.answer_ids.push(answer._id);
       question.save(function (err, question) {
         if (err) { return next(err); }
         next();
