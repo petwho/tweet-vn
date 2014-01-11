@@ -57,8 +57,8 @@ module.exports = function (app) {
     };
 
     update_question_log_and_answer = function (next) {
-      question.logs.push(log);
-      question.answers.push(answer);
+      question.logs.push(log._id);
+      question.answers.push(answer._id);
       question.save(function (err, question) {
         if (err) { return next(err); }
         next();

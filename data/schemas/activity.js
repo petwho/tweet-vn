@@ -7,6 +7,7 @@ var Schema        = require('mongoose').Schema,
   CommentSchema   = require('comment');
 
 var ActivitySchema = new Schema({
+  is_hidden: { type: Boolean, required: true, default: false },
   vote: [VoteSchema], // * contain a single document
   post: {
     question  : [QuestionSchema], // * contain a single document
@@ -14,7 +15,7 @@ var ActivitySchema = new Schema({
     comment   : [CommentSchema]   // * contain a single document
   },
   // * all keys within follow field contain a single document
-  follow      : { user: [UserSchema],  question: [QuestionSchema], topics: [TopicSchema] },
+  follow      : { user: [UserSchema],  question: [QuestionSchema], topic: [TopicSchema] },
   created_at  : { type: Date,        default : Date.now }
 });
 
