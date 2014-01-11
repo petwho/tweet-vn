@@ -1,17 +1,15 @@
-<script type="text/template">
-  <% _.map(stat_list, function (val, key) { %>
-    <% if (val !== 0) { %>
-      <% _.each(topics, function (topic) { %>
-        <% if (topic.related_words.indexOf(key) !== -1) { %>
-          <div class="checkbox suggest-topic">
-            <label>
-              <input type="checkbox" name="topics" value="<%= topic._id %>" checked>
-              <span class="name"><%= topic.name %></span>
-              <span class="followers"><%= topic.follower_count %> followers</span>
-            </label>
-          </div>
-        <% } %>
-      <% }) %>
-    <% } %>
-  <% }) %>
-</script>
+<% _.map(stat_list, function (val, key) { %>
+  <% if (val !== 0) { %>
+    <% _.each(topics, function (topic) { %>
+      <% if (topic.related_words.indexOf(key) !== -1) { %>
+        <div class="checkbox suggest-topic">
+          <label>
+            <input type="checkbox" name="topics" value="<%= topic._id %>" checked>
+            <span class="name"><%= topic.name %></span>
+            <span class="followers"><%= topic.follower_count %> followers</span>
+          </label>
+        </div>
+      <% } %>
+    <% }) %>
+  <% } %>
+<% }) %>

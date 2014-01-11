@@ -1,10 +1,11 @@
 define([
   'jquery', 'backbone', 'spinner',
   'models/question', 'collections/questions',
-  'text!templates/add_question/search_topic.html',
+  'collections/topics',
+  'text!templates/add_question/search_results.html',
   'text!templates/add_question/suggest_topic.html',
-  'text!templates/add_question/new_topic.html'
-], function ($, Backbone, spinner, Question, questions, searchTemplate, suggestTemplate, newTemplate) {
+  'text!templates/add_question/add_topic.html'
+], function ($, Backbone, spinner, Question, questions, Topics, searchTemplate, suggestTemplate, addTemplate) {
   var AddQuestion = Backbone.View.extend({
     el: 'body',
 
@@ -25,8 +26,10 @@ define([
       this.$notice          = $('#question-modal .notice');
       this.$topicBox        = $('#question-modal .topic-box');
       this.$searchInput     = $('#question-modal .search-input');
-      this.$topicList       = $('.topic-list');
+      this.$suggestedTopics = $('.suggested-topics');
+      this.$addedTopics     = $('.added-topics');
       this.$searchResults   = $('#question-modal .search-results');
+      this.topics           = new Topics();
 
       this.$cancel  = $('#question-modal .cancel');
       this.$prev    = $('#question-modal .prev');
@@ -35,7 +38,7 @@ define([
       this.$submit  = $('#question-modal .submit');
       this.$form    = $('#question-modal form');
       this.timer    = null;
-      this.topics   = [];
+      // this.topics   = [];
 
       this.$form.on('submit', function (e) {
         e.preventDefault();
@@ -76,63 +79,62 @@ define([
         return;
       }
 
-      this.suggestTopics({
-        error: function () {
-          spinner.stop();
-        },
-        success: function () {
-          spinner.stop();
-          that.setupView();
-          that.$prev.show();
-          that.$submit.show();
-          that.$topicBox.show();
-          if (that.$searchResults.find('ul > li').length === 0) {
-            that.$searchResults.hide();
-          }
-          that.$searchInput.focus();
-        }
-      });
+      this.beginSuggest();
     },
 
-    suggestTopics : function (options) {
-      var that = this;
-      this.$topicList.find('.suggest-topic').remove();
-      spinner.start();
-      $.ajax({
-        type  : 'GET',
-        url   : '/topics/list',
-        error : function (jqXHR, textStatus, errorThrow) {
-          if (options.error !== undefined) { options.error(); }
-        },
-        success : function (topics, textStatus, jqXHR) {
-          var i, j, word, matched_list,
-            html          = '',
-            stat_list     = {},
-            topics_length = topics.length;
+    beginSuggest : function () {
+      var print_topic,
+        that = this,
 
-          that.topics = topics;
+      print_results = function (self) {
+        var i, j, word, matched_list,
+          html          = '',
+          stat_list     = {},
+          topics_length = self.topics.length;
 
-          for (i = 0; i < topics_length; i++) {
-            for (j = 0; j < topics[i].related_words.length; j++) {
-              word = topics[i].related_words[j];
-              if (stat_list[word] === undefined) {
-                stat_list[word] = 0;
-              }
-              matched_list = that.$questionTitle.val().match(new RegExp(word, 'gi'));
-              if (matched_list) {
-                stat_list[word] += matched_list.length;
-              }
+        for (i = 0; i < topics_length; i++) {
+          for (j = 0; j < self.topics.at(i).get('related_words').length; j++) {
+            word = self.topics.at(i).get('related_words')[j];
+            if (stat_list[word] === undefined) {
+              stat_list[word] = 0;
+            }
+            matched_list = self.$questionTitle.val().match(new RegExp(word, 'gi'));
+            if (matched_list) {
+              stat_list[word] += matched_list.length;
             }
           }
-          // render suggest topic list
-          that.$topicList.append(_.template($(suggestTemplate).html())({
-            topics : topics,
-            stat_list: stat_list
-          }));
-
-          if (options.success !== undefined) { options.success(); }
         }
-      });
+        // render suggest topic list
+        self.$suggestedTopics.html(_.template(suggestTemplate)({
+          topics    : self.topics.toJSON(),
+          stat_list : stat_list
+        }));
+
+        spinner.stop();
+        self.setupView();
+        self.$prev.show();
+        self.$submit.show();
+        self.$topicBox.show();
+        if (self.$searchResults.find('ul > li').length === 0) {
+          self.$searchResults.hide();
+        }
+        self.$searchInput.focus();
+      };
+
+      spinner.start();
+
+      if (this.topics.length) {
+        return print_results(this);
+      } else {
+        this.topics.fetch({
+          error: function () {
+            spinner.stop();
+          },
+          success: function () {
+            print_results(that);
+          }
+        });
+      }
     },
 
     prev : function () {
@@ -174,7 +176,7 @@ define([
           that.clearSearchResults();
           spinner.stop();
           if (topics.length !== 0) {
-            that.$searchResults.find('ul').append(_.template($(searchTemplate).html())({
+            that.$searchResults.find('ul').append(_.template(searchTemplate)({
               topics: topics
             }));
             that.$searchResults.show();
@@ -191,7 +193,7 @@ define([
       topic.name            = $target.find('.name').data('name');
       topic.follower_count  = $target.find('.followers').data('followers');
 
-      this.$topicList.append(_.template($(newTemplate).html())(topic));
+      this.$addedTopics.append(_.template(addTemplate)(topic));
     },
 
     submit: function (e) {
@@ -214,7 +216,8 @@ define([
           that.$questionTitle.val('');
           that.$searchInput.val('');
           that.$searchResults.empty();
-          that.$topicList.empty();
+          that.$suggestedTopics.empty();
+          that.$addedTopics.empty();
           that.$modal.modal('hide');
           questions.add(question);
         },
