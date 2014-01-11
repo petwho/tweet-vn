@@ -5,11 +5,11 @@ var AnswerSchema,
   escapeHtml    = require('escape-html');
 
 AnswerSchema = new Schema({
-  author      : { type: Schema.Types.ObjectId, ref: 'User' },
+  user_id     : { type: Schema.Types.ObjectId, ref: 'User' },
   question    : { type: Schema.Types.ObjectId, ref: 'Question' },
   topics      : [{ type: Schema.Types.ObjectId, ref: 'Topic' }],
   logs        : [ LogSchema ],
-  vote_list   : [ VoteSchema ],
+  votes       : [ VoteSchema ],
 
   content     : { type: String, required: true },
   created_at  : { type: Date,   default: Date.now },
@@ -24,9 +24,9 @@ AnswerSchema.pre('save', function (next) {
 });
 
 AnswerSchema.static('filterInputs', function (reqBody) {
-  delete reqBody.author;
+  delete reqBody.user_id;
   delete reqBody.logs;
-  delete reqBody.vote_list;
+  delete reqBody.votes;
   delete reqBody.created_at;
   delete reqBody.updated_at;
   // remove script tag from html

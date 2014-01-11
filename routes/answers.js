@@ -25,8 +25,8 @@ module.exports = function (app) {
     create_answer = function (next) {
       Answer.filterInputs(req.body);
 
-      req.body.author = req.session.user._id;
-      req.body.topics = question.topics;
+      req.body.user_id  = req.session.user._id;
+      req.body.topics   = question.topics;
 
       Answer.create(req.body, function (err, returned_answer) {
         if (err) { return next(err); }
