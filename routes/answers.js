@@ -36,8 +36,8 @@ module.exports = function (app) {
     };
 
     create_log = function (next) {
-      log.user = req.session.user._id;
-      log.answer = answer;
+      log.user_id = req.session.user._id;
+      log.answer_id = answer;
       log.content = req.body.content;
       log.status = 1;
 
