@@ -6,8 +6,8 @@ var AnswerSchema,
 
 AnswerSchema = new Schema({
   user_id     : { type: Schema.Types.ObjectId, ref: 'User' },
-  question    : { type: Schema.Types.ObjectId, ref: 'Question' },
-  topics      : [{ type: Schema.Types.ObjectId, ref: 'Topic' }],
+  question_id : { type: Schema.Types.ObjectId, ref: 'Question' },
+  topic_ids   : [{ type: Schema.Types.ObjectId, ref: 'Topic' }],
   logs        : [ LogSchema ],
   votes       : [ VoteSchema ],
 
@@ -25,6 +25,7 @@ AnswerSchema.pre('save', function (next) {
 
 AnswerSchema.static('filterInputs', function (reqBody) {
   delete reqBody.user_id;
+  delete reqBody.topic_ids;
   delete reqBody.logs;
   delete reqBody.votes;
   delete reqBody.created_at;

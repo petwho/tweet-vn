@@ -31,9 +31,9 @@ define([
 
       question = questionView.model;
       answer = new Answer({
-        _csrf     : this.csrfToken,
-        question  : question.get('_id'),
-        content   : questionView.editor.getContent()
+        _csrf       : this.csrfToken,
+        question_id : question.get('_id'),
+        content     : questionView.editor.getContent()
       });
 
       answer.save();

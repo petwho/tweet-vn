@@ -14,7 +14,7 @@ module.exports = function (app) {
     log = {};
 
     validate_question = function (next) {
-      Question.findById(req.body.question, function (err, returned_question) {
+      Question.findById(req.body.question_id, function (err, returned_question) {
         if (err) { return next(err); }
         if (!returned_question) { return res.json(400, { msg: 'Invalid question' }); }
         question = returned_question;
@@ -26,7 +26,7 @@ module.exports = function (app) {
       Answer.filterInputs(req.body);
 
       req.body.user_id  = req.session.user._id;
-      req.body.topics   = question.topics;
+      req.body.topic_ids   = question.topics;
 
       Answer.create(req.body, function (err, returned_answer) {
         if (err) { return next(err); }

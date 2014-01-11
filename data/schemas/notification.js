@@ -25,7 +25,7 @@ var NotificationSchema = new Schema({
     sparse  : true
   },
   new_comment: {
-    author  : { type: Schema.Types.ObjectId, ref: 'User' },
+    user_id : { type: Schema.Types.ObjectId, ref: 'User' },
     comment : { type: Schema.Types.ObjectId, ref: 'Comment' },
     sparse  : true
   }
