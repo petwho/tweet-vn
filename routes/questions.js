@@ -49,7 +49,8 @@ module.exports = function (app) {
   app.post('/questions', [loggedIn, validateTopics], function (req, res, next) {
     Question.filterInputs(req.body);
 
-    req.body.author = req.body.following_list = req.session.user._id;
+    req.body.user_id    = req.session.user._id;
+    req.body.followers  = [req.session.user._id];
 
     Question.create(req.body, function (err, question) {
       if (err) { return next(err); }

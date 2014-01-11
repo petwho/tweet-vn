@@ -21,10 +21,10 @@ QuestionSchema = new Schema({
   logs              : [LogSchema],
   answers           : [AnswerSchema],
   topics            : [{ type: Schema.Types.ObjectId, ref: 'Topic' }],
-  follower_list     : [{ type: Schema.Types.ObjectId, ref: 'User' }],
+  followers         : [{ type: Schema.Types.ObjectId, ref: 'User' }],
 
   title             : { type: String,                 required: true },
-  author            : { type: Schema.Types.ObjectId,  required: true, ref: 'User' },
+  user_id           : { type: Schema.Types.ObjectId,  required: true, ref: 'User' },
   detail            : { type: String,                 sparse  : true },
 
   is_open           : { type: Boolean,  default : 0 },
@@ -34,7 +34,8 @@ QuestionSchema = new Schema({
 
 QuestionSchema.static('filterInputs', function (reqBody) {
   delete reqBody.logs;
-  delete reqBody.author;
+  delete reqBody.user_id;
+  delete reqBody.followers;
   delete reqBody.status;
   delete reqBody.created_at;
   delete reqBody.updated_at;
