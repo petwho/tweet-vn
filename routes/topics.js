@@ -23,7 +23,7 @@ module.exports = function (app) {
 
         for (i = 0; i < topics.length; i++) {
           topic_obj = topics[i].toObject();
-          if (req.session.user.following_list.topic.indexOf(topic_obj._id.toString()) !== -1) {
+          if (req.session.user.following.topics.indexOf(topic_obj._id.toString()) !== -1) {
             topic_obj.is_following = true;
           } else {
             topic_obj.is_following = false;
@@ -122,7 +122,7 @@ module.exports = function (app) {
     update_user = function (next) {
       var topic_list, index;
 
-      topic_list  = req.session.user.following_list.topic;
+      topic_list  = req.session.user.following.topics;
       topic_list  = topic_list.slice(0, topic_list.length);
       index       = topic_list.indexOf(req.body._id);
 
@@ -138,9 +138,9 @@ module.exports = function (app) {
         req.body.is_following = false;
       }
 
-      User.update({ _id: req.session.user._id }, { 'following_list.topic': topic_list }, function (err, number_affected, raw) {
+      User.update({ _id: req.session.user._id }, { 'following.topics': topic_list }, function (err, number_affected, raw) {
         if (err) { return next(err); }
-        req.session.user.following_list.topic = topic_list;
+        req.session.user.following.topics = topic_list;
         next();
       });
     };

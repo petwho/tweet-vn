@@ -30,10 +30,10 @@ UserSchema = new Schema({
   email     : { type: String, required: true, unique: true},
   picture   : String,
 
-  following_list : {
-    user     : [{ type : Schema.Types.ObjectId, ref : 'User' }],
-    topic    : [{ type : Schema.Types.ObjectId, ref : 'Topic' }],
-    question : [{ type : Schema.Types.ObjectId, ref : 'Question' }]
+  following : {
+    users     : [{ type : Schema.Types.ObjectId, ref : 'User' }],
+    topics    : [{ type : Schema.Types.ObjectId, ref : 'Topic' }],
+    questions : [{ type : Schema.Types.ObjectId, ref : 'Question' }]
   },
 
   activity_list       : [{ type : Schema.Types.ObjectId, ref : 'Activity' }],
@@ -64,6 +64,7 @@ UserSchema.pre('save', function (next) {
 
 UserSchema.static('filterInputs', function (req_body) {
   delete req_body.activity_list;
+  delete req_body.following;
   delete req_body.notification_list;
   delete req_body.sign_up_type;
   delete req_body.status;

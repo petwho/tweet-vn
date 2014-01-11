@@ -74,7 +74,7 @@ module.exports = function (app) {
   });
 
   app.get('/answers/list', loggedIn, function (req, res, next) {
-    var following_topics = req.session.user.following_list.topic;
+    var following_topics = req.session.user.following.topics;
 
     Answer.find({ $in: { topics: following_topics } }, function (err, answers) {
       if (err) { return next(err); }
