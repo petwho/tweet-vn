@@ -215,7 +215,7 @@ define([
           spinner.stop();
           that.$questionTitle.val('');
           that.$searchInput.val('');
-          that.$searchResults.empty();
+          that.$searchResults.find('ul').empty();
           that.$suggestedTopics.empty();
           that.$addedTopics.empty();
           that.$modal.modal('hide');
