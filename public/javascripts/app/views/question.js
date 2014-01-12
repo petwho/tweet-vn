@@ -2,18 +2,20 @@
 define([
   'backbone', 'spinner',  'tinymce',
   'text!templates/question.html',
-  'text!../../vendor/tinymce/skins/lightgray/skin.min.css',
-  'text!../../vendor/tinymce/skins/lightgray/content.min.css',
-  'text!../../vendor/tinymce/skins/lightgray/content.inline.min.css'
-], function (Backbone, spinner, tinymce, questionTemplate, skinCSS, contentCSS, contentInlineCSS) {
+
+], function (Backbone, spinner, tinymce, questionTemplate) {
   var QuestionView = Backbone.View.extend({
 
     template: _.template(questionTemplate),
 
     events: {
-      'click .fake-editor'  : 'initEditor',
+      'click .fake-editor'  : 'onClickFake',
       'click .cancel-btn'   : 'cancel',
       'click .submit-btn'   : 'submit'
+    },
+
+    initialize: function () {
+      this.listenTo(this.model, 'added:answer', this.saveAnswer);
     },
 
     hideFakeEditor: function (self) {
@@ -23,48 +25,8 @@ define([
       self.$fakeInput.val(self.oldInputText);
     },
 
-    onEditorInit: function (self, editor) {
-      self.editor = editor;
-
-      if ($('head style[name="tinymce"]').length === 0) {
-        $('head').append('<style name="tinymce">' + skinCSS + '</style>');
-      }
-      tinyMCE.activeEditor.dom.add(tinyMCE.activeEditor.dom.select('head'), 'style', { type : 'text/css' }, contentCSS);
-      tinyMCE.activeEditor.dom.add(tinyMCE.activeEditor.dom.select('head'), 'style', { type : 'text/css' }, contentInlineCSS);
-
-      self.hideFakeEditor(self);
-
-      self.$answerText.removeClass('hidden');
-    },
-
-    initEditor: function (e) {
-      var that = this;
-
-      this.$fakeInput.val('Loading...');
-
-      if (this.editor) {
-        this.hideFakeEditor(this);
-        this.$answerText.removeClass('hidden');
-        return;
-      }
-
-      tinymce.init({
-        setup: function (editor) {
-          editor.on('init', function () {
-            that.onEditorInit(that, editor);
-          });
-        },
-        selector: 'textarea.eid_' + this.data_editor,
-        skin: false,
-        plugins: "autolink, autoresize, lists, link, image, anchor, paste",
-        toolbar1: "styleselect | bold italic | bullist numlist outdent indent | link image",
-        paste_as_text: true,
-        menubar: false,
-        statusbar: false,
-        min_height: 50,
-        autoresize_min_height: 50,
-        autoresize_bottom_margin: 20
-      });
+    onClickFake: function (e) {
+      this.model.trigger('initEditor', this);
     },
 
     cancel: function () {
@@ -75,6 +37,11 @@ define([
 
     submit: function () {
       this.model.trigger('add:answer', this);
+    },
+
+    saveAnswer: function (model) {
+      console.log(model)
+      this.$el.remove();
     },
 
     render: function () {
