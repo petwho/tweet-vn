@@ -1,5 +1,4 @@
 var LogSchema,
-  User = require('./user'),
   Question = require('./question'),
   Answer = require('./answer'),
   Log = require('./log'),
@@ -13,16 +12,13 @@ LogSchema = new Schema({
   // * (210): suggested edit answer
   // * (310): answer's author accepted suggested edit, (311): answer's author discarded suggested edit
   type    : { type: Number, required: true },
-  user    : [User], // single embedded doc
-  // question that is being logged
-  question: [Question], // single embedded doc
-  // answer that is being logged
-  answer  : [Answer], // single embedded doc
-  reverter: [Log], // single embedded doc
-  reverted: [Log], // single embedded doc
+  user_id : { type: Schema.Types.ObjectId, ref: 'User' },
+  question: [Question],
+  answer  : [Answer],
+  reverter: [Log],
+  reverted: [Log],
   content : { type: String, required: true },
-  created_at          : { type: Date, default: Date.now },
-  updated_at          : { type: Date, default: Date.now }
+  created_at: { type: Date, default: Date.now }
 });
 
 module.exports = LogSchema;

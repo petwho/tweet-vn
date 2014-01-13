@@ -1,5 +1,6 @@
 var loggedIn  = require('./middleware/logged_in'),
   async       = require('async'),
+  Activity    = require('../data/models/activity'),
   Question    = require('../data/models/question'),
   Answer      = require('../data/models/answer'),
   Log         = require('../data/models/log'),
@@ -36,10 +37,10 @@ module.exports = function (app) {
     };
 
     create_log = function (next) {
+      log.type = 200;
       log.user_id = req.session.user._id;
-      log.answer_id = answer._id;
+      log.answer = answer;
       log.content = req.body.content;
-      log.status = 1;
 
       Log.create(log, function (err, returned_log) {
         if (err) { return next(err); }
@@ -65,8 +66,22 @@ module.exports = function (app) {
       });
     };
 
+    create_activity = function (next) {
+      var activity = new Activity();
+
+      if (req.body.is_hidden === true) { activity.is_hidden = true; }
+      activity.type = 21;
+      activity.posted.answer.push(answer);
+
+      activity.save(function (err, question) {
+        if (err) { return next(err); }
+        next();
+      });
+    };
+
     async.series([
-      validate_question, create_answer, create_log, add_log_to_answer, update_question_log_and_answer
+      validate_question, create_answer, create_log, add_log_to_answer,
+      update_question_log_and_answer, create_activity
     ], function (err, results) {
       if (err) { return next(err); }
       res.json(200, answer);

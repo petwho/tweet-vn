@@ -52,8 +52,8 @@ module.exports = function (app) {
   });
 
   app.post('/questions', [loggedIn, validateTopics, loadTopics.toObject], function (req, res, next) {
-    var create_question, create_activity, question, activity,
-      log_question_details, log_question_title, log_question_topics, add_log_back_to_question
+    var create_question, create_activity, question,
+      log_question_details, log_question_title, log_question_topics, add_log_back_to_question,
       logs = [],
       topic_counter = 0;
 
@@ -70,7 +70,7 @@ module.exports = function (app) {
     };
 
     create_activity = function (next) {
-      activity = new Activity();
+      var activity = new Activity();
 
       if (req.body.is_hidden === true) { activity.is_hidden = true; }
       activity.type = 20;
@@ -86,7 +86,7 @@ module.exports = function (app) {
       var log = new Log();
 
       log.type = 100;
-      log.user.push(req.session.user);
+      log.user_id = req.session.user._id;
       log.question.push(question);
       log.content = question.title;
 
@@ -105,7 +105,7 @@ module.exports = function (app) {
       log = new Log();
 
       log.type = 101;
-      log.user.push(req.session.user);
+      log.user_id = req.session.user._id;
       log.question.push(question);
       log.content = req.topic_obj[question.topic_ids[topic_counter]];
       log.save(function (err, log, affected_num) {
@@ -125,7 +125,7 @@ module.exports = function (app) {
       log = new Log();
 
       log.type = 100;
-      log.user.push(req.session.user);
+      log.user_id = req.session.user._id;
       log.question.push(question);
       log.content = question.details;
 
@@ -138,7 +138,7 @@ module.exports = function (app) {
 
     add_log_back_to_question = function (next) {
       var i;
-      for(i = 0; i < logs.length; i++) {
+      for (i = 0; i < logs.length; i++) {
         question.log_ids.push(logs[i]._id);
       }
       question.save(function (err, question) {
