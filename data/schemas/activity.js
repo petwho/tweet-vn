@@ -1,9 +1,9 @@
-var Schema        = require('mongoose').Schema,
-  Vote = require('./vote'),
-  Question = require('./question'),
-  Answer = require('./answer'),
-  Topic = require('./topic'),
-  Comment = require('/comment');
+var Schema  = require('mongoose').Schema,
+  Vote      = require('./vote'),
+  Question  = require('./question'),
+  Answer    = require('./answer'),
+  Topic     = require('./topic'),
+  Comment   = require('/comment');
 
 var ActivitySchema = new Schema({
   is_hidden : { type: Boolean, required: true, default: false },
