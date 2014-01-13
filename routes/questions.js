@@ -13,7 +13,7 @@ module.exports = function (app) {
     var i,
       topic_ids       = [],
       req_topic_ids   = req.body.topic_ids;
-    if (!req_topic_ids || !util.isArray(req_topic_ids)) {
+    if (!req_topic_ids || !util.isArray(req_topic_ids) || (req_topic_ids.length === 0)) {
       return res.json(400, { msg: 'Invalid topics' });
     }
 
@@ -37,9 +37,10 @@ module.exports = function (app) {
   app.get('/questions/list', [loggedIn], function (req, res, next) {
     var scrollcount = (req.query.scrollcount || 0) * 10;
 
-    Question.find({}).skip(scrollcount).limit(10)
+    Question.find({ topic_ids: {$in: req.session.user.following.topic_ids} })
+      .skip(scrollcount).limit(10)
       .populate({
-        path  : 'topics',
+        path  : 'topic_ids',
         select: 'name picture follower_count'
       })
       .exec(function (err, questions) {

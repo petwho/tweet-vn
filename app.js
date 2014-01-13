@@ -78,6 +78,7 @@ if ('production' === app.get('env')) {
 require('./routes/index')(app);
 require('./routes/sessions')(app);
 require('./routes/users')(app);
+require('./routes/questions_answers')(app);
 require('./routes/questions')(app);
 require('./routes/answers')(app);
 require('./routes/topics')(app);

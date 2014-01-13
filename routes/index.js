@@ -5,6 +5,6 @@ module.exports = function (app) {
     if (req.session.user.following.topic_ids.length < 5) {
       return res.redirect('/topics/index');
     }
-    return res.render('questions/index');
+    return res.render('index');
   });
 };
