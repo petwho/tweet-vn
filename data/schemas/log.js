@@ -1,24 +1,28 @@
 var LogSchema,
+  User = require('./user'),
+  Question = require('./question'),
+  Answer = require('./answer'),
+  Log = require('./log'),
   Schema = require('mongoose').Schema;
 
 LogSchema = new Schema({
-  user_id     : { type: Schema.Types.ObjectId,  ref: 'User' },
-  // question that is being logged
-  question_id : { type: Schema.Types.ObjectId,  ref: 'Question',  sparse: true },
-  // answer that is being logged
-  answer_id   : { type: Schema.Types.ObjectId,  ref: 'Answer',    sparse: true },
-  reverter_id : { type: Schema.Types.ObjectId,  ref: 'Log',       sparse: true },
-  reverted_id : { type: Schema.Types.ObjectId,  ref: 'Log',       sparse: true },
-  content     : { type: String,                 required: true },
   // status code description
-  //  * 1: added      - (for both)
-  //  * 2: edited     - (for question) or suggested edits (for answer)
-  //  * 3: reverted   - (for both: editor revert their own edits)
-  //  * 4: accepted   - (for answer: suggested answer edits)
-  //  * 5: discarded  - (for answer: discarded suggested edits)
-  status              : { type: Number, required: true },
+  // * (100): added question (title), (101): added question topics, (102): added question details
+  // * (110): edited question title, (111): edidited question topics, (112): edidited question details
+  // * (200): added answer
+  // * (210): suggested edit answer
+  // * (310): answer's author accepted suggested edit, (311): answer's author discarded suggested edit
+  type    : { type: Number, required: true },
+  user    : [User], // single embedded doc
+  // question that is being logged
+  question: [Question], // single embedded doc
+  // answer that is being logged
+  answer  : [Answer], // single embedded doc
+  reverter: [Log], // single embedded doc
+  reverted: [Log], // single embedded doc
+  content : { type: String, required: true },
   created_at          : { type: Date, default: Date.now },
-  updated_at          : { type: Date, default: Date.now },
+  updated_at          : { type: Date, default: Date.now }
 });
 
 module.exports = LogSchema;
