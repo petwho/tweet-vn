@@ -71,7 +71,8 @@ module.exports = function (app) {
 
       if (req.body.is_hidden === true) { activity.is_hidden = true; }
       activity.type = 21;
-      activity.posted.answer.push(answer);
+      activity.posted.answer_id = answer._id;
+      activity.posted.topic_ids = answer.topic_ids;
 
       activity.save(function (err, question) {
         if (err) { return next(err); }

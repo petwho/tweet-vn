@@ -1,29 +1,37 @@
 define([
-  'jquery', 'backbone', 'spinner', 'tinymce',
-  'collections/questions_answers',  'views/question_answer',
+  'jquery', 'backbone', 'spinner',
+  'collections/questions',  'views/question',
   'collections/answers',    'models/answer',  'views/answer',
   'text!../../../vendor/tinymce/skins/lightgray/skin.min.css',
   'text!../../../vendor/tinymce/skins/lightgray/content.min.css',
   'text!../../../vendor/tinymce/skins/lightgray/content.inline.min.css'
-], function ($, Backbone, spinner, tinymce, qas, QAView, Answers, Answer, AnswerView, skinCSS, contentCSS, contentInlineCSS) {
+], function ($, Backbone, spinner, questions, QuestionView, Answers, Answer, AnswerView, skinCSS, contentCSS, contentInlineCSS) {
   var AppView = Backbone.View.extend({
-    el: '#qa-items',
+    el: '#feed-items',
 
     initialize: function () {
-      this.csrfToken = $('meta[name="csrf-token"]').attr('content');
-      this.qas = qas;
-      this.listenTo(this.qas, 'add', this.addQA);
-      this.listenTo(this.qas, 'submit_answer', this.submitAnswer);
-      this.listenTo(this.qas, 'initEditor', this.initEditor);
-      this.qas.fetch({
+      this.csrfToken  = $('meta[name="csrf-token"]').attr('content');
+      this.questions  = questions;
+      this.answers    = new Answers;
+      this.listenTo(this.questions, 'add',        this.addQuestion);
+      this.listenTo(this.answers,   'add',        this.addAnswer);
+      this.listenTo(this.questions, 'add:answer', this.answer);
+      this.listenTo(this.questions, 'initEditor', this.initEditor);
+      this.questions.fetch({
         success: function () {
           $('.spinner-large').remove();
         }
       });
+      this.answers.fetch();
     },
 
-    onEditorInit: function (qa, editor) {
-      qa.editor = editor;
+    addQuestion: function (question) {
+      var questionView = new QuestionView({ model: question});
+      this.$el.append(questionView.render().el);
+    },
+
+    onEditorInit: function (question, editor) {
+      question.editor = editor;
 
       if ($('head style[name="tinymce"]').length === 0) {
         $('head').append('<style name="tinymce">' + skinCSS + '</style>');
@@ -31,29 +39,29 @@ define([
       tinyMCE.activeEditor.dom.add(tinyMCE.activeEditor.dom.select('head'), 'style', { type : 'text/css' }, contentCSS);
       tinyMCE.activeEditor.dom.add(tinyMCE.activeEditor.dom.select('head'), 'style', { type : 'text/css' }, contentInlineCSS);
 
-      qa.hideFakeEditor(qa);
+      question.hideFakeEditor(question);
 
-      qa.$answerText.removeClass('hidden');
+      question.$answerText.removeClass('hidden');
     },
 
-    initEditor: function (qa) {
+    initEditor: function (question) {
       var that = this;
 
-      qa.$fakeInput.val('Loading...');
+      question.$fakeInput.val('Loading...');
 
-      if (qa.editor) {
-        qa.hideFakeEditor(qa);
-        qa.$answerText.removeClass('hidden');
+      if (question.editor) {
+        question.hideFakeEditor(question);
+        question.$answerText.removeClass('hidden');
         return;
       }
 
       tinymce.init({
         setup: function (editor) {
           editor.on('init', function () {
-            that.onEditorInit(qa, editor);
+            that.onEditorInit(question, editor);
           });
         },
-        selector: 'textarea.eid_' + qa.data_editor,
+        selector: 'textarea.eid_' + question.data_editor,
         skin: false,
         plugins: "autolink, autoresize, lists, link, image, anchor, paste",
         toolbar1: "styleselect | bold italic | bullist numlist outdent indent | link image",
@@ -66,29 +74,24 @@ define([
       });
     },
 
-    addQA: function (qa) {
-      var qaView = new QAView({ model: qa});
-      this.$el.append(qaView.render().el);
-    },
+    answer: function (questionView) {
+      var answer, question;
 
-    submitAnswer: function (qaView) {
-      var answer, qa;
-
-      qa = qaView.model;
+      question = questionView.model;
       answer = new Answer();
 
       spinner.start();
       answer.save({
         _csrf       : this.csrfToken,
-        question_id : qa.get('posted').question_id._id,
-        content     : qaView.editor.getContent()
+        question_id : question.get('_id'),
+        content     : questionView.editor.getContent()
       }, {
         error: function () {
           spinner.stop();
         },
         success: function () {
           spinner.stop();
-          qa.trigger('added:answer', qa);
+          question.trigger('added:answer', question);
         }
       });
     }

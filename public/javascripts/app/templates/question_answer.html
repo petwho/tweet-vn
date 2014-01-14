@@ -1,0 +1,47 @@
+<div class="row">
+  <% if (type === 20) { %>
+    <div class="col-sm-1">
+      <img width="25" height="25" src="<%= posted.topic_ids[0].picture %>">
+    </div>
+    <div class="col-sm-11">
+      <div class="light-gray">Question added to topic <%= posted.topic_ids[0].name %></div>
+      <div>
+        <a class="question-link" href="/questions/<%= posted.question_id._id %>" target="blank"><%= posted.question_id.title %></a>
+      </div>
+      <% if (posted.question_id.answer_ids.length == 0) { %>
+        <div class="inline-answer">
+          <div class="fake-editor" data-editor="<%= posted.question_id._id %>">
+            <img src="" width="35" height="35">
+            <input type="text" value="<%= posted.question_id.follower_ids.length %> people are waiting for answer">
+          </div>
+          <div class="answer-text hidden">
+            <textarea class="hidden eid_<%= posted.question_id._id %>"></textarea>
+            <div class="inline-editor-btn">
+              <div class="pull-right">
+                <button class="cancel-btn">Cancel</button>
+                <button class="submit-btn">Add Answer</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% } %>
+      <div class="item-action-bar">
+        <a class="follow-question" href="#follow">Follow</a>
+        <a href="/questions/<%= posted.question_id._id %>" class="answer-count" target="blank"><%= posted.question_id.answer_ids.length %> Answers</a>
+      </div>
+    </div>
+  <% } %>
+
+  <% if (type === 21) { %>
+    <div class="col-sm-1">
+      <img width="25" height="25" src="<%= posted.topic_ids[0].picture %>">
+    </div>
+    <div class="col-sm-11">
+      <div class="light-gray">Answer added to topic <%= posted.topic_ids[0].name %></div>
+      <div>
+        <a class="question-link" href="/questions/<%= posted.answer_id.question_id._id %>" target="blank"><%= posted.answer_id.question_id.title %></a>
+      </div>
+      <div class="answer-user"><%= posted.answer_id.user_id.full_name %></div>
+      <div><%= posted.answer_id.content %></div>
+  <% } %>
+</div>

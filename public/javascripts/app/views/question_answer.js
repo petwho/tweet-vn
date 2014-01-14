@@ -1,12 +1,10 @@
 // ** Begin single Question view
 define([
   'backbone', 'spinner',  'tinymce',
-  'text!templates/question.html',
-
-], function (Backbone, spinner, tinymce, questionTemplate) {
-  var QuestionView = Backbone.View.extend({
-
-    template: _.template(questionTemplate),
+  'text!templates/question_answer.html',
+], function (Backbone, spinner, tinymce, qaTpl) {
+  var View = Backbone.View.extend({
+    template: _.template(qaTpl),
 
     events: {
       'click .fake-editor'  : 'onClickFake',
@@ -14,8 +12,8 @@ define([
       'click .submit-btn'   : 'submit'
     },
 
-    initialize: function () {
-      this.listenTo(this.model, 'added:answer', this.saveAnswer);
+    onClickFake: function (e) {
+      this.model.trigger('initEditor', this);
     },
 
     hideFakeEditor: function (self) {
@@ -25,10 +23,6 @@ define([
       self.$fakeInput.val(self.oldInputText);
     },
 
-    onClickFake: function (e) {
-      this.model.trigger('initEditor', this);
-    },
-
     cancel: function () {
       this.$answerText.addClass('hidden');
       this.$inlineAnswer.removeClass('wide');
@@ -36,14 +30,11 @@ define([
     },
 
     submit: function () {
-      this.model.trigger('add:answer', this);
-    },
-
-    saveAnswer: function (model) {
-      this.$el.remove();
+      this.model.trigger('submit_answer', this);
     },
 
     render: function () {
+      this.model.contentGetHtml();
       this.$el.html(this.template(this.model.toJSON()));
       this.$('.fake-editor img').attr({ src: $('.user-picture').attr('src') });
       this.afterRender();
@@ -60,5 +51,5 @@ define([
     }
   });
 
-  return QuestionView;
+  return View;
 });

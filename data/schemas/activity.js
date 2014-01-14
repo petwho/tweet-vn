@@ -14,14 +14,15 @@ var ActivitySchema = new Schema({
   is_hidden : { type: Boolean, required: true, default: false },
   voted     : [Vote], // single doc
   posted    : {
-    question  : [Question], // single doc
-    answer    : [Answer], // single doc
-    comment   : [Comment] // single doc
+    question_id : {type: Schema.Types.ObjectId, ref: 'Question'},
+    answer_id   : {type: Schema.Types.ObjectId, ref: 'Answer'},
+    comment_id  : {type: Schema.Types.ObjectId, ref: 'Comment'},
+    topic_ids   : [{type: Schema.Types.ObjectId, ref: 'Topic'}]
   },
   followed: {
-    user     : [User], // single doc
-    question : [Question], // single doc
-    topic    : [Topic] // single doc
+    user_id     : {type: Schema.Types.ObjectId, ref: 'User'},
+    question_id : {type: Schema.Types.ObjectId, ref: 'Question'},
+    topic_id    : {type: Schema.Types.ObjectId, ref: 'Topic'}
   },
   created_at: { type: Date, default : Date.now }
 });
