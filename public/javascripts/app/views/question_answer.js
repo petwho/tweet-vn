@@ -1,7 +1,7 @@
 // ** Begin single Question view
 define([
   'backbone', 'spinner',  'tinymce',
-  'text!templates/question_answer.html',
+  'text!templates/question_answer.html'
 ], function (Backbone, spinner, tinymce, qaTpl) {
   var View = Backbone.View.extend({
     template: _.template(qaTpl),
@@ -10,6 +10,9 @@ define([
       'click .fake-editor'  : 'onClickFake',
       'click .cancel-btn'   : 'cancel',
       'click .submit-btn'   : 'submit'
+    },
+
+    initialize: function () {
     },
 
     onClickFake: function (e) {

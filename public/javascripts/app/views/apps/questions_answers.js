@@ -10,13 +10,16 @@ define([
     el: '#qa-items',
 
     initialize: function () {
+      var that = this;
       this.csrfToken = $('meta[name="csrf-token"]').attr('content');
       this.qas = qas;
       this.listenTo(this.qas, 'add', this.addQA);
       this.listenTo(this.qas, 'submit_answer', this.submitAnswer);
+      this.listenTo(this.qas, 'added_answer', this.addedAnswer);
       this.listenTo(this.qas, 'initEditor', this.initEditor);
       this.qas.fetch({
         success: function () {
+          that.$('.qa-row').removeClass('hidden');
           $('.spinner-large').remove();
         }
       });
@@ -88,7 +91,19 @@ define([
         },
         success: function () {
           spinner.stop();
-          qa.trigger('added:answer', qa);
+          qa.trigger('added_answer', qa);
+        }
+      });
+    },
+
+    addedAnswer: function () {
+      spinner.start();
+      this.$('.qa-row').addClass('old');
+      this.qas.fetch({
+        success: function () {
+          this.$('.qa-row.old').remove();
+          this.$('.qa-row').removeClass('hidden');
+          spinner.stop();
         }
       });
     }
