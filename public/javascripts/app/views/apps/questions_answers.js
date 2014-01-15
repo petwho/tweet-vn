@@ -25,11 +25,11 @@ define([
       });
 
       socket.on('addedQuestion', function () {
-        that.reRenderFeed();
+        that.reRenderFeed(that)();
       });
 
       socket.on('addedAnswer', function () {
-        that.reRenderFeed();
+        that.reRenderFeed(that)();
       });
     },
 
@@ -104,16 +104,24 @@ define([
       });
     },
 
-    reRenderFeed: function () {
-      spinner.start();
-      this.$('.qa-row').addClass('old');
-      this.qas.fetch({
-        success: function () {
-          this.$('.qa-row.old').remove();
-          this.$('.qa-row').removeClass('hidden');
-          spinner.stop();
+    reRenderFeed: function (self) {
+      var that = self;
+      return function () {
+        spinner.start();
+        if (that.is_rerendering) {
+          return setTimeout(that.reRenderFeed(that), 200);
         }
-      });
+        that.is_rerendering = true;
+        that.$('.qa-row').addClass('old');
+        that.qas.fetch({
+          success: function () {
+            that.$('.qa-row.old').remove();
+            that.$('.qa-row').removeClass('hidden');
+            that.is_rerendering = false;
+            spinner.stop();
+          }
+        });
+      };
     }
   });
 

@@ -6,8 +6,7 @@ var  server, dbUrl, facebookSDK,
   http          = require('http'),
   path          = require('path'),
   app           = express(),
-  io            = require('socket.io'),
-  sessionStore;
+  io            = require('socket.io');
 
 // development configuration
 if ('development' === app.get('env')) {
@@ -21,7 +20,6 @@ if ('development' === app.get('env')) {
 
 // connection string
 dbUrl = process.env.MONGOLAB_URI;
-sessionStore = new MongoStore({ url: dbUrl});
 
 require('mongoose').connect(dbUrl,  function (err) {
   if (err) {
@@ -42,7 +40,7 @@ app.configure(function () {
   app.use(express.cookieParser(process.env.COOKIE_SECRET));
   app.use(express.session({
     secret: process.env.SESSION_SECRET,
-    store: sessionStore
+    store: new MongoStore({ url: dbUrl})
   }));
 
   // facebook authentication middleware
@@ -97,7 +95,7 @@ server.listen(app.get('port'), function () {
 io = io.listen(server);
 io.set('authorization', function (data, accept) {
   //** source: http://notjustburritos.tumblr.com/post/22682186189/socket-io-and-express-3
-  var sid;
+  var sid, sessionStore = new MongoStore({ url: dbUrl});
 
   if (!data.headers.cookie) {
     return accept('Session cookie required.', false);
