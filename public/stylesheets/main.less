@@ -6,6 +6,58 @@
   src: url('/stylesheets/fonts/facebold.otf');
 }
 
+// disalbe responsiveness
+@screen-xs-min: 480px;
+@screen-sm-min: 768px;
+@screen-md-min: 992px;
+@screen-lg-min: 1200px;
+
+@media (min-width: @screen-xs-min) {
+  .container {
+    width: 970px !important;
+    .navbar-header {
+      float: left;
+    }
+
+    .navbar-nav {
+      margin: 0;
+      > li {
+        float: left !important;
+      }
+    }
+    .navbar-right {
+    float: right !important;
+    }
+  }
+}
+
+@media (min-width: @screen-sm-min) {
+  .container {
+    width: 970px !important;
+  }
+}
+
+@media (min-width: @screen-md-min) {
+  .container {
+    width: 970px !important;
+  }
+}
+
+@media (min-width: @screen-lg-min) {
+  .container {
+    width: 970px !important;
+  }
+}
+
+// ** Begin navbar
+.navbar-default {
+  background-color: #122c4b;
+  border-color: #122c4b;
+  .border-radius(0px);
+  min-width: 970px;
+}
+// ** End navbar
+
 // ** Begin functions definition
 .border-radius(@border) {
   -webkit-border-radius: @border;
@@ -47,14 +99,6 @@
   .form-btn(#999, #777);
 }
 // ** End functions definition
-
-// ** Begin navbar
-.navbar-default {
-  background-color: #122c4b;
-  border-color: #122c4b;
-  .border-radius(0px);
-}
-// ** End navbar
 
 // ** Begin social signup button
 .google-signup-btn {

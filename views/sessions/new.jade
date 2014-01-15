@@ -1,7 +1,7 @@
 extends ../layouts/login
 block content
   .row.login.hidden
-    .col-sm-offset-4.col-sm-4
+    .col-xs-offset-4.col-xs-4
       form(role="form", method='POST', action="/sessions")
         .form-group
           label(for="email_login") Email
@@ -16,7 +16,7 @@ block content
         | &nbsp;
         a.forgot-password-btn(href="#forgot-password") Quên mật khẩu?
   .row.signup.hidden
-    .col-sm-offset-4.col-sm-4
+    .col-xs-offset-4.col-xs-4
       br
       p.text-center
         strong Chưa có tài khoản?
@@ -32,7 +32,7 @@ block content
           span.buttonText Facebook
 
   .row.signup-form.hidden
-    .col-sm-offset-4.col-sm-4
+    .col-xs-offset-4.col-xs-4
       form(method="POST", action="/users")
 
         .form-group
@@ -52,13 +52,13 @@ block content
         a.cancel-register(href="#") Quay lại
 
   .row.forgot-password-form.hidden
-    .col-sm-offset-3.col-sm-6
+    .col-xs-offset-3.col-xs-6
       form.form-inline(method='POST', action="/users/reset_password")
         .row
-          .col-sm-8
+          .col-xs-8
             label.sr-only(for="email_forgot_password") Email
             input#email_forgot_password.form-control(name="email", type="email", placeholder="Email")
-          .col-sm-4
+          .col-xs-4
               button.btn.btn-success(type="submit") Submit
               | &nbsp;
               a.cancel-forgot(href="#") Quay lại
