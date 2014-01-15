@@ -19,6 +19,7 @@ require.config({
   }
 });
 
-require(['views/change_forgot_password'], function (changeForgotPwd) {
-    new changeForgotPwd;
+require(['views/new_password'], function (newPassword) {
+    new newPassword;
+    $('.spinner-large').remove();
 });

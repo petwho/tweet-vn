@@ -39,13 +39,17 @@ module.exports = function (app) {
     });
   });
 
-  app.post('/change-password', function (req, res, next) {
+  app.post('/new-password', function (req, res, next) {
+    if (req.session.user && (req.session.user.sign_up_type !== 'email')) {
+      return User.newPassword(req, res, next);
+    }
+
     User.findOne({ 'token.reset_password' : req.body.reset_pwd_token }, function (err, user) {
       if (err) { return next(err); }
 
       if (!user) { return res.json({ msg: 'Invalid reset password token' }, 403); }
 
-      User.changeForgotPassword(req, res, next);
+      User.newPassword(req, res, next);
     });
   });
 

@@ -23,13 +23,6 @@ module.exports = function (app) {
       });
     };
 
-    check_signup_type = function (next) {
-      if (user.sign_up_type !== 'email') {
-        return res.json(400, {msg : 'Please login using Google account'});
-      }
-      next();
-    };
-
     check_password = function (next) {
       hash(req.body.password, user.password_salt, function (err, hash) {
         if (err) { return next(err); }
@@ -51,7 +44,7 @@ module.exports = function (app) {
       });
     };
 
-    async.series([check_email, check_signup_type, check_password], function (err, results) {
+    async.series([check_email, check_password], function (err, results) {
       if (err) { return next(err); }
       req.session.message.info.push('login success');
       return res.json({msg : 'login success'}, 200);

@@ -101,7 +101,7 @@ UserSchema.static('errorHandler', function (err, req, res, next) {
   return res.json({msg: error_msg_list}, 400);
 });
 
-UserSchema.static('changeForgotPassword', function (req, res, next) {
+UserSchema.static('newPassword', function (req, res, next) {
   var make_hash_password, update_user, password_salt, password_hash,
     self = this;
 
@@ -120,6 +120,19 @@ UserSchema.static('changeForgotPassword', function (req, res, next) {
   };
 
   update_user = function (next) {
+    // initialize user for password after signup not using email
+    if (req.session.user && (req.session.user.sign_up_type !== 'email')) {
+      return self.findById(req.session.user._id, function (err, user) {
+        user.password = password_hash;
+        user.password_salt = password_salt;
+        user.save(function (err) {
+          if (err) { return next(err); }
+          req.session.user = user;
+          next();
+        });
+      });
+    }
+    // change user password
     self.findOne({'token.reset_password': req.body.reset_pwd_token}, function (err, user) {
       if (err) { return next(err); }
 

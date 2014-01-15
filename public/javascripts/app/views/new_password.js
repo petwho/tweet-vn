@@ -1,5 +1,5 @@
 define(['backbone'], function (Backbone) {
-  var ChangePwdView = Backbone.View.extend({
+  var View = Backbone.View.extend({
     el: 'body',
 
     initialize : function () {
@@ -39,7 +39,7 @@ define(['backbone'], function (Backbone) {
 
       $.ajax({
         method  : 'POST',
-        url     : '/change-password',
+        url     : '/new-password',
         data    : {
           _csrf     : this.crsfToken,
           reset_pwd_token  : this.reset_pwd_token.val(),
@@ -54,12 +54,12 @@ define(['backbone'], function (Backbone) {
           });
         },
         success : function (data, textStatus, jqXHR) {
-          window.location.href = '/login';
+          window.location.href = '/';
         }
       });
     }
 
   });
 
-  return ChangePwdView;
+  return View;
 });
