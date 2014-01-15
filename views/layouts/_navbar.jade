@@ -5,14 +5,12 @@ nav.navbar.navbar-default
       a(class="navbar-brand", href='/') BRAND
     if (session.user)
       ul.nav.navbar-nav.navbar-right
-        li
-          a(href="#") test
         li.unread-notifications
           a(href="/users/#{session.user.username}/notifications") Home &nbsp;
             span.badge
         li.dropdown
           - if (session.user.picture)
-            a.dropdown-toggle(href="/users/#{session.user.username}", data-toggle='dropdown')
+            a.user-link.dropdown-toggle(href="/users/#{session.user.username}", data-toggle='dropdown')
               img.user-picture(src!=session.user.picture, width="28", height="28")
               |&nbsp;
               b.caret

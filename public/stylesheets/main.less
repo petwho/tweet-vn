@@ -19,12 +19,6 @@
       float: left;
     }
 
-    .navbar-nav {
-      margin: 0;
-      > li {
-        float: left !important;
-      }
-    }
     .navbar-right {
     float: right !important;
     }
@@ -49,12 +43,35 @@
   }
 }
 
+.col-xs-mixin-3 {
+  width: 20%;
+}
+
 // ** Begin navbar
+.navbar-nav {
+  margin: 0px;
+  li {
+    float: left !important;
+    a.user-link {
+      padding-top: 10px;
+      padding-bottom: 10px;
+    }
+  }
+}
+
+.navbar-nav > li > a.user-link:focus, .navbar-nav > li.open > a.user-link {
+  background-color: #122c4b !important;
+}
+
 .navbar-default {
   background-color: #122c4b;
   border-color: #122c4b;
   .border-radius(0px);
   min-width: 970px;
+}
+
+.dropdown-menu {
+  margin-top: 2px !important;
 }
 // ** End navbar
 
