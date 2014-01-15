@@ -1,11 +1,11 @@
 define([
-  'jquery', 'backbone', 'spinner',
-  'models/question', 'collections/questions',
+  'share/socket', 'jquery', 'backbone', 'spinner',
+  'models/question',
   'collections/topics',
   'text!templates/add_question/search_results.html',
   'text!templates/add_question/suggest_topic.html',
   'text!templates/add_question/add_topic.html'
-], function ($, Backbone, spinner, Question, questions, Topics, searchTemplate, suggestTemplate, addTemplate) {
+], function (socket, $, Backbone, spinner, Question, Topics, searchTemplate, suggestTemplate, addTemplate) {
   var AddQuestion = Backbone.View.extend({
     el: 'body',
 
@@ -219,7 +219,7 @@ define([
           that.$suggestedTopics.empty();
           that.$addedTopics.empty();
           that.$modal.modal('hide');
-          questions.add(question);
+          socket.emit('addedQuestion', question);
         },
         wait: true
       });

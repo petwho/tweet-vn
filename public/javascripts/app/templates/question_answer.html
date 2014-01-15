@@ -1,9 +1,9 @@
 <div class="row qa-row hidden">
   <% if (type === 20) { %>
-    <div class="col-sm-1">
+    <div class="col-xs-1">
       <img width="25" height="25" src="<%= posted.topic_ids[0].picture %>">
     </div>
-    <div class="col-sm-11">
+    <div class="col-xs-11">
       <div class="light-gray">Question added to topic <%= posted.topic_ids[0].name %></div>
       <div>
         <a class="question-link" href="/questions/<%= posted.question_id._id %>" target="blank"><%= posted.question_id.title %></a>
@@ -33,10 +33,10 @@
   <% } %>
 
   <% if (type === 21) { %>
-    <div class="col-sm-1">
+    <div class="col-xs-1">
       <img width="25" height="25" src="<%= posted.topic_ids[0].picture %>">
     </div>
-    <div class="col-sm-11">
+    <div class="col-xs-11">
       <div class="light-gray">Answer added to topic <%= posted.topic_ids[0].name %></div>
       <div>
         <a class="question-link" href="/questions/<%= posted.answer_id.question_id._id %>" target="blank"><%= posted.answer_id.question_id.title %></a>

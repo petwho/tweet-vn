@@ -37,7 +37,7 @@ define([
       topics.each(function (topic) {
         if (topic.get('is_primary') === true) {
           var topicView = new TopicView({ model: topic });
-          that.$('.col-sm-4:nth-child(' + (counter % 3 + 1) + ')').append(topicView.render().el);
+          that.$('.col-xs-4:nth-child(' + (counter % 3 + 1) + ')').append(topicView.render().el);
           counter++;
         }
       });
@@ -50,7 +50,7 @@ define([
       topics.each(function (topic) {
         if (topic.get('is_primary') === false) {
           var topicView = new TopicView({ model: topic });
-          that.$('.col-sm-4:nth-child(' + (counter % 3 + 1) + ')').append(topicView.render().el);
+          that.$('.col-xs-4:nth-child(' + (counter % 3 + 1) + ')').append(topicView.render().el);
           counter++;
         }
       });

@@ -2,40 +2,40 @@ extends ../layouts/login
 
 block content
   .row
-    .col-sm-12
+    .col-xs-12
       form.form-horizontal(method="POST", action="/topics")
         input(type="hidden", name="_csrf", value!=csrfToken)
         .form-group
-          label.control-label.col-sm-2(for="name") Name
-          .col-sm-4
+          label.control-label.col-xs-2(for="name") Name
+          .col-xs-4
             input#name.form-control(type="text", name="name", placeholder="Eg: animals.", required)
         .form-group
-          label.control-label.col-sm-2(for="type") Type
-          .col-sm-4
+          label.control-label.col-xs-2(for="type") Type
+          .col-xs-4
             select#type.form-control(name="is_primary", required)
               option
               option(value="true") Primary Topics
               option(value="false") Sub-Topics
         .form-group.sub-topic-group.hidden
-          label.control-label.col-sm-2 Sub-topic
-          .col-sm-10
+          label.control-label.col-xs-2 Sub-topic
+          .col-xs-10
             .row
-              .col-sm-4
+              .col-xs-4
                 - for (var i = 0; i < subtopics.length; i++)
                   .checkbox
                     label
                       input(type="checkbox", name="subtopic_ids", value!= subtopics[i]._id, disabled)
                       span!= subtopics[i].name
         .form-group
-          label.control-label.col-sm-2(for="related_words") Related Words
-          .col-sm-4
+          label.control-label.col-xs-2(for="related_words") Related Words
+          .col-xs-4
             input#related_words.form-control(type="text", name="related_words", placeholder="Eg: dog, cat, pet (should be singular form).")
         .form-group
-          label.control-label.col-sm-2(for="picture") Picture
-          .col-sm-4
+          label.control-label.col-xs-2(for="picture") Picture
+          .col-xs-4
             input.form-control(type="url", name="picture", required, placeholder="Picture url represents each topic.")
         .form-group
-          .col-sm-offset-2.col-sm-2
+          .col-xs-offset-2.col-xs-2
             button.btn.btn-primary(type="submit") Submit
 
   script(src="/javascripts/libs/jquery/jquery-2.0.3.min.js")

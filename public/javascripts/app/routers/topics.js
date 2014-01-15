@@ -35,7 +35,7 @@ define([
     },
 
     setupView: function () {
-      appView.$('.topic-list .col-sm-4').empty();
+      appView.$('.topic-list .col-xs-4').empty();
       this.$headSteps.children().removeClass('current');
       this.$instSteps.hide();
       $('.spinner-large').remove();

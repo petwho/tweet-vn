@@ -1,12 +1,13 @@
 // *** BEGIN APPLICATION CONFIGURATION
 
 var  server, dbUrl, facebookSDK,
-  express     = require('express'),
-  MongoStore  = require('connect-mongo')(express),
-  http        = require('http'),
-  path        = require('path'),
-  app         = express(),
-  io          = require('socket.io');
+  express       = require('express'),
+  MongoStore    = require('connect-mongo')(express),
+  http          = require('http'),
+  path          = require('path'),
+  app           = express(),
+  io            = require('socket.io'),
+  sessionStore;
 
 // development configuration
 if ('development' === app.get('env')) {
@@ -20,6 +21,8 @@ if ('development' === app.get('env')) {
 
 // connection string
 dbUrl = process.env.MONGOLAB_URI;
+sessionStore = new MongoStore({ url: dbUrl});
+
 require('mongoose').connect(dbUrl,  function (err) {
   if (err) {
     console.log('ERROR connecting to: ' + dbUrl + '. ' + err);
@@ -39,7 +42,7 @@ app.configure(function () {
   app.use(express.cookieParser(process.env.COOKIE_SECRET));
   app.use(express.session({
     secret: process.env.SESSION_SECRET,
-    store: new MongoStore({ url: dbUrl})
+    store: sessionStore
   }));
 
   // facebook authentication middleware
@@ -90,43 +93,66 @@ server.listen(app.get('port'), function () {
   console.log('Express server listening on port ' + app.get('port'));
 });
 
-// TODO 31-12-2013 - trankhanh : Disable Socket IO
+// ** Begin Socket.IO
+io = io.listen(server);
+io.set('authorization', function (data, accept) {
+  //** source: http://notjustburritos.tumblr.com/post/22682186189/socket-io-and-express-3
+  var sid;
 
-// io = io.listen(server);
-// io.of('/following').on('connection', function (socket) {
-//   socket.emit('login');
-//   socket.on('connectToRoom', function (content) {
-//     var topics  = content.topics,
-//       users     = content.users,
-//       questions = content.questions,
-//       i;
+  if (!data.headers.cookie) {
+    return accept('Session cookie required.', false);
+  }
 
-//     for (i = 0; i < questions.length; i++) {
-//       socket.join('questions_' + questions[i]);
-//     }
-//     for (i = 0; i < users.length; i++) {
-//       socket.join('users_' + users[i]);
-//     }
-//     for (i = 0; i < topics.length; i++) {
-//       socket.join('topics_' + topics[i]);
-//     }
-//   });
+  data.cookie = require('cookie').parse(data.headers.cookie);
 
-//   // update title of quetsion
-//   socket.on('edit_question', function (question_id) {
-//     socket.emit('edit_question');
-//     socket.broadcast.emit('edit_question');
-//     socket.broadcast.to('questions_' + question_id).emit('update_notification');
-//   });
+  sid = data.cookie['connect.sid'].substr(2, data.cookie['connect.sid'].indexOf('.') - 2);
+  data.sessionID = sid;
 
-//   // update topics of quetsion
-//   socket.on('edit_question_topics', function (question_id) {
-//     socket.emit('edit_question_topics');
-//     socket.broadcast.emit('edit_question_topics');
-//   });
+  sessionStore.get(sid, function (err, session) {
+    data.session = session;
+    return accept(null, true);
+  });
+});
 
-// });
+io.sockets.on('connection', function (socket) {
+  var hs = socket.handshake;
 
-// END TODO 31-12-2013 - trankhanh : Disable Socket IO
+  socket.emit('login');
 
+  socket.on('connectToRoom', function (content) {
+    var i, topic_ids, user_ids, question_ids;
+
+    topic_ids = hs.session.user.following.topic_ids;
+    user_ids = hs.session.user.following.user_ids;
+    question_ids = hs.session.user.following.question_ids;
+
+    for (i = 0; i < topic_ids.length; i++) {
+      socket.join('topic_id ' + topic_ids[i]);
+    }
+
+    for (i = 0; i < question_ids.length; i++) {
+      socket.join('question_id ' + question_ids[i]);
+    }
+
+    for (i = 0; i < user_ids.length; i++) {
+      socket.join('user_id ' + user_ids[i]);
+    }
+  });
+
+  socket.on('addedQuestion', function (question) {
+    var i;
+    socket.emit('addedQuestion');
+    for (i = 0; i < question.topic_ids.length; i++) {
+      socket.broadcast.to('topic_id ' + question.topic_ids[i]).emit('addedQuestion');
+    }
+  });
+
+  socket.on('addedAnswer', function (answer) {
+    var i;
+    socket.emit('addedAnswer');
+    for (i = 0; i < answer.topic_ids.length; i++) {
+      socket.broadcast.to('topic_id ' + answer.topic_ids[i]).emit('addedAnswer');
+    }
+  });
+});
 // *** END APPLICATION CONFIGURATION

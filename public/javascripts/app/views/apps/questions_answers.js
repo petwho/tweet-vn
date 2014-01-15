@@ -1,11 +1,11 @@
 define([
-  'jquery', 'backbone', 'spinner', 'tinymce',
+  'share/socket', 'jquery', 'backbone', 'spinner', 'tinymce',
   'collections/questions_answers',  'views/question_answer',
   'collections/answers',    'models/answer',  'views/answer',
   'text!../../../vendor/tinymce/skins/lightgray/skin.min.css',
   'text!../../../vendor/tinymce/skins/lightgray/content.min.css',
   'text!../../../vendor/tinymce/skins/lightgray/content.inline.min.css'
-], function ($, Backbone, spinner, tinymce, qas, QAView, Answers, Answer, AnswerView, skinCSS, contentCSS, contentInlineCSS) {
+], function (socket, $, Backbone, spinner, tinymce, qas, QAView, Answers, Answer, AnswerView, skinCSS, contentCSS, contentInlineCSS) {
   var AppView = Backbone.View.extend({
     el: '#qa-items',
 
@@ -13,15 +13,23 @@ define([
       var that = this;
       this.csrfToken = $('meta[name="csrf-token"]').attr('content');
       this.qas = qas;
+      this.listenTo(this.qas, 'added_question', this.addedQuestion);
       this.listenTo(this.qas, 'add', this.addQA);
       this.listenTo(this.qas, 'submit_answer', this.submitAnswer);
-      this.listenTo(this.qas, 'added_answer', this.addedAnswer);
       this.listenTo(this.qas, 'initEditor', this.initEditor);
       this.qas.fetch({
         success: function () {
           that.$('.qa-row').removeClass('hidden');
           $('.spinner-large').remove();
         }
+      });
+
+      socket.on('addedQuestion', function () {
+        that.reRenderFeed();
+      });
+
+      socket.on('addedAnswer', function () {
+        that.reRenderFeed();
       });
     },
 
@@ -91,12 +99,12 @@ define([
         },
         success: function () {
           spinner.stop();
-          qa.trigger('added_answer', qa);
+          socket.emit('addedAnswer', answer);
         }
       });
     },
 
-    addedAnswer: function () {
+    reRenderFeed: function () {
       spinner.start();
       this.$('.qa-row').addClass('old');
       this.qas.fetch({
