@@ -24,11 +24,11 @@ define([
         }
       });
 
-      socket.on('addedQuestion', function () {
+      socket.on('soketAddedQuestion', function () {
         that.reRenderFeed(that)();
       });
 
-      socket.on('addedAnswer', function () {
+      socket.on('soketAddedAnswer', function () {
         that.reRenderFeed(that)();
       });
     },
@@ -99,7 +99,7 @@ define([
         },
         success: function () {
           spinner.stop();
-          socket.emit('addedAnswer', answer);
+          socket.emit('soketAddedAnswer', answer);
         }
       });
     },

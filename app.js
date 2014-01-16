@@ -137,19 +137,19 @@ io.sockets.on('connection', function (socket) {
     }
   });
 
-  socket.on('addedQuestion', function (question) {
+  socket.on('soketAddedQuestion', function (question) {
     var i;
-    socket.emit('addedQuestion');
+    socket.emit('soketAddedQuestion');
     for (i = 0; i < question.topic_ids.length; i++) {
-      socket.broadcast.to('topic_id ' + question.topic_ids[i]).emit('addedQuestion');
+      socket.broadcast.to('topic_id ' + question.topic_ids[i]).emit('soketAddedQuestion');
     }
   });
 
-  socket.on('addedAnswer', function (answer) {
+  socket.on('soketAddedAnswer', function (answer) {
     var i;
-    socket.emit('addedAnswer');
+    socket.emit('soketAddedAnswer');
     for (i = 0; i < answer.topic_ids.length; i++) {
-      socket.broadcast.to('topic_id ' + answer.topic_ids[i]).emit('addedAnswer');
+      socket.broadcast.to('topic_id ' + answer.topic_ids[i]).emit('soketAddedAnswer');
     }
   });
 });

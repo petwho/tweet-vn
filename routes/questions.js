@@ -37,11 +37,15 @@ module.exports = function (app) {
     });
   };
 
-  app.get('/questions/list', [loggedIn], function (req, res, next) {
+  app.get('/open-questions', loggedIn, function (req, res, next) {
+    res.render('questions/open');
+  });
+
+  app.get('/open-questions/list', loggedIn, function (req, res, next) {
     var scrollcount = (req.query.scrollcount || 0) * 10;
 
-    Question.find({ topic_ids: {$in: req.session.user.following.topic_ids} })
-      .skip(scrollcount).limit(10)
+    Question.find({is_open: true, topic_ids: {$in: req.session.user.following.topic_ids} })
+      .skip(scrollcount).limit(10).sort({created_at: -1})
       .populate({
         path  : 'topic_ids',
         select: 'name picture follower_count'

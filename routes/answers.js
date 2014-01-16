@@ -9,7 +9,7 @@ var loggedIn  = require('./middleware/logged_in'),
 module.exports = function (app) {
   app.post('/answers', [loggedIn], function (req, res, next) {
     var create_answer,    create_log,
-      add_log_to_answer,  validate_question,  update_question_log_and_answer,
+      add_log_to_answer,  validate_question,  update_question,
       question,           answer,             log;
 
     log = {};
@@ -57,7 +57,8 @@ module.exports = function (app) {
       });
     };
 
-    update_question_log_and_answer = function (next) {
+    update_question = function (next) {
+      question.is_open = false;
       question.log_ids.push(log._id);
       question.answer_ids.push(answer._id);
       question.save(function (err, question) {
@@ -82,7 +83,7 @@ module.exports = function (app) {
 
     async.series([
       validate_question, create_answer, create_log, add_log_to_answer,
-      update_question_log_and_answer, create_activity
+      update_question, create_activity
     ], function (err, results) {
       if (err) { return next(err); }
       res.json(200, answer);

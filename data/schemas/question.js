@@ -25,7 +25,7 @@ QuestionSchema = new Schema({
   title             : { type: String,                 required: true },
   detail            : { type: String,                 sparse  : true },
 
-  is_open           : { type: Boolean,  default : 0 },
+  is_open           : { type: Boolean,  default : true },
   created_at        : { type: Date,     required: true, default: Date.now },
   updated_at        : { type: Date,     required: true, default: Date.now }
 });

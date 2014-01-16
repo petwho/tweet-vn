@@ -1,8 +1,18 @@
 define([ 'backbone', 'models/question'], function (Backbone, Question) {
-  var Questions = Backbone.Collection.extend({
+  var _is_open = true;
+  var Collection = Backbone.Collection.extend({
     model : Question,
-    url   : '/questions/list'
+
+    setOpen : function (bool) {
+      this._is_open = bool;
+    },
+
+    url   : function () {
+      if (this._is_open === true) {
+        return '/open-questions/list';
+      }
+    }
   });
 
-  return new Questions;
-})
+  return new Collection();
+});

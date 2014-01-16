@@ -219,7 +219,7 @@ define([
           that.$suggestedTopics.empty();
           that.$addedTopics.empty();
           that.$modal.modal('hide');
-          socket.emit('addedQuestion', question);
+          socket.emit('soketAddedQuestion', question);
         },
         wait: true
       });

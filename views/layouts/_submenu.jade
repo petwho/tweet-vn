@@ -1,10 +1,12 @@
 ul.nav.nav-pills.nav-stacked
   li
-    a(href='/') Mới nhất
+    a(href='/') Câu Hỏi & Trả Lời
   li
-    a(href='/open') Chưa được trả lời
+    a(href='/open-questions') Câu Hỏi Mở
   li
-    a(href="/users/#{session.user.username}/notifications") Notifications
+    a(href='/activities') Hoạt Động
+  li
+    a(href="/notifications") Thông Báo
       span.badge
   li
     form(method="POST", action="/sessions", class="navbar-form navbar-left")

@@ -1,32 +1,41 @@
 define([
-  'jquery', 'backbone', 'spinner',
-  'collections/questions',  'views/question',
+  'share/socket', 'jquery', 'backbone', 'spinner', 'tinymce',
+  'collections/questions',  'views/open_question',
   'collections/answers',    'models/answer',  'views/answer',
   'text!../../../vendor/tinymce/skins/lightgray/skin.min.css',
   'text!../../../vendor/tinymce/skins/lightgray/content.min.css',
   'text!../../../vendor/tinymce/skins/lightgray/content.inline.min.css'
-], function ($, Backbone, spinner, questions, QuestionView, Answers, Answer, AnswerView, skinCSS, contentCSS, contentInlineCSS) {
+], function (socket, $, Backbone, spinner, tinymce, questions, OpenQuestionView, Answers, Answer, AnswerView, skinCSS, contentCSS, contentInlineCSS) {
   var AppView = Backbone.View.extend({
-    el: '#feed-items',
+    el: '#open-questions',
 
     initialize: function () {
+      var that = this;
       this.csrfToken  = $('meta[name="csrf-token"]').attr('content');
       this.questions  = questions;
-      this.answers    = new Answers;
+      this.questions.setOpen(true);
+      this.answers    = new Answers();
       this.listenTo(this.questions, 'add',        this.addQuestion);
-      this.listenTo(this.answers,   'add',        this.addAnswer);
-      this.listenTo(this.questions, 'add:answer', this.answer);
-      this.listenTo(this.questions, 'initEditor', this.initEditor);
+      this.listenTo(this.questions, 'submit_answer', this.submitAnswer);
+      this.listenTo(this.questions, 'init_editor', this.initEditor);
+
       this.questions.fetch({
         success: function () {
+          that.$('.open-question-row').removeClass('hidden');
           $('.spinner-large').remove();
         }
       });
-      this.answers.fetch();
+
+      socket.on('soketAddedQuestion', function () {
+        that.reRenderFeed(that)();
+      });
+      socket.on('soketAddedAnswer', function () {
+        that.reRenderFeed(that)();
+      });
     },
 
     addQuestion: function (question) {
-      var questionView = new QuestionView({ model: question});
+      var questionView = new OpenQuestionView({ model: question});
       this.$el.append(questionView.render().el);
     },
 
@@ -74,7 +83,7 @@ define([
       });
     },
 
-    answer: function (questionView) {
+    submitAnswer: function (questionView) {
       var answer, question;
 
       question = questionView.model;
@@ -91,9 +100,29 @@ define([
         },
         success: function () {
           spinner.stop();
-          question.trigger('added:answer', question);
+          socket.emit('soketAddedAnswer', answer);
         }
       });
+    },
+
+    reRenderFeed: function (self) {
+      var that = self;
+      return function () {
+        spinner.start();
+        if (that.is_rerendering) {
+          return setTimeout(that.reRenderFeed(that), 200);
+        }
+        that.is_rerendering = true;
+        that.$('.open-question-row').addClass('old');
+        that.questions.fetch({
+          success: function () {
+            that.$('.open-question-row.old').remove();
+            that.$('.open-question-row').removeClass('hidden');
+            that.is_rerendering = false;
+            spinner.stop();
+          }
+        });
+      };
     }
   });
 

@@ -1,12 +1,12 @@
 // ** Begin single Question view
 define([
   'backbone', 'spinner',  'tinymce',
-  'text!templates/question.html',
+  'text!templates/open_question.html',
 
-], function (Backbone, spinner, tinymce, questionTemplate) {
+], function (Backbone, spinner, tinymce, openQuestionTpl) {
   var QuestionView = Backbone.View.extend({
 
-    template: _.template(questionTemplate),
+    template: _.template(openQuestionTpl),
 
     events: {
       'click .fake-editor'  : 'onClickFake',
@@ -26,7 +26,7 @@ define([
     },
 
     onClickFake: function (e) {
-      this.model.trigger('initEditor', this);
+      this.model.trigger('init_editor', this);
     },
 
     cancel: function () {
@@ -36,7 +36,7 @@ define([
     },
 
     submit: function () {
-      this.model.trigger('add:answer', this);
+      this.model.trigger('submit_answer', this);
     },
 
     saveAnswer: function (model) {
