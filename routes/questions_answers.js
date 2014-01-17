@@ -12,11 +12,10 @@ module.exports = function (app) {
 
     scrollcount = (req.query.scrollcount || 0) * 10;
 
-    Activity.find({$or:[
-        {'posted.topic_ids': {$in: req.session.user.following.topic_ids}},
-        {'posted.question_id': {$in: req.session.user.following.question_ids}}
-      ]})
-      .populate('posted.question_id posted.answer_id posted.topic_ids')
+    Activity.find({$or: [
+      {'posted.topic_ids': {$in: req.session.user.following.topic_ids}},
+      {'posted.question_id': {$in: req.session.user.following.question_ids}}
+    ]}).populate('posted.question_id posted.answer_id posted.topic_ids')
       .skip(scrollcount).limit(10).sort({created_at: -1})
       .exec(function (err, activities) {
         if (err) { return next(err); }
@@ -42,7 +41,6 @@ module.exports = function (app) {
 
               if (activity.posted.answer_id) {
                 activity.posted.answer_id.content = getHtml(activity.posted.answer_id.content);
-                console.log( activity.posted.answer_id.content)
               }
             });
             return res.json(200, activities);
