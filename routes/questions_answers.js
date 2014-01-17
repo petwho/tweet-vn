@@ -1,5 +1,5 @@
 var loggedIn = require('./middleware/logged_in'),
-  getHtml = require('./middleware/get_html'),
+  getHtml = require('./helpers/get_html'),
   Activity = require('../data/models/activity');
 
 module.exports = function (app) {

@@ -1,6 +1,6 @@
 var loggedIn  = require('./middleware/logged_in'),
   async       = require('async'),
-  getHtml     = require('./middleware/get_html'),
+  getHtml     = require('./helpers/get_html'),
   Activity    = require('../data/models/activity'),
   Question    = require('../data/models/question'),
   Answer      = require('../data/models/answer'),
