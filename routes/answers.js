@@ -1,5 +1,6 @@
 var loggedIn  = require('./middleware/logged_in'),
   async       = require('async'),
+  getHtml     = require('./middleware/get_html'),
   Activity    = require('../data/models/activity'),
   Question    = require('../data/models/question'),
   Answer      = require('../data/models/answer'),
@@ -8,7 +9,7 @@ var loggedIn  = require('./middleware/logged_in'),
 
 module.exports = function (app) {
   app.post('/answers', [loggedIn], function (req, res, next) {
-    var create_answer,    create_log,
+    var create_answer,    create_log, create_activity,
       add_log_to_answer,  validate_question,  update_question,
       question,           answer,             log;
 
@@ -51,8 +52,9 @@ module.exports = function (app) {
 
     add_log_to_answer = function (next) {
       answer.log_ids = log._id;
-      answer.save(function (err, answer, number_affected) {
+      answer.save(function (err, returned_answer, number_affected) {
         if (err) { return next(err); }
+        answer = returned_answer;
         next();
       });
     };
@@ -75,7 +77,7 @@ module.exports = function (app) {
       activity.posted.answer_id = answer._id;
       activity.posted.topic_ids = answer.topic_ids;
 
-      activity.save(function (err, question) {
+      activity.save(function (err, activity) {
         if (err) { return next(err); }
         next();
       });
@@ -86,7 +88,20 @@ module.exports = function (app) {
       update_question, create_activity
     ], function (err, results) {
       if (err) { return next(err); }
-      res.json(200, answer);
+      Answer.populate(answer, [
+        {
+          path: 'user_id',
+          model: 'User'
+        },
+        {
+          path: 'topic_ids',
+          model: 'Topic'
+        }
+      ], function (err, answer) {
+        if (err) { return next(err); }
+        answer.content = getHtml(answer.content);
+        res.json(200, answer);
+      });
     });
   });
 

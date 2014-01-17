@@ -33,8 +33,8 @@ define([
       });
     },
 
-    onEditorInit: function (qa, editor) {
-      qa.editor = editor;
+    onEditorInit: function (qaView, editor) {
+      qaView.editor = editor;
 
       if ($('head style[name="tinymce"]').length === 0) {
         $('head').append('<style name="tinymce">' + skinCSS + '</style>');
@@ -42,32 +42,32 @@ define([
       tinyMCE.activeEditor.dom.add(tinyMCE.activeEditor.dom.select('head'), 'style', { type : 'text/css' }, contentCSS);
       tinyMCE.activeEditor.dom.add(tinyMCE.activeEditor.dom.select('head'), 'style', { type : 'text/css' }, contentInlineCSS);
 
-      qa.hideFakeEditor(qa);
+      qaView.hideFakeEditor(qaView);
 
-      qa.$answerText.removeClass('hidden');
+      qaView.$answerText.removeClass('hidden');
     },
 
-    initEditor: function (qa) {
+    initEditor: function (qaView) {
       var that = this;
 
-      qa.$fakeInput.val('Loading...');
+      qaView.$fakeInput.val('Loading...');
 
-      if (qa.editor) {
-        qa.hideFakeEditor(qa);
-        qa.$answerText.removeClass('hidden');
+      if (qaView.editor) {
+        qaView.hideFakeEditor(qaView);
+        qaView.$answerText.removeClass('hidden');
         return;
       }
 
       tinymce.init({
         setup: function (editor) {
           editor.on('init', function () {
-            that.onEditorInit(qa, editor);
+            that.onEditorInit(qaView, editor);
           });
         },
-        selector: 'textarea.eid_' + qa.data_editor,
+        selector: 'textarea.eid_' + qaView.data_editor,
         skin: false,
         plugins: "autolink, autoresize, lists, link, image, anchor, paste",
-        toolbar1: "styleselect | bold italic | bullist numlist outdent indent | link image",
+        toolbar1: "styleselect | bold italic | bullist numlist | link image",
         paste_as_text: true,
         menubar: false,
         statusbar: false,

@@ -1,0 +1,13 @@
+<div>
+  <div class="topic-list">
+    <% for (var i = 0; i < topic_ids.length; i++) { %>
+      <a href="/topics/<%= topic_ids[i].name %>"><%= topic_ids[i].name %></a>
+    <% } %>
+  </div>
+  <div>
+    <h1><%= title %></h1>
+  </div>
+  <% if (typeof details !== 'undefined') { %>
+    <%= details %>
+  <% } %>
+</div>

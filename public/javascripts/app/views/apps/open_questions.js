@@ -39,8 +39,8 @@ define([
       this.$el.append(questionView.render().el);
     },
 
-    onEditorInit: function (question, editor) {
-      question.editor = editor;
+    onEditorInit: function (questionView, editor) {
+      questionView.editor = editor;
 
       if ($('head style[name="tinymce"]').length === 0) {
         $('head').append('<style name="tinymce">' + skinCSS + '</style>');
@@ -48,29 +48,29 @@ define([
       tinyMCE.activeEditor.dom.add(tinyMCE.activeEditor.dom.select('head'), 'style', { type : 'text/css' }, contentCSS);
       tinyMCE.activeEditor.dom.add(tinyMCE.activeEditor.dom.select('head'), 'style', { type : 'text/css' }, contentInlineCSS);
 
-      question.hideFakeEditor(question);
+      questionView.hideFakeEditor(questionView);
 
-      question.$answerText.removeClass('hidden');
+      questionView.$answerText.removeClass('hidden');
     },
 
-    initEditor: function (question) {
+    initEditor: function (questionView) {
       var that = this;
 
-      question.$fakeInput.val('Loading...');
+      questionView.$fakeInput.val('Loading...');
 
-      if (question.editor) {
-        question.hideFakeEditor(question);
-        question.$answerText.removeClass('hidden');
+      if (questionView.editor) {
+        questionView.hideFakeEditor(questionView);
+        questionView.$answerText.removeClass('hidden');
         return;
       }
 
       tinymce.init({
         setup: function (editor) {
           editor.on('init', function () {
-            that.onEditorInit(question, editor);
+            that.onEditorInit(questionView, editor);
           });
         },
-        selector: 'textarea.eid_' + question.data_editor,
+        selector: 'textarea.eid_' + questionView.data_editor,
         skin: false,
         plugins: "autolink, autoresize, lists, link, image, anchor, paste",
         toolbar1: "styleselect | bold italic | bullist numlist outdent indent | link image",

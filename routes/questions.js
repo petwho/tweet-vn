@@ -3,6 +3,8 @@ var loggedIn = require('./middleware/logged_in'),
   loadTopics = require('./middleware/load_topics'),
   async = require('async'),
   util = require('util'),
+  getHtml = require('./middleware/get_html'),
+  validateTopics = require('./middleware/validate_topics'),
   Activity = require('../data/models/activity'),
   Question = require('../data/models/question'),
   Topic = require('../data/models/topic'),
@@ -10,32 +12,6 @@ var loggedIn = require('./middleware/logged_in'),
   User = require('../data/models/user');
 
 module.exports = function (app) {
-  var validateTopics;
-
-  validateTopics = function (req, res, next) {
-    var i,
-      topic_ids       = [],
-      req_topic_ids   = req.body.topic_ids;
-    if (!req_topic_ids || !util.isArray(req_topic_ids) || (req_topic_ids.length === 0)) {
-      return res.json(400, { msg: 'Invalid topics' });
-    }
-
-    Topic.find({}, function (err, topics) {
-      if (err) { return next(err); }
-
-      for (i = 0; i < topics.length; i++) {
-        topic_ids.push(topics[i]._id.toString());
-      }
-
-      for (i = 0; i < req_topic_ids.length; i++) {
-        if (topic_ids.indexOf(req_topic_ids[i]) === -1) {
-          return res.json(400, { msg: 'Invalid topics' });
-        }
-      }
-
-      next();
-    });
-  };
 
   app.get('/open-questions', loggedIn, function (req, res, next) {
     res.render('questions/open');
@@ -52,6 +28,44 @@ module.exports = function (app) {
       })
       .exec(function (err, questions) {
         return res.json(200, questions);
+      });
+  });
+
+  app.get('/questions/:id', function (req, res, next) {
+    Question.findById(req.params.id)
+      .populate({
+        path: 'topic_ids',
+        select: 'name picture follower_count'
+      })
+      .populate({
+        path: 'answer_ids'
+      })
+      .exec(function (err, question) {
+        if (err) { return next(err); }
+        Question.populate(question,
+          [
+            {
+              path: 'answer_ids.user_id',
+              model: 'User'
+            }
+          ], function (err, question) {
+            if (err) { return next(err); }
+
+            if (!question) {
+              return res.redirect('/');
+            }
+            // return content html
+            question.title = getHtml(question.title);
+            if (question.detail) {
+              question.detail = getHtml(question.detail);
+            }
+
+            question.answer_ids.map(function (answer) {
+              answer.content = getHtml(answer.content);
+            });
+
+            res.render('questions/show', {question: question});
+          });
       });
   });
 

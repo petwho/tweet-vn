@@ -1,0 +1,41 @@
+extends ../layouts/home_no_spinner
+
+block content
+  #question(data-id="#{question._id}")
+    .question-text
+      h1= question.title
+      - if (!question.detail)
+        strong  
+          a(href="#") Add question detail
+        br
+        strong
+          a(href="#") Share
+    .answer-count
+      strong #{question.answer_ids.length} answers
+    - if (session.user)
+      .answer-user-wrapper.row
+        .col-xs-12
+          a.user(href="#")= session.user.full_name
+          .fake-editor-wrapper
+            .fake-answer-editor
+              .light-gray Add your answer
+          .answer-text.hidden
+            textarea.hidden
+            .inline-editor-btn
+              .pull-right
+                button.cancel-btn Cancel
+                button.submit-btn Add Answer
+    .answer-list
+      - for (var i = 0; i < question.answer_ids.length; i++)
+        .row
+          .col-xs-1
+            img(src="#{question.topic_ids[0].picture}", width="28", height="28")
+          .col-xs-10
+            strong 
+              a(href="#")= question.answer_ids[i].user_id.full_name
+          .col-xs-1
+            img.pull-right(src= question.answer_ids[i].user_id.picture, width="28", height="28")
+        .row
+          .col-xs-11.col-xs-offset-1!= question.answer_ids[i].content
+
+  script(data-main="/javascripts/app/bootstraps/question.js", src="/javascripts/libs/require/require-2.1.9.min.js")

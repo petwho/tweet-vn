@@ -43,9 +43,30 @@
   }
 }
 
+// ** Begin mixin
 .col-xs-mixin-3 {
   width: 20%;
 }
+
+#open-questions, #qa-items {
+  .col-xs-1 {
+    width: 9%;
+  }
+  .col-xs-11 {
+    width: 91%;
+  }
+}
+
+h1 {
+  font-size: 1.4em;
+  margin: 0 0 10px;
+  color: #161f21;
+  font-size: 20px;
+  line-height: 24px;
+  letter-spacing: -1px;
+  font-weight: bold;
+}
+// ** End of mixin
 
 // ** Begin navbar
 .navbar-nav {
@@ -354,4 +375,25 @@
 .inline-editor-btn {
   margin-top: 10px;
   min-height: 20px;
+}
+
+#question {
+  .question-text {
+    border-bottom: 1px solid #c0c0c0;
+  }
+
+  .fake-editor-wrapper {
+    border: 1px solid #999;
+    padding: 5px;
+  }
+
+  .fake-answer-editor {
+    min-height: 40px;
+    cursor: text;
+  }
+
+  a.user {
+    color: #333;
+    font-weight: bold;
+  }
 }

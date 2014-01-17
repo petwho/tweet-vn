@@ -1,0 +1,19 @@
+<div class="row answer-item-<%= _id %>">
+  <div class="col-xs-1">
+    <img src="<%= topic_ids[0].picture %>" width="28" height="28">
+  </div>
+
+  <div class="col-xs-10">
+    <strong>
+      <a href="#"><%= user_id.full_name %></a>
+    </strong>
+  </div>
+
+  <div class="col-xs-1">
+    <img class="pull-right" src="<%= user_id.picture %>" width="28" heigh="28">
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xs-11 col-xs-offset-1"><%= content %></div>
+</div>
