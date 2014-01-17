@@ -21,7 +21,10 @@ module.exports = function (app) {
   app.get('/open-questions/list', loggedIn, function (req, res, next) {
     var scrollcount = (req.query.scrollcount || 0) * 10;
 
-    Question.find({is_open: true, topic_ids: {$in: req.session.user.following.topic_ids} })
+    Question.find({is_open: true, $or: [
+      {topic_ids: {$in: req.session.user.following.topic_ids}},
+      {_id: {$in: req.session.user.following.question_ids}}
+    ]})
       .skip(scrollcount).limit(10).sort({created_at: -1})
       .populate({
         path  : 'topic_ids',
@@ -77,7 +80,7 @@ module.exports = function (app) {
   });
 
   app.post('/questions', [loggedIn, validateTopics, loadTopics.toObject], function (req, res, next) {
-    var create_question, create_activity, question,
+    var create_question, update_user_following, create_activity,
       log_question_details, log_question_title, log_question_topics, add_log_back_to_question,
       logs = [],
       topic_counter = 0;
@@ -87,11 +90,20 @@ module.exports = function (app) {
 
       req.body.user_id = req.session.user._id;
       req.body.follower_ids = [req.session.user._id];
-      Question.create(req.body, function (err, returned_question) {
+      Question.create(req.body, function (err, question) {
         if (err) { return next(err); }
-        question = returned_question;
+        req.question = question;
         next();
       });
+    };
+
+    update_user_following = function (next) {
+      User.update({_id: req.session.user._id}, {$push: {'following.question_ids': req.question._id} })
+        .exec(function (err, affected_num, raw) {
+          if (err) { return next(err); }
+          req.session.user.following.question_ids.push(req.question._id);
+          next();
+        });
     };
 
     create_activity = function (next) {
@@ -99,8 +111,8 @@ module.exports = function (app) {
 
       if (req.body.is_hidden === true) { activity.is_hidden = true; }
       activity.type = 20;
-      activity.posted.question_id = question._id;
-      activity.posted.topic_ids = question.topic_ids;
+      activity.posted.question_id = req.question._id;
+      activity.posted.topic_ids = req.question.topic_ids;
 
       activity.save(function (err, question) {
         if (err) { return next(err); }
@@ -113,8 +125,8 @@ module.exports = function (app) {
 
       log.type = 100;
       log.user_id = req.session.user._id;
-      log.question.push(question);
-      log.content = question.title;
+      log.question.push(req.question);
+      log.content = req.question.title;
 
       log.save(function (err, log, affected_num) {
         if (err) { return next(err); }
@@ -124,7 +136,7 @@ module.exports = function (app) {
     };
 
     log_question_topics = function (next) {
-      var log, length = question.topic_ids.length;
+      var log, length = req.question.topic_ids.length;
 
       if (topic_counter === length) { return next(); }
 
@@ -132,8 +144,8 @@ module.exports = function (app) {
 
       log.type = 101;
       log.user_id = req.session.user._id;
-      log.question.push(question);
-      log.content = req.topic_obj[question.topic_ids[topic_counter]];
+      log.question.push(req.question);
+      log.content = req.topic_obj[req.question.topic_ids[topic_counter]];
       log.save(function (err, log, affected_num) {
         if (err) { return next(err); }
 
@@ -146,14 +158,14 @@ module.exports = function (app) {
     log_question_details = function (next) {
       var log;
 
-      if (!question.details) { return next(); }
+      if (!req.question.details) { return next(); }
 
       log = new Log();
 
       log.type = 100;
       log.user_id = req.session.user._id;
-      log.question.push(question);
-      log.content = question.details;
+      log.question.push(req.question);
+      log.content = req.question.details;
 
       log.save(function (err, log, affected_num) {
         if (err) { return next(err); }
@@ -165,17 +177,17 @@ module.exports = function (app) {
     add_log_back_to_question = function (next) {
       var i;
       for (i = 0; i < logs.length; i++) {
-        question.log_ids.push(logs[i]._id);
+        req.question.log_ids.push(logs[i]._id);
       }
-      question.save(function (err, question) {
+      req.question.save(function (err, question) {
         if (err) { return next(err); }
         next();
       });
     };
 
-    async.series([create_question, log_question_title, log_question_topics, log_question_details, add_log_back_to_question, create_activity], function (err, results) {
+    async.series([create_question, update_user_following, log_question_title, log_question_topics, log_question_details, add_log_back_to_question, create_activity], function (err, results) {
       if (err) { return next(err); }
-      return res.json(200, question);
+      return res.json(200, req.question);
     });
   });
 
