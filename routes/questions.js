@@ -5,6 +5,7 @@ var loggedIn = require('./middleware/logged_in'),
   util = require('util'),
   getHtml = require('./middleware/get_html'),
   validateTopics = require('./middleware/validate_topics'),
+  validateQuestion = require('./middleware/validate_question'),
   Activity = require('../data/models/activity'),
   Question = require('../data/models/question'),
   Topic = require('../data/models/topic'),
@@ -32,41 +33,47 @@ module.exports = function (app) {
   });
 
   app.get('/questions/:id', function (req, res, next) {
-    Question.findById(req.params.id)
-      .populate({
-        path: 'topic_ids',
-        select: 'name picture follower_count'
-      })
-      .populate({
-        path: 'answer_ids'
-      })
-      .exec(function (err, question) {
-        if (err) { return next(err); }
-        Question.populate(question,
-          [
-            {
-              path: 'answer_ids.user_id',
-              model: 'User'
-            }
-          ], function (err, question) {
+    var find_question, question, find_related, related_questions;
+
+    find_question = function (next) {
+      Question.findById(req.params.id)
+        .populate({ path: 'topic_ids', select: 'name picture follower_count' })
+        .populate({ path: 'answer_ids' })
+        .exec(function (err, returned_question) {
+          if (err) { return next(err); }
+          Question.populate(returned_question, [{ path: 'answer_ids.user_id', model: 'User' }], function (err, returned_question) {
             if (err) { return next(err); }
 
-            if (!question) {
-              return res.redirect('/');
-            }
+            question = returned_question;
+
+            if (!question) { return res.redirect('/'); }
             // return content html
             question.title = getHtml(question.title);
-            if (question.detail) {
-              question.detail = getHtml(question.detail);
-            }
+            if (question.detail) { question.detail = getHtml(question.detail); }
 
             question.answer_ids.map(function (answer) {
               answer.content = getHtml(answer.content);
             });
 
-            res.render('questions/show', {question: question});
+            next();
           });
-      });
+        });
+    };
+
+    find_related = function (next) {
+      Question.find({ topic_ids: {$in: question.topic_ids} })
+        .populate({path: 'topic_ids'})
+        .exec(function (err, questions) {
+          if (err) { return next(err); }
+          related_questions = questions;
+          next();
+        });
+    };
+
+    async.series([find_question, find_related], function (err, results) {
+      if (err) { return next(err); }
+      res.render('questions/show', {question: question, related_questions: related_questions});
+    });
   });
 
   app.post('/questions', [loggedIn, validateTopics, loadTopics.toObject], function (req, res, next) {
@@ -169,6 +176,95 @@ module.exports = function (app) {
     async.series([create_question, log_question_title, log_question_topics, log_question_details, add_log_back_to_question, create_activity], function (err, results) {
       if (err) { return next(err); }
       return res.json(200, question);
+    });
+  });
+
+  app.post('/questions/:id/follow', [loggedIn, validateQuestion.byIdParam], function (req, res, next) {
+    var update_user, update_question;
+
+    update_user = function (next) {
+      User.findById(req.session.user._id, function (err, user) {
+        var index;
+        if (err) { return next(err); }
+        if (!user) { return res.json(403, {msg: 'user not found'}); }
+
+        index = user.following.question_ids.indexOf(req.params.id);
+
+        if (index === -1) {
+          user.following.question_ids.push(req.params.id);
+
+          user.save(function (err, user) {
+            if (err) { return next(err); }
+            req.session.user = user;
+            next();
+          });
+        } else {
+          next();
+        }
+      });
+    };
+
+    update_question = function (next) {
+      var index = req.question.follower_ids.indexOf(req.session.user._id);
+
+      if (index === -1) {
+        req.question.follower_ids.push(req.session.user._id);
+        req.question.save(function (err, question) {
+          if (err) { return next(err); }
+          next();
+        });
+      } else {
+        next();
+      }
+    };
+
+    async.series([update_user, update_question], function (err, results) {
+      if (err) { return next(err); }
+      res.json(200, {msg: 'following success'});
+    });
+  });
+
+  app.post('/questions/:id/unfollow', [loggedIn, validateQuestion.byIdParam], function (req, res, next) {
+    var update_user, update_question;
+
+    update_user = function (next) {
+      User.findById(req.session.user._id, function (err, user) {
+        var index;
+        if (err) { return next(err); }
+        if (!user) { return res.json(403, {msg: 'user not found'}); }
+
+        index = user.following.question_ids.indexOf(req.params.id);
+
+        if (index !== -1) {
+          user.following.question_ids.splice(index, 1);
+          user.save(function (err, user) {
+            if (err) { return next(err); }
+            req.session.user = user;
+            next();
+          });
+        } else {
+          next();
+        }
+      });
+    };
+
+    update_question = function (next) {
+      var index = req.question.follower_ids.indexOf(req.session.user._id);
+
+      if (index !== -1) {
+        req.question.follower_ids.splice(index, 1);
+        req.question.save(function (err, question) {
+          if (err) { return next(err); }
+          next();
+        });
+      } else {
+        next();
+      }
+    };
+
+    async.series([update_user, update_question], function (err, results) {
+      if (err) { return next(err); }
+      res.json(200, {msg: 'following success'});
     });
   });
 };

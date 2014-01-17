@@ -14,7 +14,7 @@
 
 @media (min-width: @screen-xs-min) {
   .container {
-    width: 970px !important;
+    width: 980px !important;
     .navbar-header {
       float: left;
     }
@@ -27,23 +27,27 @@
 
 @media (min-width: @screen-sm-min) {
   .container {
-    width: 970px !important;
+    width: 980px !important;
   }
 }
 
 @media (min-width: @screen-md-min) {
   .container {
-    width: 970px !important;
+    width: 980px !important;
   }
 }
 
 @media (min-width: @screen-lg-min) {
   .container {
-    width: 970px !important;
+    width: 980px !important;
   }
 }
 
 // ** Begin mixin
+html {
+  overflow-y: scroll;
+}
+
 .col-xs-mixin-3 {
   width: 20%;
 }
@@ -88,7 +92,7 @@ h1 {
   background-color: #122c4b;
   border-color: #122c4b;
   .border-radius(0px);
-  min-width: 970px;
+  min-width: 980px;
 }
 
 .dropdown-menu {
@@ -395,5 +399,47 @@ h1 {
   a.user {
     color: #333;
     font-weight: bold;
+  }
+}
+
+.side-bar {
+  h3 {
+    border-top: 1px solid #e0e0e0;
+    padding: 15px 0 3px;
+    font-size: 1em;
+    font-weight: bold;
+  }
+  .related-questions {
+    font-weight: bold;
+  }
+  .related-question {
+    padding: 5px 0;
+  }
+}
+.follow-btn {
+  background-color: #c3dd82;
+  border-color: #8cb332;
+  border-bottom: 1px solid #648517;
+  color: #406a24;
+  text-shadow: 0 1px #d4ed95;
+  .border-radius(3px);
+  display: inline-block;
+  padding: 3px 10px;
+  text-align: center;
+  // border: 1px solid #bbb;
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #333;
+}
+
+.unfollow-btn {
+  background: none repeat scroll 0 0 #eaeaea;
+  padding: 3px 10px;
+  color: #999999;
+  font-size: 1.1em;
+  font-weight: bold;
+  &:hover {
+    background: #999;
+    color: #fff;
   }
 }

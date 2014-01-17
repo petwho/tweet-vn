@@ -12,7 +12,9 @@ define([
     events: {
       'click .fake-answer-editor': 'initEditor',
       'click .inline-editor-btn .cancel-btn': 'hideEditor',
-      'click .inline-editor-btn .submit-btn': 'submit'
+      'click .inline-editor-btn .submit-btn': 'submit',
+      'click .follow-btn.follow-question': 'followQuestion',
+      'click .unfollow-btn.unfollow-question': 'unfollowQuestion'
     },
 
     initialize: function () {
@@ -63,7 +65,7 @@ define([
             title : 'Header 1', // tooltip text seen on mouseover
             icon: "header1",
             image : false,
-            onclick : function() {
+            onclick : function () {
               editor.execCommand('FormatBlock', false, 'h1');
             }
           });
@@ -114,6 +116,46 @@ define([
         return;
       }
       $('.answer-list').append(this.template(answer));
+    },
+
+    followQuestion: function () {
+      spinner.start();
+      $.ajax({
+        type: 'POST',
+        url: '/questions/' + this.question_id + '/follow',
+        data: {
+          _csrf: this.csrfToken
+        },
+        error: function () {
+          spinner.stop();
+        },
+        success: function () {
+          spinner.stop();
+          $('.follow-btn').removeClass('follow-btn follow-question')
+            .addClass('unfollow-btn unfollow-question')
+            .text('Unfollow Question');
+        }
+      });
+    },
+
+    unfollowQuestion: function () {
+      spinner.start();
+      $.ajax({
+        type: 'POST',
+        url: '/questions/' + this.question_id + '/unfollow',
+        data: {
+          _csrf: this.csrfToken
+        },
+        error: function () {
+          spinner.stop();
+        },
+        success: function () {
+          spinner.stop();
+          $('.unfollow-btn').removeClass('unfollow-btn unfollow-question')
+            .addClass('follow-btn follow-question')
+            .text('Follow Question');
+        }
+      });
     }
   });
 
