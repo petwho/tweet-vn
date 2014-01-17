@@ -14,7 +14,7 @@ module.exports = function (app) {
 
     Activity.find({$or:[
         {'posted.topic_ids': {$in: req.session.user.following.topic_ids}},
-        {'posted.question_id.topic_ids': {$in: req.session.user.following.question_ids}}
+        {'posted.question_id': {$in: req.session.user.following.question_ids}}
       ]})
       .populate('posted.question_id posted.answer_id posted.topic_ids')
       .skip(scrollcount).limit(10).sort({created_at: -1})
