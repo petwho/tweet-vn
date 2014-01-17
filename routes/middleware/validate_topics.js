@@ -1,4 +1,6 @@
-var Topic = require('../../data/models/topic');
+var Topic = require('../../data/models/topic'),
+  util = require('util');
+
 module.exports = function (req, res, next) {
   var i,
     topic_ids       = [],

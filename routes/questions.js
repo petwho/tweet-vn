@@ -110,6 +110,7 @@ module.exports = function (app) {
       var activity = new Activity();
 
       if (req.body.is_hidden === true) { activity.is_hidden = true; }
+      activity.user_id = req.session.user._id;
       activity.type = 20;
       activity.posted.question_id = req.question._id;
       activity.posted.topic_ids = req.question.topic_ids;
