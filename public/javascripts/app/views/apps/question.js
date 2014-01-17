@@ -63,7 +63,7 @@ define([
             that.onEditorInit(editor);
           });
         },
-        selector: 'textarea',
+        selector: '#question textarea',
         skin: false,
         plugins: "autolink, autoresize, lists, link, image, anchor, paste",
         toolbar1: "styleselect | bold italic | bullist numlist outdent indent | link image",
