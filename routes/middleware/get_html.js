@@ -2,6 +2,8 @@ var $ = require('jquery');
 module.exports = function (content) {
   var $content;
 
+  if (!content) { return; }
+
   content = content
     .replace(/&amp;nbsp;/g, ' ')
     .replace(/&lt;p&gt;/g, '<p>').replace(/&lt;\/p&gt;/g, '<p>')

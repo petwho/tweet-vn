@@ -37,7 +37,6 @@ define([
     },
 
     render: function () {
-      this.model.contentGetHtml();
       this.$el.html(this.template(this.model.toJSON()));
       this.$('.fake-editor img').attr({ src: $('.user-picture').attr('src') });
       this.afterRender();

@@ -1,4 +1,5 @@
 var loggedIn = require('./middleware/logged_in'),
+  getHtml = require('./middleware/get_html'),
   Activity = require('../data/models/activity');
 
 module.exports = function (app) {
@@ -30,6 +31,17 @@ module.exports = function (app) {
             }
           ],
           function (err, activities) {
+            activities.map(function (activity) {
+              if (activity.posted.question_id) {
+                activity.posted.question_id.title = getHtml(activity.posted.question_id.title);
+                activity.posted.question_id.detail = getHtml(activity.posted.question_id.detail);
+              }
+
+              if (activity.posted.answer_id) {
+                activity.posted.answer_id.content = getHtml(activity.posted.answer_id.content);
+                console.log( activity.posted.answer_id.content)
+              }
+            });
             return res.json(200, activities);
           });
       });

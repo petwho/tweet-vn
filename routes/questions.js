@@ -49,7 +49,7 @@ module.exports = function (app) {
             if (!question) { return res.redirect('/'); }
             // return content html
             question.title = getHtml(question.title);
-            if (question.detail) { question.detail = getHtml(question.detail); }
+            question.detail = getHtml(question.detail);
 
             question.answer_ids.map(function (answer) {
               answer.content = getHtml(answer.content);
