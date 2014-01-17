@@ -60,6 +60,15 @@ define([
 
       tinymce.init({
         setup: function (editor) {
+          editor.addButton('h1', {
+            title : 'Header 1', // tooltip text seen on mouseover
+            icon: "header1",
+            image : false,
+            onclick : function() {
+              editor.execCommand('FormatBlock', false, 'h1');
+            }
+          });
+
           editor.on('init', function () {
             that.onEditorInit(qaView, editor);
           });
@@ -67,7 +76,7 @@ define([
         selector: 'textarea.eid_' + qaView.data_editor,
         skin: false,
         plugins: "autolink, autoresize, lists, link, image, anchor, paste",
-        toolbar1: "styleselect | bold italic | bullist numlist | link image",
+        toolbar1: "h1 bold italic underline strikethrough hr| bullist numlist | link image",
         paste_as_text: true,
         menubar: false,
         statusbar: false,
