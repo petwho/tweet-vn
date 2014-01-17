@@ -192,7 +192,7 @@ module.exports = function (app) {
   });
 
   app.post('/questions/:id/follow', [loggedIn, validateQuestion.byIdParam], function (req, res, next) {
-    var update_user, update_question;
+    var update_user, update_question, create_activity;
 
     update_user = function (next) {
       User.findById(req.session.user._id, function (err, user) {
@@ -230,7 +230,19 @@ module.exports = function (app) {
       }
     };
 
-    async.series([update_user, update_question], function (err, results) {
+    create_activity = function (next) {
+      var activity = new Activity();
+      activity.user_id = req.session.user._id;
+      activity.type = 31;
+      activity.followed.question_id = req.question._id;
+
+      activity.save(function (err, question) {
+        if (err) { return next(err); }
+        next();
+      });
+    };
+
+    async.series([update_user, update_question, create_activity], function (err, results) {
       if (err) { return next(err); }
       res.json(200, {msg: 'following success'});
     });

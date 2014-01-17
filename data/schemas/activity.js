@@ -10,8 +10,9 @@ var ActivitySchema = new Schema({
   // (10): vote answer,
   // (20): post question, (21): post answer, (22): post comment
   // (30): follow user, (31): follow question, (32): follow topic
+  user_id   : { type: Schema.Types.ObjectId, ref: 'User', required: true },
   type      : { type: Number, required: true },
-  is_hidden : { type: Boolean, required: true, default: false },
+  is_hidden : { type: Boolean, default: false },
   voted     : [Vote], // single doc
   posted    : {
     question_id : {type: Schema.Types.ObjectId, ref: 'Question'},

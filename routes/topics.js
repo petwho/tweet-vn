@@ -1,7 +1,8 @@
-var loggedIn  = require('./middleware/logged_in.js'),
-  Topic       = require('../data/models/topic.js'),
-  User        = require('../data/models/user.js'),
-  async       = require('async');
+var loggedIn  = require('./middleware/logged_in'),
+  Activity    = require('../data/models/activity'),
+  Topic       = require('../data/models/topic'),
+  User        = require('../data/models/user'),
+  async       = require('async'),
   util        = require('util');
 
 module.exports = function (app) {
@@ -112,7 +113,7 @@ module.exports = function (app) {
   });
 
   app.put('/topics/:id/follow', loggedIn, function (req, res, next) {
-    var validate_topic, update_user;
+    var validate_topic, update_user, create_activity;
 
     validate_topic = function (next) {
       Topic.findById(req.body._id, function (err, topic) {
@@ -150,7 +151,23 @@ module.exports = function (app) {
       });
     };
 
-    async.series([ validate_topic, update_user ], function (err, results) {
+    create_activity = function (next) {
+      var activity;
+
+      if (req.body.is_following === false) { return next(); }
+
+      activity = new Activity();
+      activity.user_id = req.session.user._id;
+      activity.type = 32;
+      activity.followed.topic_id = req.body._id;
+
+      activity.save(function (err, question) {
+        if (err) { return next(err); }
+        next();
+      });
+    };
+
+    async.series([ validate_topic, update_user, create_activity ], function (err, results) {
       if (err) { return next(err); }
 
       return res.json(200, req.body);
