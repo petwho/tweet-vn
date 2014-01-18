@@ -5,13 +5,29 @@ block content
     .row
       .col-xs-7
         .question-text
+          .topic-list
+            - for (var i = 0; i < question.topic_ids.length; i++)
+              span.topic-item
+                a(href="/topics/#{question.topic_ids[i]._id}", data-id="#{question.topic_ids[i]._id}")= question.topic_ids[i].name
+              span.editing-topic-item.hidden
+                a(href="/topics/#{question.topic_ids[i]._id}")= question.topic_ids[i].name
+                a.remove-topic(href="#remove-topic/#{question.topic_ids[i]._id}") &nbsp;
+            .row.search-box.hidden
+              .col-xs-8.topic-selector
+                input.form-control(type="text", placeholder="Search Topics")
+                .search-results.hidden
+                  ul
+              .col-xs-4.done
+                a(role="button", href="#done") Done
+            a.edit.edit-topics-btn(href="#edit-topics") Edit
           h1= question.title
+            a.edit.edit-question-title(href="#edit-title") Edit
           - if (!question.detail)
             strong
-              a(href="#") Add question detail
+              a.add-question-detail(href="#add-details") Add Question Details
             br
             strong
-              a(href="#") Share
+              a(href="#share") Share
         .answer-count
           strong #{question.answer_ids.length} answers
         - if (session.user)
@@ -20,7 +36,7 @@ block content
               a.user(href="#")= session.user.full_name
               .fake-editor-wrapper
                 .fake-answer-editor
-                  .light-gray Add your answer
+                  a.light-gray Add your answer
               .answer-text.hidden
                 textarea.hidden
                 .inline-editor-btn

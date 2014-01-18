@@ -6,28 +6,24 @@ var Schema        = require('mongoose').Schema,
   CommentSchema   = require('comment');
 
 var NotificationSchema = new Schema({
-  is_read: Boolean,
-  post_modification: {
-    user_id     : { type: Schema.Types.ObjectId, ref: 'User' },
-    question_id : { type: Schema.Types.ObjectId, ref: 'Question' },
-    answer_id   : { type: Schema.Types.ObjectId, ref: 'Answer' },
-    sparse      : true
-  },
-  suggested_modification_accepted: {
-    user_id   : { type: Schema.Types.ObjectId, ref: 'User' },
-    answer_id : { type: Schema.Types.ObjectId, ref: 'Answer' },
-    sparse    : true
-  },
+  // (10): question edited
+  // (11): suggested edit answer
+  // (20): answer added to followed question
+  // (30): suggested edit answer accepted
+  // (31): suggested edit answer discarded
+  // (40): new follower
+  // (50): new comment
+  type        : Number,
+  is_read     : { type: Boolean, default: false },
+  user_id     : { type: Schema.Types.ObjectId, ref: 'User' },
+  log_id      : { type: Schema.Types.ObjectId, ref: 'Log' },
   new_follower: {
     user_id     : { type: Schema.Types.ObjectId, ref: 'User' }, // * follower user_id
-    // * if follower followed 'question' created by user but not 'user' --> sparse: true
-    question_id : { type: Schema.Types.ObjectId, ref: 'Question' },
-    sparse  : true
+    question_id : { type: Schema.Types.ObjectId, ref: 'Question' }
   },
   new_comment: {
     user_id     : { type: Schema.Types.ObjectId, ref: 'User' },
-    comment_id  : { type: Schema.Types.ObjectId, ref: 'Comment' },
-    sparse      : true
+    comment_id  : { type: Schema.Types.ObjectId, ref: 'Comment' }
   }
 });
 

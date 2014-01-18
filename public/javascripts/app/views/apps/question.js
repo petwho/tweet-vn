@@ -1,11 +1,12 @@
 define([
   'share/socket', 'jquery', 'backbone', 'spinner',
   'models/question', 'views/question', 'models/answer',
+  'text!templates/add_question/search_results.html',
   'text!templates/answer.html',
   'text!../../../vendor/tinymce/skins/lightgray/skin.min.css',
   'text!../../../vendor/tinymce/skins/lightgray/content.min.css',
   'text!../../../vendor/tinymce/skins/lightgray/content.inline.min.css'
-], function (socket, $, Backbone, spinner, Question, QuestionView, Answer, answerTpl, skinCSS, contentCSS, contentInlineCSS) {
+], function (socket, $, Backbone, spinner, Question, QuestionView, Answer, searchTemplate, answerTpl, skinCSS, contentCSS, contentInlineCSS) {
   var View = Backbone.View.extend({
     el: '#question',
 
@@ -14,13 +15,16 @@ define([
       'click .inline-editor-btn .cancel-btn': 'hideEditor',
       'click .inline-editor-btn .submit-btn': 'submit',
       'click .follow-btn.follow-question': 'followQuestion',
-      'click .unfollow-btn.unfollow-question': 'unfollowQuestion'
+      'click .unfollow-btn.unfollow-question': 'unfollowQuestion',
+      'keyup .topic-selector > input' : 'searchTopic'
     },
 
     initialize: function () {
       var that = this;
       this.csrfToken = $('meta[name="csrf-token"]').attr('content');
       this.question_id = this.$el.data('id');
+      this.$searchInput = $('#question .search-box input');
+      this.$searchResults   = $('#question .search-results');
 
       socket.on('soketAddedAnswer', function (answer) {
         that.socketAddAnswer(answer);
@@ -156,7 +160,46 @@ define([
             .text('Follow Question');
         }
       });
-    }
+    },
+
+    searchTopic: function () {
+      if (this.timer) { clearTimeout(this.timer); }
+      this.timer = setTimeout(this.searchTopicCallback(this), 100);
+    },
+
+    clearSearchResults: function () {
+      this.$searchResults.addClass('hidden').find('ul').empty();
+    },
+
+    searchTopicCallback : function (self) {
+      var that = self,
+        term = that.$searchInput.val();
+
+      if (!term.trim()) {
+        that.clearSearchResults();
+        return;
+      }
+
+      spinner.start();
+
+      $.ajax({
+        type  : 'GET',
+        url   : '/topics/search?name=' + term,
+        error : function (jqXHR, textStatus, errorThrow) {
+          spinner.stop();
+        },
+        success : function (topics, textStatus, jqXHR) {
+          that.clearSearchResults();
+          spinner.stop();
+          if (topics.length !== 0) {
+            that.$searchResults.find('ul').append(_.template(searchTemplate)({
+              topics: topics
+            }));
+            that.$searchResults.removeClass('hidden');
+          }
+        }
+      });
+    },
   });
 
   return View;

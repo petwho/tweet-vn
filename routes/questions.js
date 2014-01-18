@@ -6,6 +6,7 @@ var loggedIn = require('./middleware/logged_in'),
   getHtml = require('./helpers/get_html'),
   validateTopics = require('./middleware/validate_topics'),
   validateQuestion = require('./middleware/validate_question'),
+  updateTopics = require('./middleware/update_question_topics'),
   Activity = require('../data/models/activity'),
   Question = require('../data/models/question'),
   Topic = require('../data/models/topic'),
@@ -291,5 +292,11 @@ module.exports = function (app) {
       if (err) { return next(err); }
       res.json(200, {msg: 'following success'});
     });
+  });
+
+  app.put('/questions', [validateTopics, loggedIn], function (req, res, next) {
+    if (req.body.update_type === 'topics') {
+      return updateTopics.remove(req, res, next);
+    }
   });
 };
