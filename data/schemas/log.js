@@ -20,6 +20,7 @@ LogSchema = new Schema({
   reverted        : [Log],
   content         : String,
   removed_topic_id: { type: Schema.Types.ObjectId, ref: 'Topic' },
+  added_topic_id  : { type: Schema.Types.ObjectId, ref: 'Topic' },
   created_at      : { type: Date, default: Date.now }
 });
 

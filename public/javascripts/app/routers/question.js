@@ -7,6 +7,7 @@ define(['backbone', 'models/question'], function (Backbone, Question) {
       'add-details': 'addDetails',
       'done': 'done',
       'remove-topic/:id': 'removeTopic',
+      'add-topic/:id': 'addTopic',
       '*other': 'index'
     },
 
@@ -24,8 +25,7 @@ define(['backbone', 'models/question'], function (Backbone, Question) {
       this.question = new Question({
         _csrf: this.csrfToken,
         _id: $('#question').data('id'),
-        topic_ids: topic_ids,
-        update_type: 'topics'
+        topic_ids: topic_ids
       });
     },
 
@@ -57,20 +57,42 @@ define(['backbone', 'models/question'], function (Backbone, Question) {
       if (index !== -1) {
         topic_ids.splice(index, 1);
         this.question.set({
+          update_type: 'remove topic',
           topic_ids: topic_ids,
           removed_topic_id: id
         });
+
+        this.question.save({}, {
+          error: function () {
+
+          },
+          success: function () {
+
+          }
+        });
       }
-
-      this.question.save({}, {
-        error: function () {
-
-        },
-        success: function () {
-
-        }
-      });
       // this.navigate('', {trigger: true});
+    },
+
+    addTopic: function (id) {
+      var topic_ids = this.question.get('topic_ids'),
+        index = topic_ids.indexOf(id);
+      if (index === -1) {
+        topic_ids.push(id);
+        this.question.set({
+          update_type: 'add topic',
+          topic_ids: topic_ids,
+          added_topic_id: id
+        });
+        this.question.save({}, {
+          error: function () {
+
+          },
+          success: function () {
+
+          }
+        });
+      }
     }
   });
 

@@ -295,8 +295,11 @@ module.exports = function (app) {
   });
 
   app.put('/questions', [validateTopics, loggedIn], function (req, res, next) {
-    if (req.body.update_type === 'topics') {
+    if (req.body.update_type === 'remove topic') {
       return updateTopics.remove(req, res, next);
+    }
+    if (req.body.update_type === 'add topic') {
+      return updateTopics.add(req, res, next);
     }
   });
 };

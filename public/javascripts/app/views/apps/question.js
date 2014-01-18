@@ -1,7 +1,7 @@
 define([
   'share/socket', 'jquery', 'backbone', 'spinner',
   'models/question', 'views/question', 'models/answer',
-  'text!templates/add_question/search_results.html',
+  'text!templates/question/search_results.html',
   'text!templates/answer.html',
   'text!../../../vendor/tinymce/skins/lightgray/skin.min.css',
   'text!../../../vendor/tinymce/skins/lightgray/content.min.css',
@@ -25,6 +25,10 @@ define([
       this.question_id = this.$el.data('id');
       this.$searchInput = $('#question .search-box input');
       this.$searchResults   = $('#question .search-results');
+      this.question = new Question({
+        _csrf: this.csrfToken,
+        _id: $('#question').data('id')
+      });
 
       socket.on('soketAddedAnswer', function (answer) {
         that.socketAddAnswer(answer);
@@ -199,7 +203,7 @@ define([
           }
         }
       });
-    },
+    }
   });
 
   return View;
