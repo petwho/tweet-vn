@@ -70,7 +70,7 @@ define([
             title : 'Header 1', // tooltip text seen on mouseover
             icon: "header1",
             image : false,
-            onclick : function() {
+            onclick : function () {
               editor.execCommand('FormatBlock', false, 'h1');
             }
           });
@@ -123,6 +123,7 @@ define([
         }
         that.is_rerendering = true;
         that.$('.open-question-row').addClass('old');
+        that.questions.reset();
         that.questions.fetch({
           success: function () {
             that.$('.open-question-row.old').remove();

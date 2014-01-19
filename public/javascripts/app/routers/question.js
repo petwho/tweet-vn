@@ -53,7 +53,8 @@ define(['backbone', 'models/question'], function (Backbone, Question) {
 
     removeTopic: function (id) {
       var topic_ids = this.question.get('topic_ids'),
-        index = topic_ids.indexOf(id);
+        index = topic_ids.indexOf(id),
+        that = this;
       if (index !== -1) {
         topic_ids.splice(index, 1);
         this.question.set({
@@ -68,15 +69,16 @@ define(['backbone', 'models/question'], function (Backbone, Question) {
           },
           success: function () {
 
+            that.navigate('', {trigger: true});
           }
         });
       }
-      // this.navigate('', {trigger: true});
     },
 
     addTopic: function (id) {
       var topic_ids = this.question.get('topic_ids'),
-        index = topic_ids.indexOf(id);
+        index = topic_ids.indexOf(id),
+        that = this;
       if (index === -1) {
         topic_ids.push(id);
         this.question.set({
@@ -88,8 +90,8 @@ define(['backbone', 'models/question'], function (Backbone, Question) {
           error: function () {
 
           },
-          success: function () {
-
+          success: function (data, textStatus, jqXHR) {
+            that.navigate('', {trigger: true});
           }
         });
       }

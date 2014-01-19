@@ -12,7 +12,7 @@ define([
 
     initialize: function () {
       var that = this;
-      this.topics   = new Topics;
+      this.topics   = new Topics();
       this.listenTo(this.topics, 'change:is_following', this.followingTopic);
       this.listenTo(this.topics, 'addPrimaryTopic', this.addPrimaryTopic);
       this.listenTo(this.topics, 'addSubTopic', this.addSubTopic);
@@ -31,7 +31,7 @@ define([
     },
 
     addPrimaryTopic: function (topics) {
-      var counter = 0;
+      var counter = 0,
         that = this;
 
       topics.each(function (topic) {
@@ -44,7 +44,7 @@ define([
     },
 
     addSubTopic: function (topics) {
-      var counter = 0;
+      var counter = 0,
         that = this;
 
       topics.each(function (topic) {
@@ -61,5 +61,5 @@ define([
     }
   });
 
-  return new AppView;
+  return new AppView();
 });

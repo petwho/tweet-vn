@@ -4,5 +4,5 @@ define([ 'backbone', 'models/question_answer'], function (Backbone, QuestionAnsw
     url   : '/questions-answers/list'
   });
 
-  return new Collection;
-})
+  return new Collection();
+});

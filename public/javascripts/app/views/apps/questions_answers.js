@@ -64,7 +64,7 @@ define([
             title : 'Header 1', // tooltip text seen on mouseover
             icon: "header1",
             image : false,
-            onclick : function() {
+            onclick : function () {
               editor.execCommand('FormatBlock', false, 'h1');
             }
           });
