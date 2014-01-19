@@ -95,5 +95,5 @@ server.listen(app.get('port'), function () {
 io = io.listen(server);
 
 require('./sockets/auth')(io, dbUrl, MongoStore);
-require('./sockets/new_post')(io);
+require('./sockets/connect')(io);
 // *** END APPLICATION CONFIGURATION
