@@ -122,6 +122,7 @@ define([
         }
         that.is_rerendering = true;
         that.$('.qa-row').addClass('old');
+        that.qas.reset();
         that.qas.fetch({
           success: function () {
             that.$('.qa-row.old').remove();
