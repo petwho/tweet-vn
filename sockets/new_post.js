@@ -27,26 +27,26 @@ module.exports = function (io) {
 
     });
 
-    socket.on('soketQuestionAdded', function (question) {
+    socket.on('soketAddedQuestion', function (question) {
       var i;
-      socket.emit('soketQuestionAdded', question);
+      socket.emit('soketAddedQuestion', question);
       for (i = 0; i < question.topic_ids.length; i++) {
         if (typeof question.topic_ids[i] === 'object') {
-          socket.broadcast.to('topic_id ' + question.topic_ids[i]._id).emit('soketQuestionAdded', question);
+          socket.broadcast.to('topic_id ' + question.topic_ids[i]._id).emit('soketAddedQuestion', question);
         } else {
-          socket.broadcast.to('topic_id ' + question.topic_ids[i]).emit('soketQuestionAdded', question);
+          socket.broadcast.to('topic_id ' + question.topic_ids[i]).emit('soketAddedQuestion', question);
         }
       }
     });
 
-    socket.on('soketAnswerAdded', function (answer) {
+    socket.on('soketAddedAnswer', function (answer) {
       var i;
-      socket.emit('soketAnswerAdded', answer);
+      socket.emit('soketAddedAnswer', answer);
       for (i = 0; i < answer.topic_ids.length; i++) {
         if (typeof answer.topic_ids[i] === 'object') {
-          socket.broadcast.to('topic_id ' + answer.topic_ids[i]._id).emit('soketAnswerAdded', answer);
+          socket.broadcast.to('topic_id ' + answer.topic_ids[i]._id).emit('soketAddedAnswer', answer);
         } else {
-          socket.broadcast.to('topic_id ' + answer.topic_ids[i]).emit('soketAnswerAdded', answer);
+          socket.broadcast.to('topic_id ' + answer.topic_ids[i]).emit('soketAddedAnswer', answer);
         }
       }
     });
