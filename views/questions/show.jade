@@ -12,7 +12,8 @@ block content
               span.editing-topic-item.hidden
                 a(href="/topics/#{question.topic_ids[i]._id}")= question.topic_ids[i].name
                 button.remove-topic(data-topic-id="#{question.topic_ids[i]._id}") &nbsp;
-            a.edit.edit-topics-link(href="#edit-topics") Edit
+            -if (session.user)
+              a.edit.edit-topics-link(href="#edit-topics") Edit
           .row.search-box.hidden
             .col-xs-8.topic-selector
               input.form-control(type="text", placeholder="Search Topics")
@@ -23,7 +24,8 @@ block content
           .title-text
             .edit-box
               h1.title= question.title
-              a.edit.edit-title-link(href="#edit-title") Edit
+              -if (session.user)
+                a.edit.edit-title-link(href="#edit-title") Edit
             .row.edit-title-actions.hidden
               .col-xs-12
                 .pull-right

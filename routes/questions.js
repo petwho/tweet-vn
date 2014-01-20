@@ -1,4 +1,5 @@
 var loggedIn = require('./middleware/logged_in'),
+  loggedInAjax = require('./middleware/logged_in_ajax'),
   loadUser = require('./middleware/load_user'),
   loadTopics = require('./middleware/load_topics'),
   async = require('async'),
@@ -295,7 +296,7 @@ module.exports = function (app) {
     });
   });
 
-  app.put('/questions', [validateTopics, loggedIn], function (req, res, next) {
+  app.put('/questions', [validateTopics, loggedInAjax], function (req, res, next) {
     switch (req.body.update_type) {
     case 'remove topic':
       updateTopics.remove(req, res, next);

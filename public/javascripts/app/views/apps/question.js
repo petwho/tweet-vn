@@ -229,6 +229,9 @@ define([
         url   : '/topics/search?name=' + term,
         error : function (jqXHR, textStatus, errorThrow) {
           spinner.stop();
+          if (jqXHR.responseJSON.msg === 'login required') {
+            window.location.href = '/login'
+          }
         },
         success : function (topics, textStatus, jqXHR) {
           that.clearSearchResults();
@@ -257,9 +260,11 @@ define([
         });
         spinner.start();
         this.question.save({}, {
-          error: function () {
+          error: function (model, xhr, options) {
             spinner.stop();
-            this.navigate('', {trigger: true});
+            if (xhr.responseJSON.msg === 'login required') {
+              window.location.href = '/login'
+            }
           },
           success: function (data, textStatus, jqXHR) {
             spinner.stop();
@@ -289,8 +294,11 @@ define([
 
         spinner.start();
         this.question.save({}, {
-          error: function () {
+          error: function (model, xhr, options) {
             spinner.stop();
+            if (xhr.responseJSON.msg === 'login required') {
+              window.location.href = '/login'
+            }
           },
           success: function (data, textStatus, jqXHR) {
             spinner.stop();
@@ -329,8 +337,11 @@ define([
           'title': this.$titleHeader.text(),
           'update_type': 'update title'
         }, {
-          error: function () {
+          error: function (model, xhr, options) {
             spinner.stop();
+            if (xhr.responseJSON.msg === 'login required') {
+              window.location.href = '/login';
+            }
           },
           success: function (data, textStatus, jqXHR) {
             spinner.stop();

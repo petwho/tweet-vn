@@ -1,9 +1,10 @@
-var loggedIn  = require('./middleware/logged_in'),
-  Activity    = require('../data/models/activity'),
-  Topic       = require('../data/models/topic'),
-  User        = require('../data/models/user'),
-  async       = require('async'),
-  util        = require('util');
+var loggedIn = require('./middleware/logged_in'),
+  loggedInAjax = require('./middleware/logged_in_ajax'),
+  Activity = require('../data/models/activity'),
+  Topic = require('../data/models/topic'),
+  User = require('../data/models/user'),
+  async = require('async'),
+  util = require('util');
 
 module.exports = function (app) {
   var subtopics, loadSubTopics;
@@ -39,11 +40,11 @@ module.exports = function (app) {
     }, 1000);
   });
 
-  app.get('/topics/index', loggedIn, function (req, res, next) {
+  app.get('/topics/index', loggedInAjax, function (req, res, next) {
     return res.render('topics/index');
   });
 
-  app.get('/topics/search', loggedIn, function (req, res, next) {
+  app.get('/topics/search', loggedInAjax, function (req, res, next) {
     if (!req.query.name) {
       return res.json(200, {});
     }
