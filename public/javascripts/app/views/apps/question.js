@@ -158,10 +158,12 @@ define([
     },
 
     socketAddAnswer: function (answer) {
+      // check if answer was already append
       if ($('.answer-item-' + answer._id).length !== 0) {
         return;
       }
       $('.answer-list').append(this.template(answer));
+      $('.answer-num').text(parseInt($('.answer-num').text()) + 1);
     },
 
     followQuestion: function () {
