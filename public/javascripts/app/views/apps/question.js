@@ -32,10 +32,10 @@ define([
 
       this.csrfToken = $('meta[name="csrf-token"]').attr('content');
       this.question_id = this.$el.data('id');
-      this.$topicList = $('.topic-list');
-      this.$searchInput = $('#question .search-box input');
-      this.$searchResults   = $('#question .search-results');
-      this.$titleHeader = $('#question .title-text h1');
+      this.$titleHeader = this.$('.title-text h1');
+      this.$topicList = this.$('.topic-list');
+      this.$searchInput = this.$('.search-box input');
+      this.$searchResults = this.$('.search-results');
       this.question = new Question({
         _csrf: this.csrfToken,
         _id: this.question_id,

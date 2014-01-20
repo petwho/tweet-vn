@@ -20,7 +20,7 @@ define([
       }).get();
 
       this.csrfToken = $('meta[name="csrf-token"]').attr('content');
-      this.$topicList = $('.topic-list');
+      this.$topicList = $('#question .topic-list');
       this.$searchBox = $('#question .search-box');
       this.$editTitleActions = $('#question .edit-title-actions');
       this.setupVars();
