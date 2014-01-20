@@ -102,8 +102,10 @@ define(['jquery'], function () {
   return {
     start : start,
     stop  : function () {
-      $el.hide();
-      clearTimeout(timeout_id);
+      // if (typeof $el !== 'undefined') {
+        $el.hide();
+        clearTimeout(timeout_id);
+      // }
     }
   };
 });

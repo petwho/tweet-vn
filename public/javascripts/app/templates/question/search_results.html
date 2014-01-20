@@ -1,5 +1,5 @@
 <% _.each(topics, function (topic) { %>
-  <a href="#add-topic/<%= topic._id %>">
+  <div class="seach-topic-item" role="button" data-topic-id="<%= topic._id %>">
     <li data-topic-id="<%= topic._id %>">
       <div class="picture">
         <img width="25" height="25" src="<%= topic.picture %>">
@@ -7,5 +7,5 @@
       <span class="name" data-name="<%= topic.name %>"><%= topic.name %></span><br>
       <span class="followers" data-followers="<%= topic.follower_count %>"><%= topic.follower_count %> followers</span>
     </li>
-  </a>
+  </div>
 <% }) %>

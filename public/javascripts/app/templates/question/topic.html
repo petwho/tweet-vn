@@ -1,0 +1,14 @@
+<% for (var i = 0; i < topic_ids.length; i++) { %>
+  <span class="topic-item">
+    <a href="/topics/<%= topic_ids[i]._id %>" data-id="<%= topic_ids[i]._id %>">
+      <%= topic_ids[i].name %>
+    </a>
+  </span>
+  <span class="editing-topic-item hidden">
+    <a href="/topics/<%= topic_ids[i]._id %>">
+      <%= topic_ids[i].name %>
+    </a>
+    <button class="remove-topic" data-topic-id="<%= topic_ids[i]._id %>">&nbsp;</button>
+  </span>
+<%  } %>
+<a class="edit edit-topics-btn" href="#edit-topics">Edit</a>

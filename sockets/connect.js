@@ -1,6 +1,3 @@
-var addQuestion = require('./add_question'),
-  addAnswer = require('./add_answer');
-
 module.exports = function (io) {
   io.sockets.on('connection', function (socket) {
     var hs = socket.handshake;
@@ -27,10 +24,10 @@ module.exports = function (io) {
           socket.join('user_id ' + user_ids[i]);
         }
       }
-
     });
 
-    addQuestion(socket);
-    addAnswer(socket);
+    require('./add_question')(socket);
+    require('./edit_question')(socket);
+    require('./add_answer')(socket);
   });
 };

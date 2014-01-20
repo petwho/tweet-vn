@@ -3,10 +3,11 @@ define([
   'models/question', 'views/question', 'models/answer',
   'text!templates/question/search_results.html',
   'text!templates/answer.html',
+  'text!templates/question/topic.html',
   'text!../../../vendor/tinymce/skins/lightgray/skin.min.css',
   'text!../../../vendor/tinymce/skins/lightgray/content.min.css',
   'text!../../../vendor/tinymce/skins/lightgray/content.inline.min.css'
-], function (socket, $, Backbone, spinner, Question, QuestionView, Answer, searchTemplate, answerTpl, skinCSS, contentCSS, contentInlineCSS) {
+], function (socket, $, Backbone, spinner, Question, QuestionView, Answer, searchTemplate, answerTpl, topicTpl, skinCSS, contentCSS, contentInlineCSS) {
   var View = Backbone.View.extend({
     el: '#question',
 
@@ -16,26 +17,51 @@ define([
       'click .inline-editor-btn .submit-btn': 'submit',
       'click .follow-btn.follow-question': 'followQuestion',
       'click .unfollow-btn.unfollow-question': 'unfollowQuestion',
-      'keyup .topic-selector > input' : 'searchTopic'
+      'keyup .topic-selector > input' : 'searchTopic',
+      'click button.remove-topic': 'removeTopic',
+      'click .search-results .seach-topic-item': 'addTopic',
+      'click .edit-title-actions .submit-btn': 'saveEditingTitle'
     },
 
     initialize: function () {
-      var that = this;
+      var topic_ids, that = this;
+
+      topic_ids = $('#question .topic-item a').map(function () {
+        return $(this).data('id');
+      }).get();
+
       this.csrfToken = $('meta[name="csrf-token"]').attr('content');
       this.question_id = this.$el.data('id');
+      this.$topicList = $('.topic-list');
       this.$searchInput = $('#question .search-box input');
       this.$searchResults   = $('#question .search-results');
+      this.$titleHeader = $('#question .title-text h1');
       this.question = new Question({
         _csrf: this.csrfToken,
-        _id: $('#question').data('id')
+        _id: this.question_id,
+        topic_ids: topic_ids
       });
 
       socket.on('soketAddedAnswer', function (answer) {
         that.socketAddAnswer(answer);
       });
+
+      socket.on('socketEditQuestionTopics', function (data) {
+        that.reRenderTopics(that)(data);
+        that.resetQuestionTopics(data);
+      });
     },
 
     template: _.template(answerTpl),
+
+
+    resetQuestionTopics: function (data) {
+      var i, topic_ids = [], topic_objects = data.topic_ids;
+      for (i = 0; i < topic_objects.length; i++) {
+        topic_ids.push(topic_objects[i]._id);
+      }
+      this.question.set('topic_ids', topic_ids);
+    },
 
     showEditor: function () {
       $('.fake-editor-wrapper').hide();
@@ -203,6 +229,76 @@ define([
           }
         }
       });
+    },
+
+    addTopic: function (event) {
+      var topic_id = $(event.currentTarget).data('topic-id'),
+        topic_ids = this.question.get('topic_ids'),
+        index = topic_ids.indexOf(topic_id),
+        that = this;
+      if (index === -1) {
+        topic_ids.push(topic_id);
+        this.question.set({
+          update_type: 'add topic',
+          topic_ids: topic_ids,
+          added_topic_id: topic_id
+        });
+        spinner.start();
+        this.question.save({}, {
+          error: function () {
+            spinner.stop();
+            this.navigate('', {trigger: true});
+          },
+          success: function (data, textStatus, jqXHR) {
+            spinner.stop();
+            socket.emit('socketEditQuestionTopics', data);
+          }
+        });
+      }
+    },
+
+    removeTopic: function (event) {
+      var topic_id = $(event.target).data('topic-id'),
+        topic_ids = this.question.get('topic_ids'),
+        index = topic_ids.indexOf(topic_id),
+        that = this;
+
+      if (index !== -1) {
+        if (topic_ids.length === 1) {
+          return;
+        }
+
+        topic_ids.splice(index, 1);
+        this.question.set({
+          update_type: 'remove topic',
+          topic_ids: topic_ids,
+          removed_topic_id: topic_id
+        });
+
+        spinner.start();
+        this.question.save({}, {
+          error: function () {
+            spinner.stop();
+          },
+          success: function (data, textStatus, jqXHR) {
+            spinner.stop();
+            socket.emit('socketEditQuestionTopics', data);
+          }
+        });
+      }
+    },
+
+    reRenderTopics: function (self) {
+      var that = self;
+      return function (data) {
+        that.$topicList.empty();
+        that.$topicList.html(_.template(topicTpl)({topic_ids: data.topic_ids}));
+        Backbone.history.loadUrl();
+      };
+    },
+
+    saveEditingTitle: function () {
+      this.$titleHeader.text();
     }
   });
 

@@ -9,12 +9,15 @@ updateQuestion = function (req, res, next) {
     Question.findById(req.body._id, function (err, question) {
       if (err) { return next(err); }
 
-      req.question = question;
       question.topic_ids = req.body.topic_ids;
 
       question.save(function (err, question) {
         if (err) { return next(err); }
-        next();
+        question.populate('topic_ids', function (err, question) {
+          if (err) { return next(err); }
+          req.question = question;
+          next();
+        })
       });
     });
   };
@@ -50,7 +53,7 @@ exports.remove = function (req, res, next) {
 
   async.series([updateQuestion(req, res, next), create_log, create_notification], function (err, results) {
     if (err) { return next(err); }
-    res.json(200, {question: req.question});
+    res.json(200, req.question);
   });
 };
 
@@ -84,6 +87,6 @@ exports.add = function (req, res, next) {
 
   async.series([updateQuestion(req, res, next), create_log, create_notification], function (err, results) {
     if (err) { return next(err); }
-    res.json(200, {question: req.question});
+    res.json(200, req.question);
   });
 };
