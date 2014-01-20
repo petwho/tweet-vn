@@ -1,23 +1,24 @@
 define([
   'share/socket', 'jquery', 'backbone', 'spinner',
   'models/question', 'views/question', 'models/answer',
+  'text!templates/banner_msg.html',
   'text!templates/question/search_results.html',
   'text!templates/answer.html',
   'text!templates/question/topic.html',
   'text!../../../vendor/tinymce/skins/lightgray/skin.min.css',
   'text!../../../vendor/tinymce/skins/lightgray/content.min.css',
   'text!../../../vendor/tinymce/skins/lightgray/content.inline.min.css'
-], function (socket, $, Backbone, spinner, Question, QuestionView, Answer, searchTemplate, answerTpl, topicTpl, skinCSS, contentCSS, contentInlineCSS) {
+], function (socket, $, Backbone, spinner, Question, QuestionView, Answer, bannerMsgTpl, searchTemplate, answerTpl, topicTpl, skinCSS, contentCSS, contentInlineCSS) {
   var View = Backbone.View.extend({
     el: '#question',
 
     events: {
       'click .fake-answer-editor': 'initEditor',
+      'keyup .topic-selector > input' : 'searchTopic',
       'click .inline-editor-btn .cancel-btn': 'hideEditor',
-      'click .inline-editor-btn .submit-btn': 'submit',
+      'click .inline-editor-btn .submit-btn': 'submitAnswer',
       'click .follow-btn.follow-question': 'followQuestion',
       'click .unfollow-btn.unfollow-question': 'unfollowQuestion',
-      'keyup .topic-selector > input' : 'searchTopic',
       'click button.remove-topic': 'removeTopic',
       'click .search-results .seach-topic-item': 'addTopic',
       'click .edit-title-actions .submit-btn': 'saveEditingTitle'
@@ -32,23 +33,30 @@ define([
 
       this.csrfToken = $('meta[name="csrf-token"]').attr('content');
       this.question_id = this.$el.data('id');
-      this.$titleHeader = this.$('.title-text h1');
+      this.$titleHeader = this.$('.title-text h1.title');
       this.$topicList = this.$('.topic-list');
       this.$searchInput = this.$('.search-box input');
       this.$searchResults = this.$('.search-results');
       this.question = new Question({
         _csrf: this.csrfToken,
         _id: this.question_id,
+        title: this.$titleHeader.text(),
         topic_ids: topic_ids
       });
+      this.$bannerMsg = $('.banner-msg');
 
       socket.on('soketAddedAnswer', function (answer) {
         that.socketAddAnswer(answer);
       });
 
       socket.on('socketEditQuestionTopics', function (data) {
-        that.reRenderTopics(that)(data);
         that.resetQuestionTopics(data);
+        that.reRenderTopics(that)(data);
+      });
+
+      socket.on('socketEditQuestionTitle', function (data) {
+        that.resetQuestionTitle(data);
+        that.reRenderTitle(that)(data);
       });
     },
 
@@ -61,6 +69,10 @@ define([
         topic_ids.push(topic_objects[i]._id);
       }
       this.question.set('topic_ids', topic_ids);
+    },
+
+    resetQuestionTitle: function (data) {
+      this.question.set('title', data.title);
     },
 
     showEditor: function () {
@@ -121,7 +133,7 @@ define([
       });
     },
 
-    submit: function () {
+    submitAnswer: function () {
       var answer, that = this;
 
       answer = new Answer({
@@ -297,10 +309,38 @@ define([
       };
     },
 
+    reRenderTitle: function (self) {
+      var that = self;
+      return function (data) {
+        if (Backbone.history.fragment === 'edit-title') {
+          that.$bannerMsg.append(bannerMsgTpl);
+          return;
+        }
+        that.$titleHeader.html(that.question.get('title'));
+      };
+    },
+
     saveEditingTitle: function () {
-      this.$titleHeader.text();
+      var that = this;
+      if (this.question.get('title') !== this.$titleHeader.text()) {
+
+        spinner.start();
+        this.question.save({
+          'title': this.$titleHeader.text(),
+          'update_type': 'update title'
+        }, {
+          error: function () {
+            spinner.stop();
+          },
+          success: function (data, textStatus, jqXHR) {
+            spinner.stop();
+            socket.emit('socketEditQuestionTitle', data);
+            that.trigger('saveEditingTitle');
+          }
+        });
+      }
     }
   });
 
-  return View;
+  return new View();
 });

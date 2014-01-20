@@ -1,7 +1,7 @@
 define([
   'share/socket', 'backbone', 'spinner', '../../libs/move_caret_to_end',
-  'models/question'
-], function (socket, Backbone, spinner, moveCaret, Question) {
+  'views/apps/question', 'models/question'
+], function (socket, Backbone, spinner, moveCaret, appView, Question) {
   var Router = Backbone.Router.extend({
     routes: {
       'edit-topics': 'editTopic',
@@ -9,6 +9,7 @@ define([
       'edit-title' : 'editTitle',
       'add-details': 'addDetails',
       'cancel-edit-title': 'cancelEditTitle',
+      'refresh': 'refresh',
       '*other': 'index'
     },
 
@@ -23,13 +24,10 @@ define([
       this.$topicList = $('#question .topic-list');
       this.$searchBox = $('#question .search-box');
       this.$editTitleActions = $('#question .edit-title-actions');
+      this.$titleHeader = $('#question h1.title');
       this.setupVars();
 
-      this.question = new Question({
-        _csrf: this.csrfToken,
-        _id: $('#question').data('id'),
-        topic_ids: topic_ids
-      });
+      this.listenTo(appView, 'saveEditingTitle', this.saveEditingTitle);
     },
 
     setupVars: function () {
@@ -38,24 +36,27 @@ define([
       this.$editingTopicItems = $('#question .editing-topic-item');
 
       this.$editTitleLn = $('#question .edit-title-link');
-      this.$titleHeader = $('#question .title-text h1');
     },
 
     setupView: function () {
       this.setupVars();
+      // show links
       this.$editTopicsLn.show();
+      this.$editTitleLn.show();
+      // show question's components
       this.$topicItems.show();
       this.$editingTopicItems.addClass('hidden');
       this.$searchBox.addClass('hidden');
-    },
-
-    cancelEditTitle: function () {
-      this.$editTitleLn.show();
       this.$editTitleActions.addClass('hidden');
       this.$titleHeader.attr('contenteditable', false);
     },
 
     index: function () {
+      this.setupView();
+    },
+
+    cancelEditTitle: function () {
+      this.$titleHeader.html(appView.question.get('title'));
       this.setupView();
     },
 
@@ -81,6 +82,18 @@ define([
       });
 
       this.$titleHeader.trigger('focus');
+    },
+
+    saveEditingTitle:function () {
+      this.$editTitleActions.addClass('hidden');
+      this.$titleHeader.attr('contenteditable', false);
+      this.navigate('', {trigger: true});
+    },
+
+    refresh: function () {
+      $('.banner-msg').empty();
+      this.$titleHeader.html(appView.question.get('title'));
+      this.navigate('', {trigger: true});
     }
   });
 

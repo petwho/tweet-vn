@@ -79,6 +79,15 @@ a.edit {
 }
 // ** End of mixin
 
+.banner-msg {
+  width: 100%;
+  background: #ffc;
+  border-bottom: 1px solid #cc9;
+  margin: 0;
+  text-align: center;
+  color: #333;
+}
+
 // ** Begin navbar
 .navbar-nav {
   margin: 0px;
@@ -492,6 +501,34 @@ a.edit {
       }
     }
   }
+
+  .title-text {
+    h1[contenteditable=true] {
+      display: block;
+      font-size: 1.6em;
+      font-weight: bold;
+      white-space: normal;
+      letter-spacing: -1px;
+      line-height: 1.2em;
+      &[contenteditable=true] {
+        border: 1px solid #999;
+        outline: 0;
+        padding: 4px;
+        &:focus {
+          border-color: #538dc2;
+          box-shadow: 0 0 4px rgba(83,141,194,0.5);
+        }
+      }
+    }
+
+    h1 {
+      display: inline-block;
+      margin: 2px 2px;
+    }
+    .edit-title-actions {
+      margin-top: 3px;
+    }
+  }
 }
 
 .side-bar {
@@ -533,22 +570,5 @@ a.edit {
   &:hover {
     background: #999;
     color: #fff;
-  }
-}
-
-h1[contenteditable=true] {
-  font-size: 1.6em;
-  font-weight: bold;
-  white-space: normal;
-  letter-spacing: -1px;
-  line-height: 1.2em;
-  &[contenteditable=true] {
-    border: 1px solid #999;
-    outline: 0;
-    padding: 4px;
-    &:focus {
-      border-color: #538dc2;
-      box-shadow: 0 0 4px rgba(83,141,194,0.5);
-    }
   }
 }

@@ -6,6 +6,7 @@ var loggedIn = require('./middleware/logged_in'),
   getHtml = require('./helpers/get_html'),
   validateTopics = require('./middleware/validate_topics'),
   validateQuestion = require('./middleware/validate_question'),
+  updateTitle = require('./middleware/update_question_title'),
   updateTopics = require('./middleware/update_question_topics'),
   Activity = require('../data/models/activity'),
   Question = require('../data/models/question'),
@@ -295,11 +296,16 @@ module.exports = function (app) {
   });
 
   app.put('/questions', [validateTopics, loggedIn], function (req, res, next) {
-    if (req.body.update_type === 'remove topic') {
-      return updateTopics.remove(req, res, next);
-    }
-    if (req.body.update_type === 'add topic') {
-      return updateTopics.add(req, res, next);
+    switch (req.body.update_type) {
+    case 'remove topic':
+      updateTopics.remove(req, res, next);
+      break;
+    case 'add topic':
+      updateTopics.add(req, res, next);
+      break;
+    case 'update title':
+      updateTitle(req, res, next);
+      break;
     }
   });
 };

@@ -17,7 +17,7 @@ define(['backbone', 'spinner'], function (Backbone, spinner) {
       this.$emailLogin        = $('#email_login');
       this.$passwordLogin     = $('#password_login');
       this.$emailForgotPwd    = $('#email_forgot_password');
-      this.$message           = $('.message .router-msg');
+      this.$message           = $('.message .non-session-msg');
       this.crsfToken          = $('meta[name="csrf-token"]').attr('content');
     },
 

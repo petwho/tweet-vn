@@ -17,7 +17,7 @@ updateQuestion = function (req, res, next) {
           if (err) { return next(err); }
           req.question = question;
           next();
-        })
+        });
       });
     });
   };

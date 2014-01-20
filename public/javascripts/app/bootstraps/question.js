@@ -30,9 +30,8 @@ require([
   'bootstrap', 'backbone', 'routers/question',
   'share/views/add_question',
   'views/apps/question'
-], function (bootstrap, Backbone, Router, AddQuestionView, AppView) {
+], function (bootstrap, Backbone, Router, AddQuestionView, appView) {
   new AddQuestionView();
-  new AppView();
   new Router();
   Backbone.history.start();
 });

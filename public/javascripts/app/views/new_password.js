@@ -3,7 +3,7 @@ define(['backbone'], function (Backbone) {
     el: 'body',
 
     initialize : function () {
-      this.$message         = $('.message .router-msg');
+      this.$message         = $('.message .non-session-msg');
       this.crsfToken        = $('meta[name="csrf-token"]').attr('content');
       this.reset_pwd_token  = $('input[name="reset-pwd-token"]');
       this.password         = $('#password');
