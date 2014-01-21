@@ -70,7 +70,7 @@ block content
               strong #{session.user.first_name}&nbsp;
               span.light-gray added a new comment
 
-            - if (activities[i].type === 30)
+            - if (activities[i].type === 30 && !activities[i].is_hidden)
               strong #{session.user.first_name}&nbsp;
               span.light-gray followed a user&nbsp;
                 a(href="/users/#{activities[i].followed.user_id.username}")

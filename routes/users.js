@@ -324,18 +324,19 @@ module.exports = function (app) {
       Activity.findOne({
         user_id: req.session.user._id,
         'followed.user_id': req.following._id
-      }, function (err, activity) {
-        if (err) { return next(err); }
-        if (activity) {
-          activity.is_hidden = true;
-          activity.save(function (err, activity) {
-            if (err) { return next(err); }
+      }).sort({created_at: -1})
+        .exec(function (err, activity) {
+          if (err) { return next(err); }
+          if (activity) {
+            activity.is_hidden = true;
+            activity.save(function (err, activity) {
+              if (err) { return next(err); }
+              next();
+            });
+          } else {
             next();
-          });
-        } else {
-          next();
-        }
-      });
+          }
+        });
     };
 
     async.series([validate_username, update_user, hide_activity], function (err, results) {
