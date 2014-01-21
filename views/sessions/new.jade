@@ -36,8 +36,12 @@ block content
       form(method="POST", action="/users")
 
         .form-group
-          label.control-label(for="full_name_signup") Full Name:
-          input.form-control#full_name_signup(type="text", name="full_name")
+          label.control-label(for="first_name_signup") First Name:
+          input.form-control#first_name_signup(type="text", name="first_name")
+
+        .form-group
+          label.control-label(for="last_name_signup") Last Name:
+          input.form-control#last_name_signup(type="text", name="last_name")
 
         .form-group
           label.control-label(for="email_signup") Email:

@@ -1,9 +1,11 @@
 var UserSchema, activationMsgMap, resetPasswordMsgMap,
-  Schema                  = require('mongoose').Schema,
-  async                   = require('async'),
-  hash                    = require('../helpers/secure_pass').hash,
-  sendgrid                = require('sendgrid')(process.env.SENDGRID_USERNAME, process.env.SENDGRID_PASSWORD),
-  randomString            = require('../helpers/random_string');
+  Schema = require('mongoose').Schema,
+  async = require('async'),
+  fs = require('fs'),
+  request = require('request'),
+  hash = require('../helpers/secure_pass').hash,
+  sendgrid = require('sendgrid')(process.env.SENDGRID_USERNAME, process.env.SENDGRID_PASSWORD),
+  randomString = require('../helpers/random_string');
 
 activationMsgMap = {
   "html": "<p>Chào {{username}}.</p><p>Cảm ơn bạn đã đăng ký tài khoản trên  {{url}}</p><p>Vui lòng click đường link sau để kích hoạt tài khoản <a href='{{activate_link}}'>activate</a></p>",
@@ -26,7 +28,8 @@ UserSchema = new Schema({
   // (1): registered, (2): [1] + activated, (3): [2] + followed topic, (4): [3] + followed users
   status    : { type: Number, required: true, default: 1},
   username  : { type: String, required: true, unique: true },
-  full_name : { type: String, required: true },
+  first_name: { type: String, required: true},
+  last_name : { type: String, required: true},
   email     : { type: String, required: true, unique: true},
   picture   : String,
 
@@ -267,11 +270,10 @@ UserSchema.static('oauthSignUp', function (req, res, next) {
     counter = 0;
 
   create_valid_user = function (next) {
-    if (!counter) {
-      auto_username = req.body.full_name.replace(' ', '-');
+    if (counter === 0) {
+      auto_username = req.body.first_name + '-' + req.body.last_name;
     } else {
-      auto_username = req.body.full_name.replace(' ', '-') + '-' + counter;
-      counter = 0;
+      auto_username = req.body.first_name + '-' + req.body.last_name + '-' + counter;
     }
 
     counter++;
@@ -287,6 +289,13 @@ UserSchema.static('oauthSignUp', function (req, res, next) {
           }
         }
         return self.errorHandler(err, req, res, next);
+      }
+      if (req.body.sign_up_type === 'google') {
+        request(req.body.picture)
+          .pipe(fs.createWriteStream('./public/pictures/google/' + user.username + '.jpg'));
+      } else {
+        request(req.body.picture)
+          .pipe(fs.createWriteStream('./public/pictures/facebook/' + user.username + '.jpg'));
       }
 
       new_user = user;
@@ -328,8 +337,12 @@ UserSchema.static('emailSignUp', function (req, res, next) {
     return res.json({msg: ['Password must be at least 6 characters']}, 400);
   }
 
-  if (!req.body.full_name) {
-    return res.json({msg : ['invalid fullname']}, 400);
+  if (!req.body.first_name) {
+    return res.json({msg : ['invalid first name']}, 400);
+  }
+
+  if (!req.body.last_name) {
+    return res.json({msg : ['invalid last name']}, 400);
   }
 
   make_hash_password = function (next) {
@@ -346,9 +359,9 @@ UserSchema.static('emailSignUp', function (req, res, next) {
     random_token = randomString(100, '#aA!');
 
     if (counter) {
-      auto_username = req.body.full_name.replace(' ', '-') + '-' + counter;
+      auto_username = req.body.first_name + '-' + req.body.last_name + '-' + counter;
     } else {
-      auto_username = req.body.full_name.replace(' ', '-');
+      auto_username = req.body.first_name + '-' + req.body.last_name;
       counter = 0;
     }
     counter++;
@@ -445,6 +458,10 @@ UserSchema.static('getUnreadNotifications', function (username, req, res, next) 
     }
     return res.json(container, 200);
   });
+});
+
+UserSchema.virtual('full_name').get(function () {
+  return this.first_name + ' ' + this.last_name;
 });
 
 module.exports = UserSchema;

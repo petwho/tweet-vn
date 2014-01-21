@@ -3,3 +3,5 @@ var CommentSchema,
 
 CommentSchema = new Schema({
 });
+
+module.exports = CommentSchema;

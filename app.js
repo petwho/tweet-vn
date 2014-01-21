@@ -83,6 +83,7 @@ require('./routes/questions_answers')(app);
 require('./routes/questions')(app);
 require('./routes/answers')(app);
 require('./routes/topics')(app);
+require('./routes/activities')(app);
 // * End load routes
 
 // start server

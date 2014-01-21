@@ -1,0 +1,20 @@
+extends ../layouts/profile
+block content
+  .row.user-profile
+    .col-xs-10
+      h1.full-name= user.full_name
+      .short-bio
+        - if (user.short_bio)
+          span= user.short_bio
+        - else
+          span Bio: N/A
+    .col-xs-2
+      button.btn.btn-sm.follow-btn Folllow
+
+  .row.profile-feed
+    .col-xs-3
+      img.picture(src=user.picture, width="150", height="150")
+    .col-xs-9.activities
+      - for (var i = 0; i < activities.length; i++)
+        - if (activities.type === 20)
+          .pagelist-item 

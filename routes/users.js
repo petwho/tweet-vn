@@ -1,10 +1,13 @@
 var oauth2Client, googleapis, Facebook,
-  notLoggedIn   = require('./middleware/not_logged_in'),
-  loadUser      = require('./middleware/load_user'),
-  User          = require('../data/models/user'),
-  async         = require('async'),
-  request       = require('request'),
-  randomString  = require('./middleware/random_string');
+  notLoggedIn = require('./middleware/not_logged_in'),
+  loggedIn = require('./middleware/logged_in'),
+  loadUser = require('./middleware/load_user'),
+  User = require('../data/models/user'),
+  Comment = require('../data/models/comment'),
+  Activity = require('../data/models/activity'),
+  async = require('async'),
+  request = require('request'),
+  randomString = require('./middleware/random_string');
 
 Facebook = require('facebook-node-sdk');
 
@@ -105,11 +108,13 @@ module.exports = function (app) {
             return res.redirect('/');
           }
 
-          req.body.email        = profile.email;
-          req.body.picture      = profile.picture;
-          req.body.full_name    = profile.name;
-          req.body.token        = { oauth : access_token };
+          req.body.email = profile.email;
+          req.body.first_name = profile.given_name;
+          req.body.last_name = profile.family_name;
+          req.body.token = { oauth : access_token };
           req.body.sign_up_type = 'google';
+          req.body.picture = profile.picture;
+
           next();
         });
     };
@@ -128,9 +133,10 @@ module.exports = function (app) {
         if (err) { return next(err); }
 
         user = user_obj;
-        req.body.email        = user.email;
+        req.body.email = user.email;
         req.body.sign_up_type = 'facebook';
-        req.body.full_name    = user.first_name + ' ' + user.last_name;
+        req.body.first_name = user.first_name;
+        req.body.last_name = user.last_name;
         next();
       });
     };
@@ -148,6 +154,33 @@ module.exports = function (app) {
     async.series([get_user_info, get_user_photo], function (err, result) {
       if (err) { return next(err); }
       return User.oauthSignUp(req, res, next);
+    });
+  });
+
+  app.get('/users/:username', loggedIn, function (req, res, next) {
+    var find_user, find_activity;
+    find_user = function (next) {
+      User.findOne({username: req.params.username}, function (err, user) {
+        if (err) { return next(err); }
+        if (!user) { return res.render('not_found'); }
+        req.user = user; // this may not be current logged in user
+        next();
+      });
+    };
+
+    find_activity = function (next) {
+      Activity.find({user_id: req.user._id})
+        .populate('posted.question_id posted.answer_id posted.comment_id ')
+        .exec(function (err, activities) {
+          if (err) { return next(err); }
+          req.activities = activities;
+          next();
+        });
+    };
+
+    async.series([find_user, find_activity], function (err, results) {
+      if (err) { return next(err); }
+      return res.render('users/profile', {user: req.user, activities: req.activities});
     });
   });
 };

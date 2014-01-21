@@ -11,7 +11,8 @@ define(['backbone', 'spinner'], function (Backbone, spinner) {
     },
 
     initialize: function () {
-      this.$fullNameSignup    = $('#full_name_signup');
+      this.$firstNameSignUp    = $('#first_name_signup');
+      this.$lastNameSignUp    = $('#last_name_signup');
       this.$emailSignup       = $('#email_signup');
       this.$passwordSignup    = $('#password_signup');
       this.$emailLogin        = $('#email_login');
@@ -22,7 +23,7 @@ define(['backbone', 'spinner'], function (Backbone, spinner) {
     },
 
     clearForm : function () {
-      this.$fullNameSignup.val('');
+      this.$firstNameSignUp.val('');
       this.$emailSignup.val('');
       this.$passwordSignup.val('');
       this.$emailLogin.val('');
@@ -65,10 +66,11 @@ define(['backbone', 'spinner'], function (Backbone, spinner) {
         type  : 'POST',
         url   : '/users',
         data  : {
-          full_name : this.$fullNameSignup.val(),
-          email     : this.$emailSignup.val(),
-          password  : this.$passwordSignup.val(),
-          _csrf     : this.crsfToken
+          first_name : this.$firstNameSignUp.val(),
+          last_name : this.$lastNameSignUp.val(),
+          email : this.$emailSignup.val(),
+          password : this.$passwordSignup.val(),
+          _csrf : this.crsfToken
         },
         success : function (data, textStatus, jqXHR) {
           self.successCallback(data, textStatus, jqXHR);
