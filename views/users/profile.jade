@@ -9,12 +9,50 @@ block content
         - else
           span Bio: N/A
     .col-xs-2
-      button.btn.btn-sm.follow-btn Folllow
+      - if (session.user.username !== user.username)
+        button.btn.btn-sm.follow-btn Folllow
 
   .row.profile-feed
     .col-xs-3
-      img.picture(src=user.picture, width="150", height="150")
+      .picture
+        img(src="/pictures/#{user.sign_up_type + '/' + user.username}.jpg")
+      .followed-topics
+        a.link-text(href="/#{user.username}/topics")
+          strong Topics&nbsp;
+          span.light-gray= user.following.topic_ids.length
+      .questions
+        a.link-text(href="/#{user.username}/questions")
+          strong Questions&nbsp;
+          span.light-gray= questionCount
+      .answers
+        a.link-text(href="/#{user.username}/answers")
+          strong Answers&nbsp;
+          span.light-gray= answerCount
+
     .col-xs-9.activities
       - for (var i = 0; i < activities.length; i++)
-        - if (activities.type === 20)
-          .pagelist-item 
+        .pagelist-item
+          - if (activities[i].type === 10)
+            .light-gray #{session.user.first_name} voted on a post
+          - if (activities[i].type === 20)
+            strong #{session.user.first_name}&nbsp;
+            span.light-gray added a new question
+            .link-text.question-title
+              a(href="/questions/#{activities[i].posted.question_id._id}")!=activities[i].posted.question_id.title
+          - if (activities[i].type === 21)
+            strong #{session.user.first_name}&nbsp;
+            span.light-gray added a new answer
+            .link-text.question-title
+              a(href="/questions/#{activities[i].posted.answer_id.question_id}")!=activities[i].posted.answer_id.content
+          - if (activities[i].type === 22)
+            strong #{session.user.first_name}&nbsp;
+            span.light-gray added a new comment
+          - if (activities[i].type === 30)
+            .light-gray #{session.user.first_name} followed a user
+          - if (activities[i].type === 31)
+            .light-gray #{session.user.first_name} followed a question
+          - if (activities[i].type === 32)
+            .light-gray #{session.user.first_name} followed a topic &nbsp;
+              a(href="/topics/#{activities[i].followed.topic_id.name}")
+                img(src=activities[i].followed.topic_id.picture, width="15", height="15")
+                | &nbsp;#{activities[i].followed.topic_id.name}

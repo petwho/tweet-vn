@@ -6,6 +6,7 @@ var oauth2Client, googleapis, Facebook,
   Comment = require('../data/models/comment'),
   Activity = require('../data/models/activity'),
   async = require('async'),
+  getHtml = require('./helpers/get_html'),
   request = require('request'),
   randomString = require('./middleware/random_string');
 
@@ -170,9 +171,25 @@ module.exports = function (app) {
 
     find_activity = function (next) {
       Activity.find({user_id: req.user._id})
-        .populate('posted.question_id posted.answer_id posted.comment_id ')
+        .sort({created_at: -1})
+        .populate('posted.question_id posted.answer_id posted.comment_id followed.user_id followed.question_id followed.topic_id')
         .exec(function (err, activities) {
+          var i;
+          req.answerCount = req.questionCount = 0;
+
           if (err) { return next(err); }
+
+          for (i = 0; i < activities.length; i++) {
+            if (activities[i].type === 21) {
+              req.questionCount++;
+              activities[i].posted.answer_id.content = getHtml(activities[i].posted.answer_id.content);
+            }
+            if (activities[i].type === 20) {
+              req.answerCount++;
+              activities[i].posted.question_id.title = getHtml(activities[i].posted.question_id.title);
+              activities[i].posted.question_id.details = getHtml(activities[i].posted.question_id.details);
+            }
+          }
           req.activities = activities;
           next();
         });
@@ -180,7 +197,7 @@ module.exports = function (app) {
 
     async.series([find_user, find_activity], function (err, results) {
       if (err) { return next(err); }
-      return res.render('users/profile', {user: req.user, activities: req.activities});
+      return res.render('users/profile', {user: req.user, activities: req.activities, questionCount: req.questionCount, answerCount: req.answerCount});
     });
   });
 };
