@@ -1,6 +1,5 @@
 var Schema = require('mongoose').Schema,
   User = require('./user'),
-  Vote = require('./vote'),
   Question = require('./question'),
   Answer = require('./answer'),
   Topic = require('./topic'),
@@ -13,7 +12,10 @@ var ActivitySchema = new Schema({
   user_id   : { type: Schema.Types.ObjectId, ref: 'User', required: true },
   type      : { type: Number, required: true },
   is_hidden : { type: Boolean, default: false },
-  voted     : [Vote], // single doc
+  voted     : {
+    answer_id: { type: Schema.Types.ObjectId, ref : 'Answer' },
+    type     : { type: String, enum: ['up', 'down'] }
+  }, // single doc
   posted    : {
     question_id : {type: Schema.Types.ObjectId, ref: 'Question'},
     answer_id   : {type: Schema.Types.ObjectId, ref: 'Answer'},

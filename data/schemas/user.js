@@ -126,6 +126,7 @@ UserSchema.static('newPassword', function (req, res, next) {
     // initialize user for password after signup not using email
     if (req.session.user && (req.session.user.sign_up_type !== 'email')) {
       return self.findById(req.session.user._id, function (err, user) {
+        if (!user) { return req.session.destroy(); }
         user.password = password_hash;
         user.password_salt = password_salt;
         user.save(function (err) {
@@ -290,16 +291,15 @@ UserSchema.static('oauthSignUp', function (req, res, next) {
         }
         return self.errorHandler(err, req, res, next);
       }
-      if (req.body.sign_up_type === 'google') {
-        request(req.body.picture)
-          .pipe(fs.createWriteStream('./public/pictures/google/' + user.username + '.jpg'));
-      } else {
-        request(req.body.picture)
-          .pipe(fs.createWriteStream('./public/pictures/facebook/' + user.username + '.jpg'));
-      }
 
-      new_user = user;
-      next();
+      request(req.body.picture).pipe(fs.createWriteStream('./public/pictures/' + user.sign_up_type + '/' + user.username + '.jpg'));
+      user.picture = '/pictures/' + user.sign_up_type + '/' + user.username + '.jpg';
+
+      user.save(function (err, user) {
+        if (err) { return next(err); }
+        new_user = user;
+        next();
+      });
     });
   };
 

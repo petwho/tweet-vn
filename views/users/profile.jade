@@ -1,58 +1,90 @@
 extends ../layouts/profile
 block content
-  .row.user-profile
-    .col-xs-10
-      h1.full-name= user.full_name
-      .short-bio
-        - if (user.short_bio)
-          span= user.short_bio
-        - else
-          span Bio: N/A
-    .col-xs-2
-      - if (session.user.username !== user.username)
-        button.btn.btn-sm.follow-btn Folllow
+  #user-profile(data-username=user.username)
+    .row.user-profile
+      .col-xs-10
+        h1.full-name= user.full_name
+        .short-bio
+          - if (user.short_bio)
+            span= user.short_bio
+          - else
+            span Bio: N/A
+      .col-xs-2
+        - if (session.user.username !== user.username)
+          - if (session.user.following.user_ids.indexOf(user._id.toString()) === -1)
+            button.btn.btn-sm.follow-btn.follow-user Folllow
+          - else
+            button.btn.btn-sm.unfollow-btn.unfollow-user Unfolllow
 
-  .row.profile-feed
-    .col-xs-3
-      .picture
-        img(src="/pictures/#{user.sign_up_type + '/' + user.username}.jpg")
-      .followed-topics
-        a.link-text(href="/#{user.username}/topics")
-          strong Topics&nbsp;
-          span.light-gray= user.following.topic_ids.length
-      .questions
-        a.link-text(href="/#{user.username}/questions")
-          strong Questions&nbsp;
-          span.light-gray= questionCount
-      .answers
-        a.link-text(href="/#{user.username}/answers")
-          strong Answers&nbsp;
-          span.light-gray= answerCount
+    .row.profile-feed
+      .col-xs-3
+        .picture
+          img(src=user.picture)
+        .following
+          strong Following&nbsp;
+          span.following-count.light-gray= user.following.user_ids.length
+          .following-user-link
+            - for (var i = 0; i < user.following.user_ids.length; i++)
+              a(href="/users/#{user.following.user_ids[i].username}")
+                img(src=user.following.user_ids[i].picture, width="28", height="28")
+        .followed
+          strong Followed&nbsp;
+          span.followed-count.light-gray= followers.length
+          .followed-user-link
+            - for (var i = 0; i < followers.length; i++)
+              a(href="/users/#{followers[i].username}")
+                img(src=followers[i].picture, width="28", height="28")
+        .followed-topics
+          a.link-text(href="/#{user.username}/topics")
+            strong Topics&nbsp;
+            span.light-gray= user.following.topic_ids.length
+        .questions
+          a.link-text(href="/#{user.username}/questions")
+            strong Questions&nbsp;
+            span.light-gray= questionCount
+        .answers
+          a.link-text(href="/#{user.username}/answers")
+            strong Answers&nbsp;
+            span.light-gray= answerCount
 
-    .col-xs-9.activities
-      - for (var i = 0; i < activities.length; i++)
-        .pagelist-item
-          - if (activities[i].type === 10)
-            .light-gray #{session.user.first_name} voted on a post
-          - if (activities[i].type === 20)
-            strong #{session.user.first_name}&nbsp;
-            span.light-gray added a new question
-            .link-text.question-title
-              a(href="/questions/#{activities[i].posted.question_id._id}")!=activities[i].posted.question_id.title
-          - if (activities[i].type === 21)
-            strong #{session.user.first_name}&nbsp;
-            span.light-gray added a new answer
-            .link-text.question-title
-              a(href="/questions/#{activities[i].posted.answer_id.question_id}")!=activities[i].posted.answer_id.content
-          - if (activities[i].type === 22)
-            strong #{session.user.first_name}&nbsp;
-            span.light-gray added a new comment
-          - if (activities[i].type === 30)
-            .light-gray #{session.user.first_name} followed a user
-          - if (activities[i].type === 31)
-            .light-gray #{session.user.first_name} followed a question
-          - if (activities[i].type === 32)
-            .light-gray #{session.user.first_name} followed a topic &nbsp;
-              a(href="/topics/#{activities[i].followed.topic_id.name}")
-                img(src=activities[i].followed.topic_id.picture, width="15", height="15")
-                | &nbsp;#{activities[i].followed.topic_id.name}
+      .col-xs-9.activities
+        - for (var i = 0; i < activities.length; i++)
+          .pagelist-item
+            - if (activities[i].type === 10)
+              .light-gray #{session.user.first_name} voted on a post
+
+            - if (activities[i].type === 20)
+              strong #{session.user.first_name}&nbsp;
+              span.light-gray added a new question
+              .link-text.question-title
+                a(href="/questions/#{activities[i].posted.question_id._id}")!=activities[i].posted.question_id.title
+
+            - if (activities[i].type === 21)
+              strong #{session.user.first_name}&nbsp;
+              span.light-gray added a new answer
+              .link-text.question-title
+                a(href="/questions/#{activities[i].posted.answer_id.question_id._id}")!=activities[i].posted.answer_id.question_id.title
+              .anwswer.light-gray!=activities[i].posted.answer_id.content
+
+            - if (activities[i].type === 22)
+              strong #{session.user.first_name}&nbsp;
+              span.light-gray added a new comment
+
+            - if (activities[i].type === 30)
+              strong #{session.user.first_name}&nbsp;
+              span.light-gray followed a user&nbsp;
+                a(href="/users/#{activities[i].followed.user_id.username}")
+                  img(src=activities[i].followed.user_id.picture, width="20", height="20")
+                  | &nbsp;#{activities[i].followed.user_id.name}
+
+            - if (activities[i].type === 31)
+              .light-gray #{session.user.first_name} followed a question
+
+            - if (activities[i].type === 32)
+              strong #{session.user.first_name}&nbsp;
+              span.light-gray followed a topic &nbsp;
+                a(href="/topics/#{activities[i].followed.topic_id.name}")
+                  img(src=activities[i].followed.topic_id.picture, width="15", height="15")
+                  | &nbsp;#{activities[i].followed.topic_id.name}
+
+  script(data-main="/javascripts/app/bootstraps/profile", src="/javascripts/libs/require/require-2.1.9.min.js")

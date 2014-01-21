@@ -1,7 +1,6 @@
 var AnswerSchema,
   Schema      = require('mongoose').Schema,
   LogSchema   = require('./log'),
-  VoteSchema  = require('./vote'),
   escapeHtml    = require('escape-html');
 
 AnswerSchema = new Schema({

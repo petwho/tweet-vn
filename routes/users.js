@@ -1,10 +1,12 @@
 var oauth2Client, googleapis, Facebook,
   notLoggedIn = require('./middleware/not_logged_in'),
   loggedIn = require('./middleware/logged_in'),
+  loggedInAjax = require('./middleware/logged_in_ajax'),
   loadUser = require('./middleware/load_user'),
   User = require('../data/models/user'),
   Comment = require('../data/models/comment'),
   Activity = require('../data/models/activity'),
+  Notification = require('../data/models/notification'),
   async = require('async'),
   getHtml = require('./helpers/get_html'),
   request = require('request'),
@@ -159,14 +161,16 @@ module.exports = function (app) {
   });
 
   app.get('/users/:username', loggedIn, function (req, res, next) {
-    var find_user, find_activity;
+    var find_user, find_activity, find_follower;
     find_user = function (next) {
-      User.findOne({username: req.params.username}, function (err, user) {
-        if (err) { return next(err); }
-        if (!user) { return res.render('not_found'); }
-        req.user = user; // this may not be current logged in user
-        next();
-      });
+      User.findOne({username: req.params.username})
+        .populate('following.user_ids following.topic_ids')
+        .exec(function (err, user) {
+          if (err) { return next(err); }
+          if (!user) { return res.render('not_found'); }
+          req.user = user; // this may not be current logged in user
+          next();
+        });
     };
 
     find_activity = function (next) {
@@ -190,14 +194,153 @@ module.exports = function (app) {
               activities[i].posted.question_id.details = getHtml(activities[i].posted.question_id.details);
             }
           }
-          req.activities = activities;
-          next();
+
+          Activity.populate(activities, {
+            path: 'posted.answer_id.question_id',
+            model: 'Question'
+          }, function (err, activities) {
+            if (err) { return next(err); }
+            req.activities = activities;
+            next();
+          });
         });
     };
 
-    async.series([find_user, find_activity], function (err, results) {
+    find_follower = function (next) {
+      User.find({ 'following.user_ids': {$in: [req.user._id]} }, function (err, users) {
+        if (err) { return next(err); }
+        req.followers = users;
+        next();
+      });
+    };
+
+    async.series([find_user, find_activity, find_follower], function (err, results) {
       if (err) { return next(err); }
-      return res.render('users/profile', {user: req.user, activities: req.activities, questionCount: req.questionCount, answerCount: req.answerCount});
+      return res.render('users/profile', {
+        user: req.user,
+        activities: req.activities,
+        followers: req.followers,
+        questionCount: req.questionCount,
+        answerCount: req.answerCount
+      });
+    });
+  });
+
+  app.post('/users/follow/:username', loggedInAjax, function (req, res, next) {
+    var validate_username, update_user, add_activity, add_notification;
+    validate_username = function (next) {
+      User.findOne({username: req.params.username}, function (err, user) {
+        if (err) { return next(err); }
+        if (!user) { return res.json(403, {msg: 'Invalid username'}); }
+        req.following = user;
+        next();
+      });
+    };
+    // update user following list
+    update_user = function (next) {
+      User.findById(req.session.user._id, function (err, user) {
+        if (err) { return next(err); }
+        if (user.following.user_ids.indexOf(req.following._id) !== -1) {
+          return res.json(400, {msg: 'Invalid request, You already followed this user'});
+        }
+        user.following.user_ids.push(req.following._id);
+        user.save(function (err, user, affected_num) {
+          if (err) { return next(err); }
+          req.session.user = user; // update session
+          next();
+        });
+      });
+    };
+    // update activity
+    add_activity = function (next) {
+      Activity.create({
+        user_id: req.session.user._id,
+        type: 30,
+        followed: { user_id: req.following._id }
+      }, function (err, activity) {
+        if (err) { return next(err); }
+        Activity.populate(activity, {path: 'followed.user_id', model: 'User'}, function (err, activity) {
+          if (err) { return next(err); }
+          req.activity = activity;
+          next();
+        });
+      });
+    };
+    // update notification
+    add_notification = function (next) {
+      Notification.findOne({
+        user_id: req.following._id,
+        new_follower: { user_id: req.session.user._id }
+      }, function (err, notification) {
+        if (err) { return next(err); }
+        if (!notification) {
+          Notification.create({
+            type: 40,
+            user_id: req.following._id,
+            new_follower: { user_id: req.session.user._id }
+          }, function (err, notification) {
+            if (err) { return next(err); }
+            next();
+          });
+        } else {
+          next();
+        }
+      });
+    };
+
+    async.series([validate_username, update_user, add_activity, add_notification], function (err, results) {
+      if (err) { return next(err); }
+      return res.json(200, req.activity);
+    });
+  });
+
+  app.post('/users/unfollow/:username', loggedInAjax, function (req, res, next) {
+    var validate_username, update_user, hide_activity;
+    validate_username = function (next) {
+      User.findOne({username: req.params.username}, function (err, user) {
+        if (err) { return next(err); }
+        if (!user) { return res.json(403, {msg: 'Invalid username'}); }
+        req.following = user;
+        next();
+      });
+    };
+    // update user following list
+    update_user = function (next) {
+      User.findById(req.session.user._id, function (err, user) {
+        if (err) { return next(err); }
+        if (user.following.user_ids.indexOf(req.following._id) === -1) {
+          return res.json(400, {msg: 'Invalid request, you are not following this user'});
+        }
+        user.following.user_ids.splice(user.following.user_ids.indexOf(req.following._id), 1);
+        user.save(function (err, user, affected_num) {
+          if (err) { return next(err); }
+          req.session.user = user; // update session
+          next();
+        });
+      });
+    };
+    // update activity
+    hide_activity = function (next) {
+      Activity.findOne({
+        user_id: req.session.user._id,
+        'followed.user_id': req.following._id
+      }, function (err, activity) {
+        if (err) { return next(err); }
+        if (activity) {
+          activity.is_hidden = true;
+          activity.save(function (err, activity) {
+            if (err) { return next(err); }
+            next();
+          });
+        } else {
+          next();
+        }
+      });
+    };
+
+    async.series([validate_username, update_user, hide_activity], function (err, results) {
+      if (err) { return next(err); }
+      return res.json(200, req.activity);
     });
   });
 };

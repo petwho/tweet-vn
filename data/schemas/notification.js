@@ -15,6 +15,7 @@ var NotificationSchema = new Schema({
   // (50): new comment
   type        : Number,
   is_read     : { type: Boolean, default: false },
+  is_hidden   : { type: Boolean, default: false },
   user_id     : { type: Schema.Types.ObjectId, ref: 'User' },
   log_id      : { type: Schema.Types.ObjectId, ref: 'Log' },
   new_follower: {
