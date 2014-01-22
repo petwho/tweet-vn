@@ -15,7 +15,7 @@ define([
     initialize: function () {
       var that = this;
       this.username = this.$el.data('username');
-      this.sessionUserId = this.$el.data('sessionUserId');
+      this.sessionUserId = this.$el.data('session-userid');
       this.csrfToken = $('meta[name="csrf-token"]').attr('content');
       profileSI.on('newFollow', function (activity) {
         that.socketNewFollow(that, activity);

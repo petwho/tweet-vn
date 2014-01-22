@@ -28,7 +28,7 @@ module.exports = function (app) {
             },
             {
               path: 'posted.answer_id.user_id',
-              select: '-email -password -password_salt',
+              select: '-email -password -password_salt -token -sign_up_type',
               model: 'User'
             }
           ],
@@ -41,6 +41,12 @@ module.exports = function (app) {
 
               if (activity.posted.answer_id) {
                 activity.posted.answer_id.content = getHtml(activity.posted.answer_id.content);
+
+                activity.posted.answer_id.votes.map(function (vote) {
+                  if ((activity.type !== 'hidden') && (vote.user_id.toString() === req.session.user._id)) {
+                    activity.posted.answer_id.set(vote.type, true, {strict: false});
+                  }
+                });
               }
             });
             return res.json(200, activities);

@@ -47,7 +47,12 @@
 html {
   overflow-y: scroll;
 }
-
+.col-img-1-left {
+  float: left;
+}
+.col-img-1-right {
+  float: right;
+}
 .col-xs-mixin-3 {
   width: 20%;
 }
@@ -176,7 +181,7 @@ a.edit {
   .icon {
     position: absolute;
     left: 15px;
-    background: url('/images/google-btn.png') transparent 5px 50% no-repeat;
+    background: url('/images/google_btn.png') transparent 5px 50% no-repeat;
     display: inline-block;
     vertical-align: middle;
     width: 35px;
@@ -570,5 +575,51 @@ a.edit {
   &:hover {
     background: #999;
     color: #fff;
+  }
+}
+
+.upvote-with-number {
+  .upvote {
+    background-position: left top;
+    background: #dfeaf4;
+    background-repeat: no-repeat;
+    background-image: url('/images/upvote_btn.gif');
+    padding-top: 16px;
+    margin-bottom: 1px;
+    width: 20px;
+    min-height: 20px;
+    .border-radius(3px);
+    .number {
+      background: #dfeaf4;
+      font-size: .8em;
+      text-align: center;
+      font-weight: bold;
+      color: #19558d;
+      .border-radius(3px);
+    }
+  }
+  &:hover, &.voted {
+    .upvote {
+      background-position: left -17px;
+    }
+    .upvote, .upvote .number {
+      background-color: #19558d;
+      background-image: url('/images/upvote_btn.gif');
+      color: #fff;
+    }
+  }
+}
+.downvote {
+  display: block;
+  background-color: #fff;
+  background-image: url('/images/downvote_btn.gif');
+  width: 20px;
+  height: 17px;
+  .border-radius(3px);
+  &:hover, &.voted {
+    text-decoration: none;
+    background-position: left -17px;
+    background-color: #19558d;
+    background-image: url('/images/downvote_btn.gif');
   }
 }

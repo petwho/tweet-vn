@@ -1,5 +1,5 @@
 extends ../layouts/home
 
 block content
-  #qa-items
+  #qa-items(data-userid=session.user._id)
   script(data-main="/javascripts/app/bootstraps/questions_answers.js", src="/javascripts/libs/require/require-2.1.9.min.js")

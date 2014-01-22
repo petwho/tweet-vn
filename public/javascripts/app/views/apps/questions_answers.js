@@ -12,6 +12,7 @@ define([
     initialize: function () {
       var that = this;
       this.csrfToken = $('meta[name="csrf-token"]').attr('content');
+      this.userId = this.$el.data('userid');
       this.qas = qas;
       this.listenTo(this.qas, 'added_question', this.addedQuestion);
       this.listenTo(this.qas, 'add', this.addQA);
@@ -31,6 +32,15 @@ define([
       socket.on('soketAddedAnswer', function () {
         that.reRenderFeed(that)();
       });
+
+      socket.on('voteAnswer', function (options) {
+        that.socketVoteAnswer(that, options);
+      });
+    },
+
+    events: {
+      'click .vote-btns .upvote-with-number': 'upvoteAnswer',
+      'click .vote-btns .downvote': 'downvoteAnswer'
     },
 
     onEditorInit: function (qaView, editor) {
@@ -132,6 +142,98 @@ define([
           }
         });
       };
+    },
+
+    upvoteAnswer: function (e) {
+      var $currentTarget = $(e.currentTarget),
+        $opposite = $currentTarget.parent().find('.downvote'),
+        answerId = $currentTarget.data('answerid'),
+        that = this;
+      e.preventDefault();
+      spinner.start();
+      $.ajax({
+        type: 'POST',
+        url: '/answers/' + answerId + '/vote',
+        data: {type: 'upvote', _csrf: that.csrfToken },
+        error: function () {
+          spinner.stop();
+        },
+        success: function () {
+          spinner.stop();
+          if($currentTarget.hasClass('voted')) {
+            socket.emit('voteAnswer', {answerId: answerId, value: -1, userId: that.userId});
+          } else {
+            if ($opposite.hasClass('voted')) {
+              socket.emit('voteAnswer', {answerId: answerId, value: 2, userId: that.userId});
+            } else {
+              socket.emit('voteAnswer', {answerId: answerId, value: 1, userId: that.userId});
+            }
+          }
+        }
+      });
+    },
+
+    downvoteAnswer: function (e) {
+      var $currentTarget = $(e.currentTarget),
+        $opposite = $currentTarget.parent().find('.upvote-with-number'),
+        answerId = $currentTarget.data('answerid'),
+        that = this;
+      e.preventDefault();
+      spinner.start();
+      $.ajax({
+        type: 'POST',
+        url: '/answers/' + answerId + '/vote',
+        data: {type: 'downvote', _csrf: that.csrfToken },
+        error: function () {
+          spinner.stop();
+        },
+        success: function () {
+          spinner.stop();
+          if($currentTarget.hasClass('voted')) {
+            socket.emit('voteAnswer', {answerId: answerId, value: 1, userId: that.userId});
+          } else {
+            if ($opposite.hasClass('voted')) {
+              socket.emit('voteAnswer', {answerId: answerId, value: -2, userId: that.userId});
+            } else {
+              socket.emit('voteAnswer', {answerId: answerId, value: -1, userId: that.userId});
+            }
+          }
+        }
+      });
+    },
+
+    socketVoteAnswer: function (that, options) {
+      var $voteText = that.$('.upvote-with-number[data-answerId="' + options.answerId + '"]').parent(),
+        $number = $voteText.find('.number'), len;
+      $number.text(parseInt($number.text()) + options.value);
+
+      if (that.userId === options.userId) {
+        len = $voteText.find('.voted').length;
+        $voteText.find('.voted').removeClass('voted');
+
+        if (options.value === 1) {
+          if (len === 0) {
+            $voteText.find('.upvote-with-number').addClass('voted');
+          } else {
+            $voteText.find('.downvote').removeClass('voted');
+          }
+        }
+
+        if (options.value === -1) {
+          if (len === 0) {
+            $voteText.find('.downvote').addClass('voted');
+          } else {
+            $voteText.find('.upvote-with-number').removeClass('voted');
+          }
+        }
+
+        if (options.value === 2) {
+          $voteText.find('.upvote-with-number').addClass('voted');
+        }
+        if (options.value === -2) {
+          $voteText.find('.downvote').addClass('voted');
+        }
+      }
     }
   });
 

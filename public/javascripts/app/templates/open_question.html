@@ -5,7 +5,7 @@
   <div class="col-xs-11">
     <div class="light-gray">Question added to topic <%= topic_ids[0].name %></div>
     <div>
-      <a class="question-link" href="/questions/<%= _id %>" target="blank"><%= title %></a>
+      <a class="question-link" href="/questions/<%= _id %>" target="_blank"><%= title %></a>
     </div>
     <% if (answer_ids.length == 0) { %>
       <div class="inline-answer">
@@ -26,7 +26,7 @@
     <% } %>
     <div class="item-action-bar">
       <a class="follow-question" href="#follow">Follow</a>
-      <a href="/questions/<%= _id %>" class="answer-count" target="blank"><%= answer_ids.length %> Answers</a>
+      <a href="/questions/<%= _id %>" class="answer-count" target="_blank"><%= answer_ids.length %> Answers</a>
     </div>
   </div>
 </div>

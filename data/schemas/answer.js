@@ -8,8 +8,10 @@ AnswerSchema = new Schema({
   question_id : { type: Schema.Types.ObjectId, ref: 'Question' },
   topic_ids   : [{ type: Schema.Types.ObjectId, ref: 'Topic' }],
   log_ids     : [{ type: Schema.Types.ObjectId, ref: 'Log' }],
-  vote_ids    : [{ type: Schema.Types.ObjectId, ref: 'Vote' }],
-
+  votes       : [{
+    user_id   : { type: Schema.Types.ObjectId, ref: 'User' },
+    type      : { type: String, enum: ['upvote', 'downvote'] }
+  }],
   content     : { type: String, required: true },
   created_at  : { type: Date,   default: Date.now },
   updated_at  : { type: Date,   default: Date.now }

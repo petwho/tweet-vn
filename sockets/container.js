@@ -8,6 +8,7 @@ module.exports = function (io) {
     require('./add_question')(socket);
     require('./edit_question')(socket);
     require('./add_answer')(socket);
+    require('./vote_answer')(socket);
 
     require('./connect_view_profile')(socket);
     require('./toggle_follow')(socket);

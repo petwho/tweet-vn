@@ -49,7 +49,7 @@ module.exports = function (app) {
           if (err) { return next(err); }
           Question.populate(returned_question, [{
             path: 'answer_ids.user_id',
-            select: '-email -password -password_salt',
+            select: '-email -password -password_salt -token -sign_up_type',
             model: 'User'
           }], function (err, returned_question) {
             if (err) { return next(err); }

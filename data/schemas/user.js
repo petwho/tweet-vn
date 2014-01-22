@@ -5,23 +5,9 @@ var UserSchema, activationMsgMap, resetPasswordMsgMap,
   request = require('request'),
   hash = require('../helpers/secure_pass').hash,
   sendgrid = require('sendgrid')(process.env.SENDGRID_USERNAME, process.env.SENDGRID_PASSWORD),
-  randomString = require('../helpers/random_string');
-
-activationMsgMap = {
-  "html": "<p>Chào {{username}}.</p><p>Cảm ơn bạn đã đăng ký tài khoản trên  {{url}}</p><p>Vui lòng click đường link sau để kích hoạt tài khoản <a href='{{activate_link}}'>activate</a></p>",
-  "text": "Chào {{username}}. Cảm ơn bạn đã đăng ký tài khoản trên  {{url}}. Vui lòng click đường link sau để kích hoạt tài khoản {{activate_link}}",
-  "subject": "Kích hoạt tài khoản",
-  "from_email": process.env.NOTIFIER_EMAIL_ADD,
-  "from_name": process.env.NOTIFIER_NAME
-};
-
-resetPasswordMsgMap = {
-  "html": "<p>Chào {{username}}.</p><p>Chúng tôi nhận được yêu cầu thay đổi mật khẩu cho tài khoản của bạn trên {{url}}. Để đổi mật khẩu vui lòng click đường link sau: <a href='{{reset_password_link}}'>reset</a></p>",
-  "text": "Chào {{username}}. Chúng tôi nhận được yêu cầu thay đổi mật khẩu cho tài khoản của bạn trên {{url}}. Để đổi mật khẩu vui lòng click đường link sau: {{reset_password_link}}",
-  "subject": "Thay đổi mật khẩu",
-  "from_email": process.env.NOTIFIER_EMAIL_ADD,
-  "from_name": process.env.NOTIFIER_NAME
-};
+  randomString = require('../helpers/random_string'),
+  activationMsgMap = require('../helpers/mail_template').activation,
+  resetPasswordMsgMap = require('../helpers/mail_template').resetPwd;
 // ** End module scope variables
 
 UserSchema = new Schema({
@@ -53,7 +39,7 @@ UserSchema = new Schema({
 
   sign_up_type: { type : String,  enum: [ 'email', 'google', 'facebook' ] },
 
-  reputation  : { type : Number,  required : true, default : 0 },
+  credit      : { type : Number,  required : true, default : 0 },
   created_at  : { type : Date,    required : true, default : Date.now },
   updated_at  : { type : Date,    required : true, default : Date.now }
 });
@@ -72,7 +58,7 @@ UserSchema.static('filterInputs', function (req_body) {
   delete req_body.sign_up_type;
   delete req_body.status;
   delete req_body.token;
-  delete req_body.reputation;
+  delete req_body.credit;
   delete req_body.created_at;
   delete req_body.updated_at;
 });
@@ -463,5 +449,7 @@ UserSchema.static('getUnreadNotifications', function (username, req, res, next) 
 UserSchema.virtual('full_name').get(function () {
   return this.first_name + ' ' + this.last_name;
 });
+
+UserSchema.set('toJSON', { virtuals: true });
 
 module.exports = UserSchema;

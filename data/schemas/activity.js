@@ -14,7 +14,7 @@ var ActivitySchema = new Schema({
   is_hidden : { type: Boolean, default: false },
   voted     : {
     answer_id: { type: Schema.Types.ObjectId, ref : 'Answer' },
-    type     : { type: String, enum: ['up', 'down'] }
+    type     : { type: String, enum: ['upvote', 'downvote'] }
   }, // single doc
   posted    : {
     question_id : {type: Schema.Types.ObjectId, ref: 'Question'},
@@ -27,7 +27,15 @@ var ActivitySchema = new Schema({
     question_id : {type: Schema.Types.ObjectId, ref: 'Question'},
     topic_id    : {type: Schema.Types.ObjectId, ref: 'Topic'}
   },
-  created_at: { type: Date, default : Date.now }
+  created_at: { type: Date, default : Date.now },
+  updated_at: { type: Date, default : Date.now }
+});
+
+ActivitySchema.pre('save', function (next) {
+  if (!this.isNew) {
+    this.updated_at = new Date();
+  }
+  next();
 });
 
 module.exports = ActivitySchema;

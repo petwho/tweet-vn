@@ -6,7 +6,7 @@
     <div class="col-xs-11">
       <div class="light-gray">Question added to topic <%= posted.topic_ids[0].name %></div>
       <div>
-        <a class="question-link" href="/questions/<%= posted.question_id._id %>" target="blank"><%= posted.question_id.title %></a>
+        <a class="question-link" href="/questions/<%= posted.question_id._id %>" target="_blank"><%= posted.question_id.title %></a>
       </div>
       <% if (posted.question_id.answer_ids.length == 0) { %>
         <div class="inline-answer">
@@ -27,21 +27,49 @@
       <% } %>
       <div class="item-action-bar">
         <a class="follow-question" href="#follow">Follow</a>
-        <a href="/questions/<%= posted.question_id._id %>" class="answer-count" target="blank"><%= posted.question_id.answer_ids.length %> Answers</a>
+        <a href="/questions/<%= posted.question_id._id %>" class="answer-count" target="_blank"><%= posted.question_id.answer_ids.length %> Answers</a>
       </div>
     </div>
   <% } %>
 
   <% if (type === 21) { %>
-    <div class="col-xs-1">
+    <div class="col-xs-1 col-img-1-left">
       <img width="25" height="25" src="<%= posted.topic_ids[0].picture %>">
     </div>
-    <div class="col-xs-11">
+    <div class="col-xs-9">
       <div class="light-gray">Answer added to topic <%= posted.topic_ids[0].name %></div>
       <div>
-        <a class="question-link" href="/questions/<%= posted.answer_id.question_id._id %>" target="blank"><%= posted.answer_id.question_id.title %></a>
+        <a class="question-link" href="/questions/<%= posted.answer_id.question_id._id %>" target="_blank"><%= posted.answer_id.question_id.title %></a>
       </div>
-      <div class="answer-user"><%= posted.answer_id.user_id.full_name %></div>
+      <div class="answer-user">
+        <a href="/users/<%= posted.answer_id.user_id.username %>" target="_blank"><%= posted.answer_id.user_id.full_name %></a>
+      </div>
       <div><%= posted.answer_id.content %></div>
+    </div>
+    <div class="col-xs-1 vote-btns">
+      <% if (posted.answer_id.upvote) { %>
+        <a href="#" class="upvote-with-number voted" data-answerid="<%= posted.answer_id._id %>">
+      <% } else { %>
+        <a href="#" class="upvote-with-number" data-answerid="<%= posted.answer_id._id %>">
+      <% } %>
+        <div class="upvote">
+          <div class="number">
+            <% for (var i = 0, j = 0; i < posted.answer_id.votes.length; i++) { %>
+              <% if (posted.answer_id.votes[i].type === 'upvote') { %>
+                <% j++ %>
+              <% } else { %>
+                <% j-- %>
+              <% } %>
+            <% } %>
+            <%= j %>
+          </div>
+        </div>
+      </a>
+      <% if (posted.answer_id.downvote) { %>
+        <a href="#" class="downvote voted" data-answerid="<%= posted.answer_id._id %>">&nbsp;</a>
+      <% } else { %>
+        <a href="#" class="downvote" data-answerid="<%= posted.answer_id._id %>">&nbsp;</a>
+      <% } %>
+    </div>
   <% } %>
 </div>
