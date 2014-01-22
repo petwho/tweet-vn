@@ -240,6 +240,10 @@ module.exports = function (app) {
     update_user = function (next) {
       User.findById(req.session.user._id, function (err, user) {
         if (err) { return next(err); }
+        if (!user) {
+          req.session.destroy();
+          return res.json(403, {msg: 'invalid session'});
+        }
         if (user.following.user_ids.indexOf(req.following._id) !== -1) {
           return res.json(400, {msg: 'Invalid request, You already followed this user'});
         }
@@ -259,7 +263,15 @@ module.exports = function (app) {
         followed: { user_id: req.following._id }
       }, function (err, activity) {
         if (err) { return next(err); }
-        Activity.populate(activity, {path: 'followed.user_id', model: 'User'}, function (err, activity) {
+        Activity.populate(activity, [{
+          path: 'followed.user_id',
+          select: '-email -password -password_salt',
+          model: 'User'
+        }, {
+          path: 'user_id',
+          select: '-email -password -password_salt',
+          model: 'User'
+        }], function (err, activity) {
           if (err) { return next(err); }
           req.activity = activity;
           next();
@@ -308,6 +320,10 @@ module.exports = function (app) {
     update_user = function (next) {
       User.findById(req.session.user._id, function (err, user) {
         if (err) { return next(err); }
+        if (!user) {
+          req.session.destroy();
+          return res.json(403, {msg: 'invalid session'});
+        }
         if (user.following.user_ids.indexOf(req.following._id) === -1) {
           return res.json(400, {msg: 'Invalid request, you are not following this user'});
         }
@@ -324,19 +340,28 @@ module.exports = function (app) {
       Activity.findOne({
         user_id: req.session.user._id,
         'followed.user_id': req.following._id
-      }).sort({created_at: -1})
-        .exec(function (err, activity) {
-          if (err) { return next(err); }
-          if (activity) {
-            activity.is_hidden = true;
-            activity.save(function (err, activity) {
-              if (err) { return next(err); }
-              next();
-            });
-          } else {
+      }).sort({created_at: -1}).populate([{
+        path: 'followed.user_id',
+        select: '-email -password -password_salt',
+        model: 'User'
+      }, {
+        path: 'user_id',
+        select: '-email -password -password_salt',
+        model: 'User'
+      }]).exec(function (err, activity) {
+        if (err) { return next(err); }
+        if (activity) {
+          activity.is_hidden = true;
+          activity.save(function (err, activity) {
+            if (err) { return next(err); }
+            req.activity = activity;
             next();
-          }
-        });
+          });
+        } else {
+          req.session.destroy();
+          return res.json(403, {msg: 'invalid request'});
+        }
+      });
     };
 
     async.series([validate_username, update_user, hide_activity], function (err, results) {

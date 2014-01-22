@@ -1,5 +1,5 @@
 define([
-  'share/socket', 'jquery', 'backbone', 'spinner', 'tinymce',
+  'sockets/connect_to_room', 'jquery', 'backbone', 'spinner', 'tinymce',
   'collections/questions_answers',  'views/question_answer',
   'collections/answers',    'models/answer',  'views/answer',
   'text!../../../vendor/tinymce/skins/lightgray/skin.min.css',

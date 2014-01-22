@@ -1,6 +1,6 @@
 extends ../layouts/profile
 block content
-  #user-profile(data-username=user.username)
+  #user-profile(data-username=user.username, data-sessionUserId=session.user._id)
     .row.user-profile
       .col-xs-10
         h1.full-name= user.full_name
@@ -9,7 +9,7 @@ block content
             span= user.short_bio
           - else
             span Bio: N/A
-      .col-xs-2
+      .col-xs-2.follow-btn-switcher
         - if (session.user.username !== user.username)
           - if (session.user.following.user_ids.indexOf(user._id.toString()) === -1)
             button.btn.btn-sm.follow-btn.follow-user Folllow
@@ -25,14 +25,14 @@ block content
           span.following-count.light-gray= user.following.user_ids.length
           .following-user-link
             - for (var i = 0; i < user.following.user_ids.length; i++)
-              a(href="/users/#{user.following.user_ids[i].username}")
+              a(href="/users/#{user.following.user_ids[i].username}", data-username=user.following.user_ids[i].username)
                 img(src=user.following.user_ids[i].picture, width="28", height="28")
-        .followed
-          strong Followed&nbsp;
-          span.followed-count.light-gray= followers.length
-          .followed-user-link
+        .follower
+          strong Follower&nbsp;
+          span.follower-count.light-gray= followers.length
+          .follower-user-link
             - for (var i = 0; i < followers.length; i++)
-              a(href="/users/#{followers[i].username}")
+              a(href="/users/#{followers[i].username}", data-username=followers[i].username)
                 img(src=followers[i].picture, width="28", height="28")
         .followed-topics
           a.link-text(href="/#{user.username}/topics")
@@ -49,38 +49,45 @@ block content
 
       .col-xs-9.activities
         - for (var i = 0; i < activities.length; i++)
-          .pagelist-item
-            - if (activities[i].type === 10)
+          - if (activities[i].type === 10)
+            .pagelist-item
               .light-gray #{session.user.first_name} voted on a post
 
-            - if (activities[i].type === 20)
+          - if (activities[i].type === 20)
+            .pagelist-item
               strong #{session.user.first_name}&nbsp;
               span.light-gray added a new question
               .link-text.question-title
                 a(href="/questions/#{activities[i].posted.question_id._id}")!=activities[i].posted.question_id.title
 
-            - if (activities[i].type === 21)
+          - if (activities[i].type === 21)
+            .pagelist-item
               strong #{session.user.first_name}&nbsp;
               span.light-gray added a new answer
               .link-text.question-title
                 a(href="/questions/#{activities[i].posted.answer_id.question_id._id}")!=activities[i].posted.answer_id.question_id.title
               .anwswer.light-gray!=activities[i].posted.answer_id.content
 
-            - if (activities[i].type === 22)
+          - if (activities[i].type === 22)
+            .pagelist-item
               strong #{session.user.first_name}&nbsp;
               span.light-gray added a new comment
 
-            - if (activities[i].type === 30 && !activities[i].is_hidden)
+          - if (activities[i].type === 30 && !activities[i].is_hidden)
+            .pagelist-item.following-user(data-username=activities[i].followed.user_id.username)
               strong #{session.user.first_name}&nbsp;
               span.light-gray followed a user&nbsp;
                 a(href="/users/#{activities[i].followed.user_id.username}")
                   img(src=activities[i].followed.user_id.picture, width="20", height="20")
-                  | &nbsp;#{activities[i].followed.user_id.name}
+                span &nbsp;
+                a(href="/users/#{activities[i].followed.user_id.username}")= activities[i].followed.user_id.full_name
 
-            - if (activities[i].type === 31)
+          - if (activities[i].type === 31)
+            .pagelist-item
               .light-gray #{session.user.first_name} followed a question
 
-            - if (activities[i].type === 32)
+          - if (activities[i].type === 32)
+            .pagelist-item
               strong #{session.user.first_name}&nbsp;
               span.light-gray followed a topic &nbsp;
                 a(href="/topics/#{activities[i].followed.topic_id.name}")

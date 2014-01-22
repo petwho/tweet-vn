@@ -1,5 +1,5 @@
 define([
-  'share/socket', 'backbone', 'spinner', '../../libs/move_caret_to_end',
+  'sockets/connect_to_room', 'backbone', 'spinner', '../../libs/move_caret_to_end',
   'views/apps/question', 'models/question'
 ], function (socket, Backbone, spinner, moveCaret, appView, Question) {
   var Router = Backbone.Router.extend({

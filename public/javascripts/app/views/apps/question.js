@@ -1,5 +1,5 @@
 define([
-  'share/socket', 'jquery', 'backbone', 'spinner',
+  'sockets/connect_to_room', 'jquery', 'backbone', 'spinner',
   'models/question', 'views/question', 'models/answer',
   'text!templates/banner_msg.html',
   'text!templates/question/search_results.html',

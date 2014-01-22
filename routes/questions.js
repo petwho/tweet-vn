@@ -47,7 +47,11 @@ module.exports = function (app) {
         .populate({ path: 'answer_ids' })
         .exec(function (err, returned_question) {
           if (err) { return next(err); }
-          Question.populate(returned_question, [{ path: 'answer_ids.user_id', model: 'User' }], function (err, returned_question) {
+          Question.populate(returned_question, [{
+            path: 'answer_ids.user_id',
+            select: '-email -password -password_salt',
+            model: 'User'
+          }], function (err, returned_question) {
             if (err) { return next(err); }
 
             question = returned_question;
@@ -202,7 +206,10 @@ module.exports = function (app) {
       User.findById(req.session.user._id, function (err, user) {
         var index;
         if (err) { return next(err); }
-        if (!user) { return res.json(403, {msg: 'user not found'}); }
+        if (!user) {
+          req.session.destroy();
+          return res.json(403, {msg: 'invalid session'});
+        }
 
         index = user.following.question_ids.indexOf(req.params.id);
 

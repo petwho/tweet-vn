@@ -92,6 +92,7 @@ module.exports = function (app) {
       Answer.populate(answer, [
         {
           path: 'user_id',
+          select: '-email -password -password_salt',
           model: 'User'
         },
         {
