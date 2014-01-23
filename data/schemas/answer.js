@@ -1,7 +1,8 @@
 var AnswerSchema,
-  Schema      = require('mongoose').Schema,
-  LogSchema   = require('./log'),
-  escapeHtml    = require('escape-html');
+  Schema = require('mongoose').Schema,
+  LogSchema = require('./log'),
+  escapeHtml = require('escape-html'),
+  getHtml = require('../helpers/get_html');
 
 AnswerSchema = new Schema({
   user_id     : { type: Schema.Types.ObjectId, ref: 'User' },
@@ -36,5 +37,11 @@ AnswerSchema.static('filterInputs', function (reqBody) {
     reqBody.content = escapeHtml(reqBody.content);
   }
 });
+
+AnswerSchema.virtual('contentHtml').get(function () {
+  return getHtml(this.content);
+});
+
+AnswerSchema.set('toJSON', { virtuals: true });
 
 module.exports = AnswerSchema;

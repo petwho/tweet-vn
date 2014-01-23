@@ -25,6 +25,7 @@ define([
       this.$searchBox = $('#question .search-box');
       this.$editTitleActions = $('#question .edit-title-actions');
       this.$titleHeader = $('#question h1.title');
+      this.$titleHeader.bind('paste', this.pasteText);
       this.setupVars();
 
       this.listenTo(appView, 'saveEditingTitle', this.saveEditingTitle);
@@ -84,7 +85,7 @@ define([
       this.$titleHeader.trigger('focus');
     },
 
-    saveEditingTitle:function () {
+    saveEditingTitle: function () {
       this.$editTitleActions.addClass('hidden');
       this.$titleHeader.attr('contenteditable', false);
       this.navigate('', {trigger: true});
@@ -94,6 +95,35 @@ define([
       $('.banner-msg').empty();
       this.$titleHeader.html(appView.question.get('title'));
       this.navigate('', {trigger: true});
+    },
+
+    pasteText: function () { // catch the paste-event in the DIV
+      // get content before paste
+      var before = document.getElementById('title-editor').innerHTML;
+      setTimeout(function () {
+        var after, pos1, pos2, i, pasted, replace, replaced;
+        // get content after paste by a 100ms delay
+        after = document.getElementById('title-editor').innerHTML;
+        // find the start and end position where the two differ
+        pos1 = -1;
+        pos2 = -1;
+        for (i = 0; i < after.length; i++) {
+          if (pos1 === -1 && before.substr(i, 1) !== after.substr(i, 1)) {
+            pos1 = i;
+          }
+          if (pos2 === -1 && before.substr(before.length - i - 1, 1) !== after.substr(after.length - i - 1, 1)) {
+            pos2 = i;
+          }
+        }
+        // the difference = pasted string with HTML:
+        pasted = after.substr(pos1, after.length - pos2 - pos1);
+        // strip the tags:
+        replace = pasted.replace(/<[^>]+>/g, '');
+        // build clean content:
+        replaced = after.substr(0, pos1) + replace + after.substr(pos1 + pasted.length);
+        // replace the HTML mess with the plain content
+        document.getElementById('title-editor').innerHTML = replaced;
+      }, 100);
     }
   });
 

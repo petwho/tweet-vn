@@ -34,7 +34,7 @@ module.exports = function (content) {
   content = $content.html();
 
   content = content
-    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;nbsp;/g, ' ')
     .replace(/&amp;/g, '&')
     .replace(/&lt;h1&gt;/g, '<h1>').replace(/&lt;\/h1&gt;/g, '</h1>')
     .replace(/&lt;p&gt;/g, '<p>').replace(/&lt;\/p&gt;/g, '</p>')

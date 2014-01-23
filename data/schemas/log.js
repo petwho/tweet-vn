@@ -12,6 +12,7 @@ LogSchema = new Schema({
   // * (210): suggested edit answer
   // * (220): deleted answer
   // * (310): answer's author accepted suggested edit, (311): answer's author discarded suggested edit
+  // * (400): reverted
   type            : { type: Number, required: true },
   user_id         : { type: Schema.Types.ObjectId, ref: 'User' },
   question        : [Question],

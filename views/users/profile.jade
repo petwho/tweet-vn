@@ -3,7 +3,7 @@ block content
   #user-profile(data-username=user.username, data-session-userid=session.user._id)
     .row.user-profile
       .col-xs-10
-        h1.full-name= user.full_name
+        h1.full-name= user.fullname
         .short-bio
           - if (user.short_bio)
             span= user.short_bio
@@ -51,7 +51,11 @@ block content
         - for (var i = 0; i < activities.length; i++)
           - if (activities[i].type === 10)
             .pagelist-item
-              .light-gray #{session.user.first_name} voted on a post
+              strong #{session.user.first_name}&nbsp;
+              span.light-gray voted an answer
+              .link-text.question-title
+                a(href="/questions/#{activities[i].voted.answer_id.question_id}")
+                  .anwswer!=activities[i].voted.answer_id.contentHtml
 
           - if (activities[i].type === 20)
             .pagelist-item
@@ -80,7 +84,7 @@ block content
                 a(href="/users/#{activities[i].followed.user_id.username}")
                   img(src=activities[i].followed.user_id.picture, width="20", height="20")
                 span &nbsp;
-                a(href="/users/#{activities[i].followed.user_id.username}")= activities[i].followed.user_id.full_name
+                a(href="/users/#{activities[i].followed.user_id.username}")= activities[i].followed.user_id.fullname
 
           - if (activities[i].type === 31)
             .pagelist-item

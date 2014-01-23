@@ -114,7 +114,7 @@ module.exports = function (app) {
   });
 
   app.put('/topics/:id/follow', loggedIn, function (req, res, next) {
-    var validate_topic, update_user, create_activity;
+    var validate_topic, update_user, update_activity, create_activity;
 
     validate_topic = function (next) {
       Topic.findById(req.body._id, function (err, topic) {
@@ -152,12 +152,26 @@ module.exports = function (app) {
       });
     };
 
+    update_activity = function (next) {
+      if (req.body.is_following) { return create_activity(next); }
+      // update previous followed topic activity to be hidden
+      Activity.findOne({
+        user_id: req.session.user._id,
+        type: 32,
+        'followed.topic_id': req.body._id
+      }, function (err, activity) {
+        if (err) { return next(err); }
+        if (!activity) { return res.json(403, {msg: 'invalid topic'}); }
+        activity.is_hidden = true;
+        activity.save(function (err, activity) {
+          if (err) { return next(err); }
+          next();
+        });
+      });
+    };
+
     create_activity = function (next) {
-      var activity;
-
-      if (req.body.is_following === false) { return next(); }
-
-      activity = new Activity();
+      var activity = new Activity();
       activity.user_id = req.session.user._id;
       activity.type = 32;
       activity.followed.topic_id = req.body._id;
@@ -168,7 +182,7 @@ module.exports = function (app) {
       });
     };
 
-    async.series([ validate_topic, update_user, create_activity ], function (err, results) {
+    async.series([ validate_topic, update_user, update_activity ], function (err, results) {
       if (err) { return next(err); }
 
       return res.json(200, req.body);

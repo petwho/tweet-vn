@@ -17,7 +17,6 @@ UserSchema = new Schema({
   first_name: { type: String, required: true},
   last_name : { type: String, required: true},
   email     : { type: String, required: true, unique: true},
-  picture   : String,
 
   following : {
     user_ids     : [{ type : Schema.Types.ObjectId, ref : 'User' }],
@@ -25,7 +24,6 @@ UserSchema = new Schema({
     question_ids : [{ type : Schema.Types.ObjectId, ref : 'Question' }]
   },
 
-  activity_ids       : [{ type : Schema.Types.ObjectId, ref : 'Activity' }],
   notification_ids   : [{ type : Schema.Types.ObjectId, ref : 'Notification' }],
 
   password      : String,
@@ -39,9 +37,9 @@ UserSchema = new Schema({
 
   sign_up_type: { type : String,  enum: [ 'email', 'google', 'facebook' ] },
 
-  credit      : { type : Number,  required : true, default : 0 },
-  created_at  : { type : Date,    required : true, default : Date.now },
-  updated_at  : { type : Date,    required : true, default : Date.now }
+  credit      : { type : Number,  default : 0 },
+  created_at  : { type : Date,    default : Date.now },
+  updated_at  : { type : Date,    default : Date.now }
 });
 
 UserSchema.pre('save', function (next) {
@@ -72,7 +70,7 @@ UserSchema.static('errorHandler', function (err, req, res, next) {
   }
 
   if (err.name === 'ValidationError') {
-    if (err.errors.full_name) {
+    if (err.errors.fullname) {
       error_msg_list.push('invalid fullname');
     }
     if (err.errors.email) {
@@ -278,14 +276,8 @@ UserSchema.static('oauthSignUp', function (req, res, next) {
         return self.errorHandler(err, req, res, next);
       }
 
-      request(req.body.picture).pipe(fs.createWriteStream('./public/pictures/' + user.sign_up_type + '/' + user.username + '.jpg'));
-      user.picture = '/pictures/' + user.sign_up_type + '/' + user.username + '.jpg';
-
-      user.save(function (err, user) {
-        if (err) { return next(err); }
-        new_user = user;
-        next();
-      });
+      request(req.body.picture).pipe(fs.createWriteStream('./public/pictures/users/' + user.sign_up_type + '/' + user.username + '.jpg'));
+      new_user = user;
     });
   };
 
@@ -446,8 +438,12 @@ UserSchema.static('getUnreadNotifications', function (username, req, res, next) 
   });
 });
 
-UserSchema.virtual('full_name').get(function () {
+UserSchema.virtual('fullname').get(function () {
   return this.first_name + ' ' + this.last_name;
+});
+
+UserSchema.virtual('picture').get(function () {
+  return '/pictures/users/' + this.sign_up_type + '/' + this.username + '.jpg'
 });
 
 UserSchema.set('toJSON', { virtuals: true });

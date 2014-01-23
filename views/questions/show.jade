@@ -23,7 +23,7 @@ block content
               a(role="button", href="#done") Done
           .title-text
             .edit-box
-              h1.title= question.title
+              h1.title#title-editor= question.title
               -if (session.user)
                 a.edit.edit-title-link(href="#edit-title") Edit
             .row.edit-title-actions.hidden
@@ -44,7 +44,7 @@ block content
         - if (session.user)
           .answer-user-wrapper.row
             .col-xs-12
-              a.user(href="#")= session.user.full_name
+              a.user(href="#")= session.user.fullname
               .fake-editor-wrapper
                 .fake-answer-editor
                   a.light-gray Add your answer
@@ -61,7 +61,7 @@ block content
                 img(src="#{question.topic_ids[0].picture}", width="28", height="28")
               .col-xs-10
                 strong
-                  a(href="#")= question.answer_ids[i].user_id.full_name
+                  a(href="#")= question.answer_ids[i].user_id.fullname
               .col-xs-1
                 img.pull-right(src= question.answer_ids[i].user_id.picture, width="28", height="28")
             .row

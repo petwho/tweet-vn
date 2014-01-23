@@ -174,9 +174,9 @@ module.exports = function (app) {
     };
 
     find_activity = function (next) {
-      Activity.find({user_id: req.user._id})
+      Activity.find({user_id: req.user._id, is_hidden: false})
         .sort({created_at: -1})
-        .populate('posted.question_id posted.answer_id posted.comment_id followed.user_id followed.question_id followed.topic_id')
+        .populate('posted.question_id posted.answer_id posted.comment_id voted.answer_id followed.user_id followed.question_id followed.topic_id')
         .exec(function (err, activities) {
           var i;
           req.answerCount = req.questionCount = 0;
@@ -195,10 +195,9 @@ module.exports = function (app) {
             }
           }
 
-          Activity.populate(activities, {
-            path: 'posted.answer_id.question_id',
-            model: 'Question'
-          }, function (err, activities) {
+          Activity.populate(activities, [
+            { path: 'posted.answer_id.question_id', model: 'Question' },
+          ], function (err, activities) {
             if (err) { return next(err); }
             req.activities = activities;
             next();
