@@ -35,10 +35,17 @@ module.exports = function (req, res, next) {
   };
 
   create_notification = function (next) {
-    var notification = new Notification();
+    var notification;
+
+    if (req.session.user._id === req.question.user_id.toString()) {
+      return next();
+    }
+
+    notification = new Notification();
+
     Notification.create({
       type: 10,
-      user_id: req.session.user._id,
+      user_id: req.question.user_id,
       log_id: req.log._id
     }, function (err, notification) {
       if (err) { return next(err); }

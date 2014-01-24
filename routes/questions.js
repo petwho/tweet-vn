@@ -298,10 +298,10 @@ module.exports = function (app) {
   app.put('/questions', [validateTopics, loggedInAjax], function (req, res, next) {
     switch (req.body.update_type) {
     case 'remove topic':
-      updateTopics.remove(req, res, next);
+      updateTopics(req, res, next);
       break;
     case 'add topic':
-      updateTopics.add(req, res, next);
+      updateTopics(req, res, next);
       break;
     case 'update title':
       updateTitle(req, res, next);

@@ -4,8 +4,10 @@ var updateQuestion,
   Log = require('../../data/models/log'),
   async = require('async');
 
-updateQuestion = function (req, res, next) {
-  return function (next) {
+module.exports = function (req, res, next) {
+  var update_question, create_log, create_notification;
+
+  update_question = function (next) {
     Question.findById(req.body._id, function (err, question) {
       if (err) { return next(err); }
 
@@ -21,18 +23,19 @@ updateQuestion = function (req, res, next) {
       });
     });
   };
-};
-
-exports.remove = function (req, res, next) {
-  var create_notification, create_log;
 
   create_log = function (next) {
-    Log.create({
-      type: 111,
-      user_id: req.session.user._id,
-      question: req.question,
-      removed_topic_id: req.body.removed_topic_id
-    }, function (err, log) {
+    var log = new Log();
+    log.user_id = req.session.user._id;
+    log.question = req.question;
+    if (req.body.update_type === 'add topic') {
+      log.type = 101;
+      log.added_topic_id = req.body.added_topic_id;
+    } else {
+      log.type = 111;
+      log.removed_topic_id = req.body.removed_topic_id;
+    }
+    log.save(function (err, log) {
       if (err) { return next(err); }
       req.log = log;
       next();
@@ -40,10 +43,16 @@ exports.remove = function (req, res, next) {
   };
 
   create_notification = function (next) {
-    var notification = new Notification();
+    var notification;
+
+    if (req.session.user._id === req.question.user_id.toString()) {
+      return next();
+    }
+
+    notification = new Notification();
     Notification.create({
       type: 10,
-      user_id: req.session.user._id,
+      user_id: req.question.user_id,
       log_id: req.log._id
     }, function (err, notification) {
       if (err) { return next(err); }
@@ -51,41 +60,7 @@ exports.remove = function (req, res, next) {
     });
   };
 
-  async.series([updateQuestion(req, res, next), create_log, create_notification], function (err, results) {
-    if (err) { return next(err); }
-    res.json(200, req.question);
-  });
-};
-
-exports.add = function (req, res, next) {
-  var create_notification, create_log;
-
-  create_log = function (next) {
-    Log.create({
-      type: 101,
-      user_id: req.session.user._id,
-      question: req.question,
-      added_topic_id: req.body.removed_topic_id
-    }, function (err, log) {
-      if (err) { return next(err); }
-      req.log = log;
-      next();
-    });
-  };
-
-  create_notification = function (next) {
-    var notification = new Notification();
-    Notification.create({
-      type: 10,
-      user_id: req.session.user._id,
-      log_id: req.log._id
-    }, function (err, notification) {
-      if (err) { return next(err); }
-      next();
-    });
-  };
-
-  async.series([updateQuestion(req, res, next), create_log, create_notification], function (err, results) {
+  async.series([update_question, create_log, create_notification], function (err, results) {
     if (err) { return next(err); }
     res.json(200, req.question);
   });
