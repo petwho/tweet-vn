@@ -30,7 +30,6 @@ require([
   'bootstrap', 'backbone',
   'share/add_question',
   'views/open_questions/app'
-], function (bootstrap, Backbone, AddQuestionView, AppView) {
-  new AddQuestionView();
+], function (bootstrap, Backbone, addQuestionView, AppView) {
   new AppView();
 });

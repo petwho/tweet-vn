@@ -226,5 +226,5 @@ define([
     }
   });
 
-  return AddQuestion;
+  return new AddQuestion();
 });
