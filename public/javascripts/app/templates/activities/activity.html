@@ -14,7 +14,7 @@
           <a href="/questions/<%= voted.answer_id.question_id._id %>" target="_blank"><%= voted.answer_id.question_id.title %></a>
         </div>
       </div>
-      <div class="answer-text"><%= voted.answer_id.contentHtml %></div>
+      <div class="answer-text"><%= voted.answer_id.content %></div>
     <% } %>
 
     <% if (type === 20) { %>
@@ -39,7 +39,7 @@
           <a href="/questions/<%= posted.answer_id.question_id._id %>" target="_blank"><%= posted.answer_id.question_id.title %></a>
         </div>
       </div>
-      <div class="answer-text"><%= posted.answer_id.contentHtml %></div>
+      <div class="answer-text"><%= posted.answer_id.content %></div>
     <% } %>
 
     <% if (type === 30) { %>

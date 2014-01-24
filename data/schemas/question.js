@@ -1,19 +1,8 @@
 var QuestionSchema,
-  Schema        = require('mongoose').Schema,
-  async         = require('async'),
-  escapeHtml    = require('escape-html'),
-  escape        = require('escape-html');
-
-// ------------- BEGIN TOdO 28-13-2013 trankhanh - String length validation disabled ---------------
-// function minLength(length) {
-//   return function(handle, done) {
-//     if(handle.length < length) {
-//       return done(false);
-//     }
-//     return done(true);
-//   }
-// }
-// ------------- END TODO 28-13-2013 trankhanh - String length validation disabled ---------------
+  Schema = require('mongoose').Schema,
+  async = require('async'),
+  escapeHtml = require('escape-html'),
+  getHtml = require('../helpers/get_html');
 
 QuestionSchema = new Schema({
   log_ids           : [{ type: Schema.Types.ObjectId, ref: 'Log' }],
@@ -23,7 +12,7 @@ QuestionSchema = new Schema({
   user_id           : { type: Schema.Types.ObjectId,  required: true, ref: 'User' },
 
   title             : { type: String,                 required: true },
-  detail            : { type: String,                 sparse  : true },
+  details           : { type: String,                 sparse  : true },
 
   is_open           : { type: Boolean,  default : true },
   created_at        : { type: Date,     required: true, default: Date.now },
@@ -39,13 +28,8 @@ QuestionSchema.static('filterInputs', function (reqBody) {
   delete reqBody.created_at;
   delete reqBody.updated_at;
 
-  if ((typeof reqBody.title === 'string') && reqBody.title.trim()) {
-    reqBody.title = escapeHtml(reqBody.title);
-  }
-
-  if ((typeof reqBody.detail === 'string') && reqBody.detail.trim()) {
-    reqBody.detail = escapeHtml(reqBody.detail);
-  }
+  reqBody.title = escapeHtml(reqBody.title);
+  reqBody.details = getHtml(reqBody.details);
 });
 
 QuestionSchema.pre('save', function (next) {

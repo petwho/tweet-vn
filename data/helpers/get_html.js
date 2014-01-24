@@ -2,9 +2,10 @@ var $ = require('jquery');
 module.exports = function (content) {
   var $content;
 
-  if (!content) { return; }
+  if ((typeof content !== 'string') || !content.trim()) { return; }
 
   $content = $('<div>' + content + '</div>');
+  $content.find(':not(p, span, h1, strong, em, ul, ol, li, a, img)').remove();
   $content.find('img').each(function () {
     var attr,
       attributes = this.attributes,
@@ -12,7 +13,7 @@ module.exports = function (content) {
       whitelist = ["src", "alt"];
     while (i--) {
       attr = attributes[i];
-      if ($.inArray(attr.name, whitelist) === -1) {
+      if (whitelist.indexOf(attr.name) === -1) {
         this.removeAttributeNode(attr);
       }
     }
@@ -25,24 +26,33 @@ module.exports = function (content) {
       whitelist = ["href", "target"];
     while (i--) {
       attr = attributes[i];
-      if ($.inArray(attr.name, whitelist) === -1) {
+      if (whitelist.indexOf(attr.name) === -1) {
         this.removeAttributeNode(attr);
       }
     }
   });
 
-  content = $content.html();
+  $content.find('p, span, h1, strong, em, ul, ol, li').each(function () {
+    var attr,
+      attributes = this.attributes,
+      i = attributes.length,
+      whitelist = ["style"];
+    while (i--) {
+      attr = attributes[i];
+      if (whitelist.indexOf(attr.name) === -1) {
+        this.removeAttributeNode(attr);
+      } else {
+        if (this.css('textDecoration').indexOf('lineThrough') !== -1) {
+          this.removeAttributeNode(attr);
+          this.css('textDecoration', 'lineThrough');
+        } else {
+          this.removeAttributeNode(attr);
+        }
+      }
+    }
+  });
 
-  content = content
-    .replace(/&amp;nbsp;/g, ' ')
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;h1&gt;/g, '<h1>').replace(/&lt;\/h1&gt;/g, '</h1>')
-    .replace(/&lt;p&gt;/g, '<p>').replace(/&lt;\/p&gt;/g, '</p>')
-    .replace(/&lt;strong&gt;/g, '<strong>').replace(/&lt;\/strong&gt;/g, '</strong>')
-    .replace(/&lt;em&gt;/g, '<em>').replace(/&lt;\/em&gt;/g, '</em>')
-    .replace(/&lt;blockquote&gt;/g, '<blockquote>').replace(/&lt;\/blockquote&gt;/g, '</blockquote>')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>');
+  content = $content.html();
 
   return content;
 };

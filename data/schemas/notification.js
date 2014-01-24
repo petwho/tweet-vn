@@ -1,9 +1,4 @@
-var Schema        = require('mongoose').Schema,
-  AnswerSchema    = require('answer'),
-  UserSchema      = require('user'),
-  QuestionSchema  = require('question'),
-  TopicSchema     = require('topic'),
-  CommentSchema   = require('comment');
+var Schema        = require('mongoose').Schema;
 
 var NotificationSchema = new Schema({
   // (10): question edited

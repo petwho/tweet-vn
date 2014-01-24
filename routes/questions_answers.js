@@ -1,5 +1,4 @@
 var loggedIn = require('./middleware/logged_in'),
-  getHtml = require('./helpers/get_html'),
   Activity = require('../data/models/activity');
 
 module.exports = function (app) {
@@ -34,14 +33,7 @@ module.exports = function (app) {
           ],
           function (err, activities) {
             activities.map(function (activity) {
-              if (activity.posted.question_id) {
-                activity.posted.question_id.title = getHtml(activity.posted.question_id.title);
-                activity.posted.question_id.detail = getHtml(activity.posted.question_id.detail);
-              }
-
               if (activity.posted.answer_id) {
-                activity.posted.answer_id.content = getHtml(activity.posted.answer_id.content);
-
                 activity.posted.answer_id.votes.map(function (vote) {
                   if ((activity.type !== 'hidden') && (vote.user_id.toString() === req.session.user._id)) {
                     activity.posted.answer_id.set(vote.type, true, {strict: false});

@@ -1,7 +1,6 @@
 var AnswerSchema,
   Schema = require('mongoose').Schema,
   LogSchema = require('./log'),
-  escapeHtml = require('escape-html'),
   getHtml = require('../helpers/get_html');
 
 AnswerSchema = new Schema({
@@ -32,16 +31,7 @@ AnswerSchema.static('filterInputs', function (reqBody) {
   delete reqBody.votes;
   delete reqBody.created_at;
   delete reqBody.updated_at;
-  // remove script tag from html
-  if ((typeof reqBody.content === 'string') && reqBody.content.trim()) {
-    reqBody.content = escapeHtml(reqBody.content);
-  }
+  reqBody.content = getHtml(reqBody.content);
 });
-
-AnswerSchema.virtual('contentHtml').get(function () {
-  return getHtml(this.content);
-});
-
-AnswerSchema.set('toJSON', { virtuals: true });
 
 module.exports = AnswerSchema;

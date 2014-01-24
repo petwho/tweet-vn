@@ -8,7 +8,6 @@ var oauth2Client, googleapis, Facebook,
   Activity = require('../data/models/activity'),
   Notification = require('../data/models/notification'),
   async = require('async'),
-  getHtml = require('./helpers/get_html'),
   request = require('request'),
   randomString = require('./middleware/random_string');
 
@@ -178,22 +177,9 @@ module.exports = function (app) {
         .sort({created_at: -1})
         .populate('posted.question_id posted.answer_id posted.comment_id voted.answer_id followed.user_id followed.question_id followed.topic_id')
         .exec(function (err, activities) {
-          var i;
           req.answerCount = req.questionCount = 0;
 
           if (err) { return next(err); }
-
-          for (i = 0; i < activities.length; i++) {
-            if (activities[i].type === 21) {
-              req.questionCount++;
-              activities[i].posted.answer_id.content = getHtml(activities[i].posted.answer_id.content);
-            }
-            if (activities[i].type === 20) {
-              req.answerCount++;
-              activities[i].posted.question_id.title = getHtml(activities[i].posted.question_id.title);
-              activities[i].posted.question_id.details = getHtml(activities[i].posted.question_id.details);
-            }
-          }
 
           Activity.populate(activities, [
             { path: 'posted.answer_id.question_id', model: 'Question' },

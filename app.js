@@ -84,6 +84,7 @@ require('./routes/questions')(app);
 require('./routes/answers')(app);
 require('./routes/topics')(app);
 require('./routes/activities')(app);
+require('./routes/notifications')(app);
 // * End load routes
 
 // start server

@@ -4,7 +4,6 @@ var loggedIn = require('./middleware/logged_in'),
   loadTopics = require('./middleware/load_topics'),
   async = require('async'),
   util = require('util'),
-  getHtml = require('./helpers/get_html'),
   validateTopics = require('./middleware/validate_topics'),
   validateQuestion = require('./middleware/validate_question'),
   updateTitle = require('./middleware/update_question_title'),
@@ -57,13 +56,6 @@ module.exports = function (app) {
             question = returned_question;
 
             if (!question) { return res.redirect('/'); }
-            // return content html
-            question.title = getHtml(question.title);
-            question.detail = getHtml(question.detail);
-
-            question.answer_ids.map(function (answer) {
-              answer.content = getHtml(answer.content);
-            });
 
             next();
           });

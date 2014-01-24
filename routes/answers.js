@@ -1,7 +1,6 @@
 var loggedIn = require('./middleware/logged_in'),
   loggedInAjax = require('./middleware/logged_in_ajax'),
   async = require('async'),
-  getHtml = require('./helpers/get_html'),
   Activity = require('../data/models/activity'),
   Question = require('../data/models/question'),
   Answer = require('../data/models/answer'),
@@ -114,7 +113,6 @@ module.exports = function (app) {
         }
       ], function (err, answer) {
         if (err) { return next(err); }
-        answer.content = getHtml(answer.content);
         res.json(200, answer);
       });
     });
