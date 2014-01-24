@@ -1,6 +1,6 @@
 define([
   'backbone', 'spinner',  'tinymce',
-  'text!templates/question.html',
+  'text!templates/question/question.html',
 
 ], function (Backbone, spinner, tinymce, questionTpl) {
   var QuestionView = Backbone.View.extend({

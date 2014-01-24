@@ -1,7 +1,7 @@
 // ** Begin single Question view
 define([
   'backbone', 'spinner',  'tinymce',
-  'text!templates/question_answer.html'
+  'text!templates/questions_answers/qa.html'
 ], function (Backbone, spinner, tinymce, qaTpl) {
   var View = Backbone.View.extend({
     template: _.template(qaTpl),

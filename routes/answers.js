@@ -104,7 +104,7 @@ module.exports = function (app) {
       Answer.populate(answer, [
         {
           path: 'user_id',
-          select: '-email -password -password_salt -token -sign_up_type',
+          select: '-email -password -password_salt -token',
           model: 'User'
         },
         {

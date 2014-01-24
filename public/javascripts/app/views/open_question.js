@@ -1,12 +1,12 @@
 // ** Begin single Question view
 define([
   'backbone', 'spinner',  'tinymce',
-  'text!templates/open_question.html',
+  'text!templates/open_questions/question.html',
 
-], function (Backbone, spinner, tinymce, openQuestionTpl) {
+], function (Backbone, spinner, tinymce, questionTpl) {
   var QuestionView = Backbone.View.extend({
 
-    template: _.template(openQuestionTpl),
+    template: _.template(questionTpl),
 
     events: {
       'click .fake-editor'  : 'onClickFake',

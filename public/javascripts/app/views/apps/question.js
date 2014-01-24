@@ -3,7 +3,7 @@ define([
   'models/question', 'views/question', 'models/answer',
   'text!templates/banner_msg.html',
   'text!templates/question/search_results.html',
-  'text!templates/answer.html',
+  'text!templates/question/answer.html',
   'text!templates/question/topic.html',
   'text!../../../vendor/tinymce/skins/lightgray/skin.min.css',
   'text!../../../vendor/tinymce/skins/lightgray/content.min.css',

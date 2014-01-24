@@ -250,11 +250,11 @@ module.exports = function (app) {
         if (err) { return next(err); }
         Activity.populate(activity, [{
           path: 'followed.user_id',
-          select: '-email -password -password_salt -token -sign_up_type',
+          select: '-email -password -password_salt -tokencontent',
           model: 'User'
         }, {
           path: 'user_id',
-          select: '-email -password -password_salt -token -sign_up_type',
+          select: '-email -password -password_salt -tokencontent',
           model: 'User'
         }], function (err, activity) {
           if (err) { return next(err); }
@@ -327,11 +327,11 @@ module.exports = function (app) {
         'followed.user_id': req.following._id
       }).sort({created_at: -1}).populate([{
         path: 'followed.user_id',
-        select: '-email -password -password_salt -token -sign_up_type',
+        select: '-email -password -password_salt -tokencontent',
         model: 'User'
       }, {
         path: 'user_id',
-        select: '-email -password -password_salt -token -sign_up_type',
+        select: '-email -password -password_salt -tokencontent',
         model: 'User'
       }]).exec(function (err, activity) {
         if (err) { return next(err); }

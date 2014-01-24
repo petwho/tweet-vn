@@ -10,7 +10,7 @@ module.exports = function (content) {
     var attr,
       attributes = this.attributes,
       i = attributes.length,
-      whitelist = ["src", "alt"];
+      whitelist = ["src", "title", "alt"];
     while (i--) {
       attr = attributes[i];
       if (whitelist.indexOf(attr.name) === -1) {
