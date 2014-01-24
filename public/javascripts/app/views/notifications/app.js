@@ -1,6 +1,7 @@
 define([
-  'jquery', 'backbone', 'collections/notifications', 'text!templates/error.html'
-], function ($, Backbone, notifications, errorTpl) {
+  'jquery', 'backbone', 'collections/notifications',
+  'text!templates/notifications/notification.html', 'text!templates/error.html'
+], function ($, Backbone, notifications, notificationTpl, errorTpl) {
   var View = Backbone.View.extend({
     el: '#notifications',
 
@@ -20,7 +21,7 @@ define([
     },
 
     addNotification: function (notification) {
-      this.$el.append();
+      this.$el.append(this.template(notification));
     }
   });
 
