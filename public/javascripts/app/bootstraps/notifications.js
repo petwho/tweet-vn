@@ -22,6 +22,6 @@ require.config({
 });
 
 require([
-  'bootstrap', 'backbone', 'views/apps/notifications'
+  'bootstrap', 'backbone', 'views/notifications/app'
 ], function (bootstrap, Backbone, appView) {
 });

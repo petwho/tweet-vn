@@ -1,6 +1,6 @@
 define([
   'sockets/connect_to_room', 'backbone', 'spinner', '../../libs/move_caret_to_end',
-  'views/apps/question', 'models/question'
+  'views/question/app', 'models/question'
 ], function (socket, Backbone, spinner, moveCaret, appView, Question) {
   var Router = Backbone.Router.extend({
     routes: {

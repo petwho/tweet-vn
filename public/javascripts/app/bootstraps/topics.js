@@ -23,7 +23,7 @@ require.config({
 
 require([
   'bootstrap', 'backbone',
-  'views/apps/topics',
+  'views/topics/app',
   'routers/topics'
 ], function (bootstrap, Backbone, appView, workspace) {
   Backbone.history.start();

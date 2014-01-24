@@ -1,5 +1,5 @@
 define([
-  'backbone', 'spinner', 'views/apps/topics',
+  'backbone', 'spinner', 'views/topics/app',
   'text!templates/topics/link_button.html',
   'text!/stylesheets/topic.css'
 ], function (Backbone, spinner, appView, linkText, topicCSS) {

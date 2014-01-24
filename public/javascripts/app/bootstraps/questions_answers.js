@@ -29,7 +29,7 @@ require.config({
 require([
   'bootstrap', 'backbone',
   'share/views/add_question',
-  'views/apps/questions_answers'
+  'views/questions_answers/app'
 ], function (bootstrap, Backbone, AddQuestionView, AppView) {
   new AddQuestionView();
   new AppView();
