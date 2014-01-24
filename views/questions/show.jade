@@ -81,6 +81,6 @@ block content
             - for (var i = 0; i < related_questions.length; i++)
               .related-question
                 a(href="/questions/#{related_questions[i]._id}")= related_questions[i].topic_ids[0].name + ': '
-                  span= related_questions[i].title
+                  span!= related_questions[i].title
 
   script(data-main="/javascripts/app/bootstraps/question.js", src="/javascripts/libs/require/require-2.1.9.min.js")

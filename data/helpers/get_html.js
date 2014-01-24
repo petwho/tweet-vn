@@ -42,9 +42,9 @@ module.exports = function (content) {
       if (whitelist.indexOf(attr.name) === -1) {
         this.removeAttributeNode(attr);
       } else {
-        if (this.css('textDecoration').indexOf('lineThrough') !== -1) {
+        if ($(this).css('textDecoration').indexOf('line-through') !== -1) {
           this.removeAttributeNode(attr);
-          this.css('textDecoration', 'lineThrough');
+          $(this).css('textDecoration', 'lineThrough');
         } else {
           this.removeAttributeNode(attr);
         }
