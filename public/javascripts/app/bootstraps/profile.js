@@ -23,7 +23,7 @@ require.config({
 });
 
 require([
-  'bootstrap', 'backbone', 'views/profile'
+  'bootstrap', 'backbone', 'views/profile/app'
 ], function (bootstrap, Backbone, ProfileView) {
   new ProfileView();
 });

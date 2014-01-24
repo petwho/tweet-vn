@@ -1,11 +1,11 @@
 define([
   'sockets/connect_to_room', 'jquery', 'backbone', 'spinner', 'tinymce',
-  'collections/questions_answers', 'views/question_answer',
-  'collections/answers', 'models/answer', 'views/answer',
+  'collections/questions_answers', 'views/questions_answers/qa',
+  'collections/answers', 'models/answer',
   'text!../../../vendor/tinymce/skins/lightgray/skin.min.css',
   'text!../../../vendor/tinymce/skins/lightgray/content.min.css',
   'text!../../../vendor/tinymce/skins/lightgray/content.inline.min.css'
-], function (socket, $, Backbone, spinner, tinymce, qas, QAView, Answers, Answer, AnswerView, skinCSS, contentCSS, contentInlineCSS) {
+], function (socket, $, Backbone, spinner, tinymce, qas, QAView, Answers, Answer, skinCSS, contentCSS, contentInlineCSS) {
   var AppView = Backbone.View.extend({
     el: '#qa-items',
 

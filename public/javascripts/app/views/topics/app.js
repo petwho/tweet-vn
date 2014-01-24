@@ -1,5 +1,5 @@
 define([
-  'backbone', 'spinner', 'collections/topics', 'views/topic'
+  'backbone', 'spinner', 'collections/topics', 'views/topics/topic'
 ], function (Backbone, spinner, Topics, TopicView) {
   var AppView = Backbone.View.extend({
     el: '#welcome-flow',

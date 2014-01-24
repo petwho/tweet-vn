@@ -1,11 +1,11 @@
 define([
   'sockets/connect_to_room', 'jquery', 'backbone', 'spinner', 'tinymce',
-  'collections/questions',  'views/open_question',
-  'collections/answers',    'models/answer',  'views/answer',
+  'collections/questions', 'views/open_questions/question',
+  'collections/answers', 'models/answer',
   'text!../../../vendor/tinymce/skins/lightgray/skin.min.css',
   'text!../../../vendor/tinymce/skins/lightgray/content.min.css',
   'text!../../../vendor/tinymce/skins/lightgray/content.inline.min.css'
-], function (socket, $, Backbone, spinner, tinymce, questions, OpenQuestionView, Answers, Answer, AnswerView, skinCSS, contentCSS, contentInlineCSS) {
+], function (socket, $, Backbone, spinner, tinymce, questions, QuestionView, Answers, Answer, skinCSS, contentCSS, contentInlineCSS) {
   var AppView = Backbone.View.extend({
     el: '#open-questions',
 
@@ -35,7 +35,7 @@ define([
     },
 
     addQuestion: function (question) {
-      var questionView = new OpenQuestionView({ model: question});
+      var questionView = new QuestionView({ model: question});
       this.$el.append(questionView.render().el);
     },
 

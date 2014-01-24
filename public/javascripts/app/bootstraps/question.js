@@ -28,7 +28,7 @@ require.config({
 
 require([
   'bootstrap', 'backbone', 'routers/question',
-  'share/views/add_question',
+  'share/add_question',
   'views/question/app'
 ], function (bootstrap, Backbone, Router, AddQuestionView, appView) {
   new AddQuestionView();

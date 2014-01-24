@@ -1,6 +1,6 @@
 define([
   'sockets/connect_to_room', 'jquery', 'backbone', 'spinner',
-  'models/question', 'views/question', 'models/answer',
+  'models/question', 'views/question/question', 'models/answer',
   'text!templates/banner_msg.html',
   'text!templates/question/search_results.html',
   'text!templates/question/answer.html',
