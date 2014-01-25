@@ -249,7 +249,7 @@ module.exports = function (app) {
     notify_author = function (next) {
       Notification.findOne({
         type: 40,
-        user_id: req.question.user_id._id,
+        user_id: req.question.user_id,
         'new_follower.user_id': req.session.user._id,
         'new_follower.question_id': req.question._id
       }, function (err, notification) {
@@ -259,7 +259,7 @@ module.exports = function (app) {
 
         Notification.create({
           type: 40,
-          user_id: req.question.user_id._id,
+          user_id: req.question.user_id,
           new_follower: {
             user_id: req.session.user._id,
             question_id: req.question._id

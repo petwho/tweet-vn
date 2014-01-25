@@ -21,7 +21,7 @@ define([
     },
 
     addNotification: function (notification) {
-      var ntfView = new notificationView({model: notification});
+      var ntfView = new NotificationView({model: notification});
       this.$el.append(ntfView.el);
     }
   });
