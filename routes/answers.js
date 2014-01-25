@@ -5,21 +5,21 @@ var loggedIn = require('./middleware/logged_in'),
   Question = require('../data/models/question'),
   Answer = require('../data/models/answer'),
   Log = require('../data/models/log'),
+  Notification = require('../data/models/notification'),
   User = require('../data/models/user');
 
 module.exports = function (app) {
   app.post('/answers', [loggedIn], function (req, res, next) {
-    var create_answer, add_author_vote,    create_log, create_activity,
-      add_log_to_answer,  validate_question,  update_question,
-      question,           answer,             log;
+    var validate_question, create_answer, add_author_vote, create_log, create_activity,
+      add_log_to_answer, update_question, notifiy_followers;
 
-    log = {};
+    req.log = {};
 
     validate_question = function (next) {
-      Question.findById(req.body.question_id, function (err, returned_question) {
+      Question.findById(req.body.question_id, function (err, question) {
         if (err) { return next(err); }
-        if (!returned_question) { return res.json(400, { msg: 'Invalid question' }); }
-        question = returned_question;
+        if (!question) { return res.json(400, { msg: 'Invalid question' }); }
+        req.question = question;
         next();
       });
     };
@@ -28,54 +28,54 @@ module.exports = function (app) {
       Answer.filterInputs(req.body);
 
       req.body.user_id    = req.session.user._id;
-      req.body.topic_ids  = question.topic_ids;
+      req.body.topic_ids  = req.question.topic_ids;
 
-      Answer.create(req.body, function (err, returned_answer) {
+      Answer.create(req.body, function (err, answer) {
         if (err) { return next(err); }
-        answer = returned_answer;
+        req.answer = answer;
         next();
       });
     };
 
     add_author_vote = function (next) {
-      answer.votes = [{
+      req.answer.votes = [{
         user_id: req.session.user._id,
         type: 'upvote'
       }];
-      answer.save(function (err, returned_answer) {
+      req.answer.save(function (err, answers) {
         if (err) { return next(err); }
-        answer = returned_answer;
+        req.answer = answers;
         next();
       });
     };
 
     create_log = function (next) {
-      log.type = 200;
-      log.user_id = req.session.user._id;
-      log.answer = answer;
-      log.content = req.body.content;
+      req.log.type = 200;
+      req.log.user_id = req.session.user._id;
+      req.log.answer = req.answer;
+      req.log.content = req.body.content;
 
-      Log.create(log, function (err, returned_log) {
+      Log.create(req.log, function (err, log) {
         if (err) { return next(err); }
-        log = returned_log;
+        req.log = log;
         next();
       });
     };
 
     add_log_to_answer = function (next) {
-      answer.log_ids = log._id;
-      answer.save(function (err, returned_answer, number_affected) {
+      req.answer.log_ids = req.log._id;
+      req.answer.save(function (err, answer, number_affected) {
         if (err) { return next(err); }
-        answer = returned_answer;
+        req.answer = answer;
         next();
       });
     };
 
     update_question = function (next) {
-      question.is_open = false;
-      question.log_ids.push(log._id);
-      question.answer_ids.push(answer._id);
-      question.save(function (err, question) {
+      req.question.is_open = false;
+      req.question.log_ids.push(req.log._id);
+      req.question.answer_ids.push(req.answer._id);
+      req.question.save(function (err, question) {
         if (err) { return next(err); }
         next();
       });
@@ -87,8 +87,8 @@ module.exports = function (app) {
       if (req.body.is_hidden === true) { activity.is_hidden = true; }
       activity.user_id = req.session.user._id;
       activity.type = 21;
-      activity.posted.answer_id = answer._id;
-      activity.posted.topic_ids = answer.topic_ids;
+      activity.posted.answer_id = req.answer._id;
+      activity.posted.topic_ids = req.answer.topic_ids;
 
       activity.save(function (err, activity) {
         if (err) { return next(err); }
@@ -96,12 +96,35 @@ module.exports = function (app) {
       });
     };
 
+    notifiy_followers = function (next) {
+      var notifiers = [], fn, i;
+      for (i = 0; i < req.question.follower_ids.length; i++) {
+        fn = (function (i) {
+          return function (next) {
+            Notification.create({
+              type: 20,
+              user_id: req.question.follower_ids[i],
+              log_id: req.log
+            }, function (err, notification) {
+              if (err) { return next(err); }
+              next();
+            });
+          };
+        }(i));
+        notifiers.push(fn);
+      }
+      async.parallel(notifiers, function (err, results) {
+        if (err) { return next(err); }
+        next();
+      });
+    };
+
     async.series([
       validate_question, create_answer, add_author_vote, create_log, add_log_to_answer,
-      update_question, create_activity
+      update_question, create_activity, notifiy_followers
     ], function (err, results) {
       if (err) { return next(err); }
-      Answer.populate(answer, [
+      Answer.populate(req.answer, [
         {
           path: 'user_id',
           select: '-email -password -password_salt -token',

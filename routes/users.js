@@ -182,7 +182,7 @@ module.exports = function (app) {
           if (err) { return next(err); }
 
           Activity.populate(activities, [
-            { path: 'posted.answer_id.question_id', model: 'Question' },
+            { path: 'posted.answer_id.question_id', model: 'Question' }
           ], function (err, activities) {
             if (err) { return next(err); }
             req.activities = activities;
@@ -266,6 +266,7 @@ module.exports = function (app) {
     // update notification
     add_notification = function (next) {
       Notification.findOne({
+        type: 40,
         user_id: req.following._id,
         new_follower: { user_id: req.session.user._id }
       }, function (err, notification) {
@@ -335,17 +336,14 @@ module.exports = function (app) {
         model: 'User'
       }]).exec(function (err, activity) {
         if (err) { return next(err); }
-        if (activity) {
-          activity.is_hidden = true;
-          activity.save(function (err, activity) {
-            if (err) { return next(err); }
-            req.activity = activity;
-            next();
-          });
-        } else {
-          req.session.destroy();
-          return res.json(403, {msg: 'invalid request'});
-        }
+        if (!activity) { return next(); }
+
+        activity.is_hidden = true;
+        activity.save(function (err, activity) {
+          if (err) { return next(err); }
+          req.activity = activity;
+          next();
+        });
       });
     };
 

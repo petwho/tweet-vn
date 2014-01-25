@@ -88,7 +88,9 @@ block content
 
           - if (activities[i].type === 31)
             .pagelist-item
-              .light-gray #{session.user.first_name} followed a question
+              strong #{session.user.first_name}&nbsp;
+              span.light-gray followed a question&nbsp;
+                a(href="/questions/#{activities[i].followed.question_id._id}", target="_blank")= activities[i].followed.question_id.title
 
           - if (activities[i].type === 32)
             .pagelist-item

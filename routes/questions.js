@@ -11,6 +11,7 @@ var loggedIn = require('./middleware/logged_in'),
   Activity = require('../data/models/activity'),
   Question = require('../data/models/question'),
   Topic = require('../data/models/topic'),
+  Notification = require('../data/models/notification'),
   Log = require('../data/models/log'),
   User = require('../data/models/user');
 
@@ -79,7 +80,7 @@ module.exports = function (app) {
   });
 
   app.post('/questions', [loggedIn, validateTopics, loadTopics.toObject], function (req, res, next) {
-    var create_question, update_user_following, create_activity,
+    var create_question, update_user_following, add_activity,
       log_question_details, log_question_title, log_question_topics, add_log_back_to_question,
       logs = [],
       topic_counter = 0;
@@ -105,7 +106,7 @@ module.exports = function (app) {
         });
     };
 
-    create_activity = function (next) {
+    add_activity = function (next) {
       var activity = new Activity();
 
       if (req.body.is_hidden === true) { activity.is_hidden = true; }
@@ -185,14 +186,14 @@ module.exports = function (app) {
       });
     };
 
-    async.series([create_question, update_user_following, log_question_title, log_question_topics, log_question_details, add_log_back_to_question, create_activity], function (err, results) {
+    async.series([create_question, update_user_following, log_question_title, log_question_topics, log_question_details, add_log_back_to_question, add_activity], function (err, results) {
       if (err) { return next(err); }
       return res.json(200, req.question);
     });
   });
 
   app.post('/questions/:id/follow', [loggedIn, validateQuestion.byIdParam], function (req, res, next) {
-    var update_user, update_question, create_activity;
+    var update_user, update_question, add_activity, notify_author;
 
     update_user = function (next) {
       User.findById(req.session.user._id, function (err, user) {
@@ -233,7 +234,7 @@ module.exports = function (app) {
       }
     };
 
-    create_activity = function (next) {
+    add_activity = function (next) {
       var activity = new Activity();
       activity.user_id = req.session.user._id;
       activity.type = 31;
@@ -245,14 +246,39 @@ module.exports = function (app) {
       });
     };
 
-    async.series([update_user, update_question, create_activity], function (err, results) {
+    notify_author = function (next) {
+      Notification.findOne({
+        type: 40,
+        user_id: req.question.user_id._id,
+        'new_follower.user_id': req.session.user._id,
+        'new_follower.question_id': req.question._id
+      }, function (err, notification) {
+        if (err) { return next(err); }
+
+        if (notification) { return next(); } // do not notify author if this user follow question again after unfollowing
+
+        Notification.create({
+          type: 40,
+          user_id: req.question.user_id._id,
+          new_follower: {
+            user_id: req.session.user._id,
+            question_id: req.question._id
+          }
+        }, function (err, notification) {
+          if (err) { return next(err); }
+          next();
+        });
+      });
+    };
+
+    async.series([update_user, update_question, add_activity, notify_author], function (err, results) {
       if (err) { return next(err); }
       res.json(200, {msg: 'following success'});
     });
   });
 
   app.post('/questions/:id/unfollow', [loggedIn, validateQuestion.byIdParam], function (req, res, next) {
-    var update_user, update_question;
+    var update_user, update_question, hide_activity;
 
     update_user = function (next) {
       User.findById(req.session.user._id, function (err, user) {
@@ -289,7 +315,24 @@ module.exports = function (app) {
       }
     };
 
-    async.series([update_user, update_question], function (err, results) {
+    hide_activity = function (next) {
+      Activity.findOne({
+        type: 31,
+        user_id: req.session.user._id,
+        'followed.question_id': req.question._id
+      }, function (err, activity) {
+        if (err) { return next(err); }
+        if (!activity) { return next(); }
+
+        activity.is_hidden = true;
+        activity.save(function (err, activity) {
+          if (err) { return next(err); }
+          next();
+        });
+      });
+    };
+
+    async.series([update_user, update_question, hide_activity], function (err, results) {
       if (err) { return next(err); }
       res.json(200, {msg: 'following success'});
     });
