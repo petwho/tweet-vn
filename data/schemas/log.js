@@ -1,7 +1,6 @@
 var LogSchema,
   Question = require('./question'),
   Answer = require('./answer'),
-  Log = require('./log'),
   Schema = require('mongoose').Schema;
 
 LogSchema = new Schema({
@@ -17,8 +16,8 @@ LogSchema = new Schema({
   user_id         : { type: Schema.Types.ObjectId, ref: 'User' },
   question        : [Question],
   answer          : [Answer],
-  reverter        : [Log],
-  reverted        : [Log],
+  reverted_to     : { type: Schema.Types.ObjectId, ref: 'Log' },
+  reverted_by     : { type: Schema.Types.ObjectId, ref: 'Log' },
   content         : String,
   removed_topic_id: { type: Schema.Types.ObjectId, ref: 'Topic' },
   added_topic_id  : { type: Schema.Types.ObjectId, ref: 'Topic' },

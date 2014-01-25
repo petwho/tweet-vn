@@ -7,9 +7,17 @@ module.exports = function (app) {
   });
 
   app.get('/notifications/list', loggedInAjax, function (req, res, next) {
-    Notification.find({user_id: req.session.user._id, is_hidden: false}, function (err, notifications) {
-      if (err) { return next(err); }
-      res.json(200, notifications);
-    });
+    var find_notifications, check_diff;
+    find_notifications = function (next) {
+      Notification.find({user_id: req.session.user._id, is_hidden: false}, function (err, notifications) {
+        if (err) { return next(err); }
+        // res.json(200, notifications);
+        req.notifications = notifications;
+        next();
+      });
+    };
+    check_diff = function (next) {
+
+    };
   });
 };
