@@ -250,11 +250,11 @@ module.exports = function (app) {
         if (err) { return next(err); }
         Activity.populate(activity, [{
           path: 'followed.user_id',
-          select: '-email -password -password_salt -tokencontent',
+          select: '-email -password -password_salt -token',
           model: 'User'
         }, {
           path: 'user_id',
-          select: '-email -password -password_salt -tokencontent',
+          select: '-email -password -password_salt -token',
           model: 'User'
         }], function (err, activity) {
           if (err) { return next(err); }
@@ -268,7 +268,7 @@ module.exports = function (app) {
       Notification.findOne({
         type: 40,
         user_id: req.following._id,
-        new_follower: { user_id: req.session.user._id }
+        'new_follower.user_id': req.session.user._id
       }, function (err, notification) {
         if (err) { return next(err); }
         if (!notification) {
@@ -328,11 +328,11 @@ module.exports = function (app) {
         'followed.user_id': req.following._id
       }).sort({created_at: -1}).populate([{
         path: 'followed.user_id',
-        select: '-email -password -password_salt -tokencontent',
+        select: '-email -password -password_salt -token',
         model: 'User'
       }, {
         path: 'user_id',
-        select: '-email -password -password_salt -tokencontent',
+        select: '-email -password -password_salt -token',
         model: 'User'
       }]).exec(function (err, activity) {
         if (err) { return next(err); }

@@ -10,7 +10,7 @@ module.exports = function (req, res, next) {
   update_question = function (next) {
     Question.findById(req.body._id, function (err, question) {
       if (err) { return next(err); }
-
+      if (!question) { res.json(404, {msg: 'Invalid title'}); }
       question.topic_ids = req.body.topic_ids;
 
       question.save(function (err, question) {

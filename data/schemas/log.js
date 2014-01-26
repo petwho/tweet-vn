@@ -16,11 +16,11 @@ LogSchema = new Schema({
   user_id         : { type: Schema.Types.ObjectId, ref: 'User' },
   question        : [Question],
   answer          : [Answer],
+  diff            : String,
   reverted_to     : { type: Schema.Types.ObjectId, ref: 'Log' },
   reverted_by     : { type: Schema.Types.ObjectId, ref: 'Log' },
-  content         : String,
-  removed_topic_id: { type: Schema.Types.ObjectId, ref: 'Topic' },
   added_topic_id  : { type: Schema.Types.ObjectId, ref: 'Topic' },
+  removed_topic_id: { type: Schema.Types.ObjectId, ref: 'Topic' },
   created_at      : { type: Date, default: Date.now }
 });
 

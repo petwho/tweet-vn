@@ -27,7 +27,7 @@ module.exports = function (app) {
             },
             {
               path: 'posted.answer_id.user_id',
-              select: '-email -password -password_salt -tokencontent',
+              select: '-email -password -password_salt -token',
               model: 'User'
             }
           ],

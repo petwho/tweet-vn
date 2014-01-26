@@ -20,7 +20,16 @@ var NotificationSchema = new Schema({
   new_comment: {
     user_id     : { type: Schema.Types.ObjectId, ref: 'User' },
     comment_id  : { type: Schema.Types.ObjectId, ref: 'Comment' }
+  },
+  created_at : { type: Date, default: Date.now },
+  updated_at : { type: Date, default: Date.now },
+});
+
+NotificationSchema.pre('save', function (next) {
+  if (!this.isNew) {
+    this.updated_at = new Date();
   }
+  next();
 });
 
 module.exports = NotificationSchema;

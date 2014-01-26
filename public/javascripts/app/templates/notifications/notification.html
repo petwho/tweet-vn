@@ -1,0 +1,47 @@
+<div>
+<% if (type === 10) { %>
+  <div>
+    <% if (log_id.type === 101) { %>
+      <a href="/users/<%= log_id.user_id.username %>"><img src="<%= log_id.user_id.picture %>" width="25" height="25"></a>
+      <a href="/users/<%= log_id.user_id.username %>"><%= log_id.user_id.fullname %></a>
+      added topic
+      <a href="/topics/<%= log_id.added_topic_id._id %>"><%= log_id.added_topic_id.name %></a>
+      to question
+    <% } %>
+
+    <% if (log_id.type === 111) { %>
+      <a href="/users/<%= log_id.user_id.username %>"><img src="<%= log_id.user_id.picture %>" width="25" height="25"></a>
+      <a href="/users/<%= log_id.user_id.username %>"><%= log_id.user_id.fullname %></a>
+      removed topic
+      <a href="/topics/<%= log_id.removed_topic_id._id %>"><%= log_id.removed_topic_id.name %></a>
+      from question
+    <% } %>
+
+    <% if (log_id.type === 110) { %>
+      <a href="/users/<%= log_id.user_id.username %>"><img src="<%= log_id.user_id.picture %>" width="25" height="25"></a>
+      <a href="/users/<%= log_id.user_id.username %>"><%= log_id.user_id.fullname %></a>
+      edited the title of the question
+      <a href="/questions/<%= log_id.question[0]._id %>" target="_blank"><%= log_id.question[0].title %></a>
+      <div class="diff light-gray">
+        <%= log_id.diff %>
+      </div>
+    <% } %>
+  </div>
+<% } %>
+
+<% if (type === 40) { %>
+  <% if (!new_follower.question_id) { %>
+    <div>
+      <a href="/users/<%= new_follower.user_id.username %>"><img src="<%= new_follower.user_id.picture %>" width="25" height="25"></a>
+      <a href="/users/<%= new_follower.user_id.username %>" target="_blank"><%= new_follower.user_id.fullname %></a>
+      is now following you
+    </div>
+  <% } else { %>
+    <div>
+      <a href="/users/<%= new_follower.user_id.username %>"><img src="<%= new_follower.user_id.picture %>" width="25" height="25"></a>
+      <a href="/users/<%= new_follower.user_id.username %>" target="_blank"><%= new_follower.user_id.fullname %></a>
+      is now following your question <a href="/questions/<%= new_follower.question_id._id %>" target="_blank"><%= new_follower.question_id.title %></a>
+    </div>
+  <% } %>
+<% } %>
+</div>
