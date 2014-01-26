@@ -71,17 +71,17 @@ UserSchema.static('errorHandler', function (err, req, res, next) {
 
   if (err.name === 'ValidationError') {
     if (err.errors.fullname) {
-      error_msg_list.push('invalid fullname');
+      error_msg_list.push('Fullname is not valid');
     }
     if (err.errors.email) {
-      error_msg_list.push('invalid email');
+      error_msg_list.push('Email is not valid');
     }
   }
 
   if (err.code === 11000) {
     message = err.err;
     if (message.indexOf(req.body.email) !== -1) {
-      error_msg_list.push('duplicate email');
+      error_msg_list.push('This email address is already in use');
     }
   }
 
@@ -93,7 +93,7 @@ UserSchema.static('newPassword', function (req, res, next) {
     self = this;
 
   if (!req.body.password || (req.body.password.length < 6)) {
-    return res.json({msg: 'new password too short'}, 400);
+    return res.json({msg: 'New password too short'}, 400);
   }
 
   make_hash_password = function (next) {
@@ -387,7 +387,7 @@ UserSchema.static('emailSignUp', function (req, res, next) {
   async.series([
     make_hash_password, create_valid_user
   ], function (err, results) {
-    var register_success_msg  = "Account registered successful. Please check your email to activate account";
+    var register_success_msg  = "Account registered successful.<br>Check your email to activate account.";
 
     if (err) { return next(err); }
 

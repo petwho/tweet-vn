@@ -108,86 +108,94 @@ html.login-page {
       }
     }
     .container {
+      margin-top: 50px;
+    }
+    .signup-link {
+      margin-top: 20px;
+    }
+    .message {
+      background: rgba(0,0,0,0.33);
+      color: #fff;
+      text-align: center;
+      .border-radius(2px);
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+    .social-signup-btns {
       margin-top: 100px;
-    }
-  }
-  .signup-link {
-    margin-top: 10px;
-  }
-  .social-signup-btns {
-    margin-top: 100px;
-    margin-left: 20px;
-    text-align: center;
-    .google-signup-btn {
-      text-align: left;
-      float: left;
-      margin-right: 20px;
-      height: 35px;
-      background: #dd4b39;
-      color: white;
-      width: 120px;
-      .border-radius(5px);
-      white-space: nowrap;
-      &:hover {
-        background: #e74b37;
-        cursor: pointer;
-      }
-      .icon {
-        left: 15px;
-        background: url('/images/google_btn.png') transparent 5px 50% no-repeat;
-        display: inline-block;
-        vertical-align: middle;
-        width: 35px;
+      margin-left: 20px;
+      text-align: center;
+      .google-signup-btn {
+        text-align: left;
+        float: left;
+        margin-right: 20px;
         height: 35px;
-        border-right: #bb3f30 1px solid;
-      }
-      .buttonText {
-        display: inline-block;
-        vertical-align: middle;
-        font-size: 14px;
-        margin-left: 5px;
-        &:before {
-          content: 'Google';
+        background: #dd4b39;
+        color: white;
+        width: 120px;
+        .border-radius(5px);
+        white-space: nowrap;
+        &:hover {
+          background: #e74b37;
+          cursor: pointer;
         }
-        font-family: 'Roboto',arial,sans-serif;
-        font-weight: bold;
+        .icon {
+          left: 15px;
+          background: url('/images/google_btn.png') transparent 5px 50% no-repeat;
+          display: inline-block;
+          vertical-align: middle;
+          width: 35px;
+          height: 35px;
+          border-right: #bb3f30 1px solid;
+        }
+        .buttonText {
+          display: inline-block;
+          vertical-align: middle;
+          font-size: 14px;
+          margin-left: 5px;
+          &:before {
+            content: 'Google';
+          }
+          font-family: 'Roboto',arial,sans-serif;
+          font-weight: bold;
+        }
       }
-    }
 
-    .facebook-signup-btn {
-      .border-radius(5px);
-      text-align: left;
-      position: absolute;
-      left: 170px;
-      width: 120px;
-      height: 35px;
-      line-height: 35px;
-      font-size: 1em;
-      font-family: "Facebook Letter Faces", Helvetica, sans-serif;
-      background-color: #4365a9;
-      color: white;
-      white-space: nowrap;
-      &:hover {
-        background: #4f6aa3;
-        cursor: pointer;
-      }
-      .icon {
-        position: relative;
-        margin-left: 10px;
-        margin-right: 10px;
-        &:before {
-          content: "f";
+      .facebook-signup-btn {
+        .border-radius(5px);
+        text-align: left;
+        position: absolute;
+        left: 170px;
+        width: 120px;
+        height: 35px;
+        line-height: 35px;
+        font-size: 1em;
+        font-family: "Facebook Letter Faces", Helvetica, sans-serif;
+        background-color: #4365a9;
+        color: white;
+        white-space: nowrap;
+        &:hover {
+          background: #4f6aa3;
+          cursor: pointer;
         }
-      }
-      .buttonText {
-        &:before {
-          content: "Facebook";
+        .icon {
+          position: relative;
+          margin-left: 10px;
+          margin-right: 10px;
+          &:before {
+            content: "f";
+          }
         }
-        padding-left: 5px;
-        border-left: 1px solid rgba(34,34,34,0.18);
-        display: inline-block;
-        vertical-align: middle;
-        margin-top: 2px;
+        .buttonText {
+          &:before {
+            content: "Facebook";
+          }
+          padding-left: 5px;
+          border-left: 1px solid rgba(34,34,34,0.18);
+          display: inline-block;
+          vertical-align: middle;
+          margin-top: 2px;
+        }
       }
     }
   }

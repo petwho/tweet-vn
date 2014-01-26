@@ -11,19 +11,20 @@ define(['backbone', 'spinner'], function (Backbone, spinner) {
     },
 
     initialize: function () {
-      this.$firstNameSignUp    = $('#first_name_signup');
-      this.$lastNameSignUp    = $('#last_name_signup');
-      this.$emailSignup       = $('#email_signup');
-      this.$passwordSignup    = $('#password_signup');
-      this.$emailLogin        = $('#email_login');
-      this.$passwordLogin     = $('#password_login');
-      this.$emailForgotPwd    = $('#email_forgot_password');
-      this.$message           = $('.message .non-session-msg');
-      this.crsfToken          = $('meta[name="csrf-token"]').attr('content');
+      this.$firstNameSignUp = $('#first_name_signup');
+      this.$lastNameSignUp = $('#last_name_signup');
+      this.$emailSignup = $('#email_signup');
+      this.$passwordSignup = $('#password_signup');
+      this.$emailLogin = $('#email_login');
+      this.$passwordLogin = $('#password_login');
+      this.$emailForgotPwd = $('#email_forgot_password');
+      this.$message = $('.msg-wrapper');
+      this.crsfToken = $('meta[name="csrf-token"]').attr('content');
     },
 
     clearForm : function () {
       this.$firstNameSignUp.val('');
+      this.$lastNameSignUp.val('');
       this.$emailSignup.val('');
       this.$passwordSignup.val('');
       this.$emailLogin.val('');
@@ -36,9 +37,7 @@ define(['backbone', 'spinner'], function (Backbone, spinner) {
 
       this.$message.fadeOut(50, function () {
         self.$message.empty().css({display : 'block'});
-        self.$message.html('<div class="alert alert-info alert-dismissable">'
-          + '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'
-          + data.msg + '</div>');
+        self.$message.html('<div class="message">' + data.msg + '</div>');
       });
 
       this.clearForm();
@@ -51,9 +50,7 @@ define(['backbone', 'spinner'], function (Backbone, spinner) {
 
       this.$message.fadeOut(50, function () {
         self.$message.empty().css({display : 'block'});
-        self.$message.html('<div class="alert alert-danger alert-dismissable">'
-          + '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'
-          + jqXHR.responseJSON.msg + '</div>');
+        self.$message.html('<div class="message">' + jqXHR.responseJSON.msg + '</div>');
       });
       spinner.stop();
     },
@@ -83,12 +80,7 @@ define(['backbone', 'spinner'], function (Backbone, spinner) {
 
           self.$message.fadeOut(50, function () {
             self.$message.empty().css({display : 'block'});
-            for (i = 0; i < length; i++) {
-              html += '<div class="alert alert-danger alert-dismissable">'
-                + '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'
-                + jqXHR.responseJSON.msg[i] + '</div>';
-              self.$message.html(html);
-            }
+            self.$message.html('<div class="message">' + jqXHR.responseJSON.msg + '</div>');
           });
           spinner.stop();
         }

@@ -17,6 +17,7 @@ block content
           label
             input(type="checkbox", name="remember", checked = "checked")
             small remember me
+        .msg-wrapper
         button.btn.btn-success.col-xs-5.pull-right(type="submit") Sign in
         | &nbsp;
         a.forgot-btn(href="#forgot-password")
@@ -42,11 +43,11 @@ block content
 
         .form-group
           label.control-label(for="first_name_signup") First Name:
-          input.form-control#first_name_signup(type="text", name="first_name")
+          input.form-control#first_name_signup(type="text", name="first_name", required)
 
         .form-group
           label.control-label(for="last_name_signup") Last Name:
-          input.form-control#last_name_signup(type="text", name="last_name")
+          input.form-control#last_name_signup(type="text", name="last_name", required)
 
         .form-group
           label.control-label(for="email_signup") Email:
@@ -55,7 +56,7 @@ block content
         .form-group
           label.control-label(for="password_signup") Password:
           input.form-control#password_signup(type="password", name="password", required='required', pattern=".{6,}", title = "Mật khẩu phải từ 5 ký tự trở lên")
-
+        .msg-wrapper
         button.btn.btn-success(type="submit") Register
         | &nbsp;
         a.cancel-register(href="#")
@@ -70,9 +71,10 @@ block content
             input#email_forgot_password.form-control(name="email", type="email", placeholder="Email")
             br
           .col-xs-12
-              button.btn.btn-success(type="submit") Submit
-              | &nbsp;
-              a.cancel-forgot(href="#")
-                strong Cancel
+            .msg-wrapper
+            button.btn.btn-success(type="submit") Submit
+            | &nbsp;
+            a.cancel-forgot(href="#")
+              strong Cancel
 
   script(data-main="/javascripts/app/bootstraps/login", src="/javascripts/libs/require/require-2.1.9.min.js")

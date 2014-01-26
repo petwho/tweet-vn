@@ -11,7 +11,7 @@ define(['backbone'], function (Backbone) {
       $('.signup').addClass('hidden');
       $('.signup-form').addClass('hidden');
       $('.forgot-password-form').addClass('hidden');
-      $('.message .non-session-msg').empty();
+      $('.msg-wrapper').empty();
       $('.spinner-large').remove();
     },
 

@@ -16,7 +16,7 @@ module.exports = function (app) {
       User.findOne({email: req.body.email}, function (err, found_user) {
         if (err) { return next(err); }
 
-        if (!found_user) { return res.json({msg: 'incorrect email'}, 403); }
+        if (!found_user) { return res.json({msg: 'Email was incorrect'}, 403); }
 
         user = found_user;
         next();
@@ -37,17 +37,17 @@ module.exports = function (app) {
             return next();
           }
 
-          return res.json({msg : 'inactivate account'}, 403);
+          return res.json({msg : 'Account is not being activated'}, 403);
         }
 
-        return res.json({msg : 'incorrect password'}, 403);
+        return res.json({msg : 'Password was incorrect'}, 403);
       });
     };
 
     async.series([check_email, check_password], function (err, results) {
       if (err) { return next(err); }
       req.session.message.info.push('login success');
-      return res.json({msg : 'login success'}, 200);
+      return res.json({msg : 'Login success'}, 200);
     });
   });
 
