@@ -1,16 +1,13 @@
-@font-face { 
-  font-family: Facebook-Letter-Faces;
-  // IE
-  src: local('Facebook-Letter-Faces'), url('/stylesheets/fonts/facebook.eot');
-  // non-IE
-  src: url('/stylesheets/fonts/facebold.otf');
+@charset 'UTF-8';
+
+@font-face {
+  font-family: 'Facebook Letter Faces';
+  src: url('/stylesheets/fonts/facebook.eot'); /* IE */
+  src: local('Facebook Letter Faces'), url('/stylesheets/fonts/facebold.otf'); /* non-IE */
 }
 
 // disalbe responsiveness
-@screen-xs-min: 480px;
-@screen-sm-min: 768px;
-@screen-md-min: 992px;
-@screen-lg-min: 1200px;
+@screen-xs-min: 0px;
 
 @media (min-width: @screen-xs-min) {
   .container {
@@ -22,24 +19,6 @@
     .navbar-right {
     float: right !important;
     }
-  }
-}
-
-@media (min-width: @screen-sm-min) {
-  .container {
-    width: 980px !important;
-  }
-}
-
-@media (min-width: @screen-md-min) {
-  .container {
-    width: 980px !important;
-  }
-}
-
-@media (min-width: @screen-lg-min) {
-  .container {
-    width: 980px !important;
   }
 }
 
@@ -83,6 +62,136 @@ a.edit {
   padding: 0 5px;
 }
 // ** End of mixin
+
+html.login-page {
+  overflow-y: auto;
+  body {
+    background: #2c4762 url('/images/background.png') top repeat-x;
+    a, h1, button, div, span {
+      color: #fff;
+    }
+    a:hover {
+      text-decoration: none;
+    }
+    .login, .signup-form {
+      margin-top: 20px;
+    }
+    .forgot-password-form {
+      margin-top: 150px;
+    }
+    .forgot-btn {
+      position: relative;
+      top: 12px;
+    }
+    input, button {
+      .border-radius(3px);
+    }
+    button {
+      background: #4e96c2;
+      border-color: #4e96c2;
+      color: #fff;
+      font-weight: bold;
+    }
+    header {
+      width: 150px;
+      margin: auto;
+      .spinner {
+        float: left;
+        padding-top: 10px;
+      }
+      h1 {
+        color: #fff;
+        text-align: center;
+        font-family: 'Poiret One', cursive;
+        letter-spacing: 3px;
+        font-size: 3em;
+      }
+    }
+    .container {
+      margin-top: 100px;
+    }
+  }
+  .signup-link {
+    margin-top: 10px;
+  }
+  .social-signup-btns {
+    margin-top: 100px;
+    margin-left: 20px;
+    text-align: center;
+    .google-signup-btn {
+      text-align: left;
+      float: left;
+      margin-right: 20px;
+      height: 35px;
+      background: #dd4b39;
+      color: white;
+      width: 120px;
+      .border-radius(5px);
+      white-space: nowrap;
+      &:hover {
+        background: #e74b37;
+        cursor: pointer;
+      }
+      .icon {
+        left: 15px;
+        background: url('/images/google_btn.png') transparent 5px 50% no-repeat;
+        display: inline-block;
+        vertical-align: middle;
+        width: 35px;
+        height: 35px;
+        border-right: #bb3f30 1px solid;
+      }
+      .buttonText {
+        display: inline-block;
+        vertical-align: middle;
+        font-size: 14px;
+        margin-left: 5px;
+        &:before {
+          content: 'Google';
+        }
+        font-family: 'Roboto',arial,sans-serif;
+        font-weight: bold;
+      }
+    }
+
+    .facebook-signup-btn {
+      .border-radius(5px);
+      text-align: left;
+      position: absolute;
+      left: 170px;
+      width: 120px;
+      height: 35px;
+      line-height: 35px;
+      font-size: 1em;
+      font-family: "Facebook Letter Faces", Helvetica, sans-serif;
+      background-color: #4365a9;
+      color: white;
+      white-space: nowrap;
+      &:hover {
+        background: #4f6aa3;
+        cursor: pointer;
+      }
+      .icon {
+        position: relative;
+        margin-left: 10px;
+        margin-right: 10px;
+        &:before {
+          content: "f";
+        }
+      }
+      .buttonText {
+        &:before {
+          content: "Facebook";
+        }
+        padding-left: 5px;
+        border-left: 1px solid rgba(34,34,34,0.18);
+        display: inline-block;
+        vertical-align: middle;
+        margin-top: 2px;
+      }
+    }
+  }
+}
 
 .banner-msg {
   width: 100%;
@@ -133,11 +242,19 @@ a.edit {
 }
 // ** End navbar
 
-// ** Begin functions definition
+// ** Begin helper functions
 .border-radius(@border) {
   -webkit-border-radius: @border;
   -moz-border-radius: @border;
   border-radius: @border;
+}
+
+.center {
+  text-align: center;
+}
+
+.clear {
+  clear: both;
 }
 
 .light-gray {
@@ -174,82 +291,6 @@ a.edit {
   .form-btn(#999, #777);
 }
 // ** End functions definition
-
-// ** Begin social signup button
-.google-signup-btn {
-  display: inline-block;
-  margin-top: 10px;
-  text-align: center;
-  height: 35px;
-  background: #dd4b39;
-  color: white;
-  width: 100%;
-  .border-radius(5px);
-  white-space: nowrap;
-  &:hover {
-    background: #e74b37;
-    cursor: pointer;
-  }
-  .icon {
-    position: absolute;
-    left: 15px;
-    background: url('/images/google_btn.png') transparent 5px 50% no-repeat;
-    display: inline-block;
-    vertical-align: middle;
-    width: 35px;
-    height: 35px;
-    border-right: #bb3f30 1px solid;
-  }
-  .buttonText {
-    margin-top: 5px;
-    display: inline-block;
-    vertical-align: middle;
-    font-size: 14px;
-    font-weight: bold;
-    /* Use the Roboto font that is loaded in the <head> */
-    font-family: 'Roboto',arial,sans-serif;
-  }
-}
-
-.facebook-signup-btn {
-  display: inline-block;
-  margin-top: 10px;
-  height: 35px;
-  text-align: center;
-  background-color: #4365a9;
-  color: white;
-  width: 100%;
-  .border-radius(5px);
-  white-space: nowrap;
-  &:hover {
-    background: #4f6aa3;
-    cursor: pointer;
-  }
-  .icon {
-    display: inline-block;
-    vertical-align: middle;
-    font-family: 'Facebook-Letter-Faces', Helvetica, sans-serif;
-    position: absolute;
-    left: 15px;
-    font-size: 2em;
-    height: 35px;
-    padding: 0 12px 0 10px;
-    border-right: 1px solid rgba(34,34,34,0.18);
-    &:before {
-      content: "f";
-    }
-  }
-  .buttonText {
-    margin-top: 5px;
-    display: inline-block;
-    vertical-align: middle;
-    font-size: 14px;
-    font-weight: bold;
-    /* Use the Roboto font that is loaded in the <head> */
-    font-family: 'Roboto',arial,sans-serif;
-  }
-}
-// ** End social signup button
 
 // ** Begin spinner
 .navbar-header .spinner {

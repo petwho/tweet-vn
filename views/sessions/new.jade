@@ -1,5 +1,9 @@
 extends ../layouts/login
 block content
+  header
+    span.spinner
+    h1
+      a(href="/", title="Tweet", alt="Tweet") Tweet
   .row.login.hidden
     .col-xs-offset-4.col-xs-4
       form(role="form", method='POST', action="/sessions")
@@ -7,29 +11,30 @@ block content
           label(for="email_login") Email
           input#email_login.form-control(name="email", type="email")
         .form-group
-          label(for="password_login") Mật khẩu
+          label(for="password_login") Password
           input#password_login.form-control(name="password", type="password")
-        .form-group
-          input(type="checkbox", name="remember", checked = "checked")
-          | &nbsp; Ghi nhớ
-        button.btn.btn-default(type="submit") Đăng nhập
+        .checkbox
+          label
+            input(type="checkbox", name="remember", checked = "checked")
+            small remember me
+        button.btn.btn-success.col-xs-5.pull-right(type="submit") Sign in
         | &nbsp;
-        a.forgot-password-btn(href="#forgot-password") Quên mật khẩu?
+        a.forgot-btn(href="#forgot-password")
+          strong Forgot password?
   .row.signup.hidden
     .col-xs-offset-4.col-xs-4
-      br
-      p.text-center
-        strong Chưa có tài khoản?
-      .form-group
-        a.signup-btn(href='#signup', class="btn btn-primary btn-block", role="button") Đăng ký tài khoản
-      .form-group
-        .google-signup-btn
+      .form-group.social-signup-btns
+        div.google-signup-btn
           span.icon
-          span.buttonText Google
-      .form-group
-        .facebook-signup-btn
+          span.buttonText
+        div.facebook-signup-btn
           span.icon
-          span.buttonText Facebook
+          span.buttonText
+      div.clear
+      .form-group.center.signup-link
+        span Don't have an account yet?&nbsp;
+        a(href='#signup')
+          strong Register
 
   .row.signup-form.hidden
     .col-xs-offset-4.col-xs-4
@@ -48,23 +53,26 @@ block content
           input.form-control#email_signup(type="email", name="email", title="Địa chỉ email không hợp lệ")
 
         .form-group
-          label.control-label(for="password_signup") Mật khẩu:
+          label.control-label(for="password_signup") Password:
           input.form-control#password_signup(type="password", name="password", required='required', pattern=".{6,}", title = "Mật khẩu phải từ 5 ký tự trở lên")
 
-        button.btn.btn-default(type="submit") Đăng ký
+        button.btn.btn-success(type="submit") Register
         | &nbsp;
-        a.cancel-register(href="#") Quay lại
+        a.cancel-register(href="#")
+          strong Cancel
 
   .row.forgot-password-form.hidden
     .col-xs-offset-3.col-xs-6
-      form.form-inline(method='POST', action="/users/reset_password")
+      form(method='POST', action="/users/reset_password")
         .row
-          .col-xs-8
+          .col-xs-12
             label.sr-only(for="email_forgot_password") Email
             input#email_forgot_password.form-control(name="email", type="email", placeholder="Email")
-          .col-xs-4
+            br
+          .col-xs-12
               button.btn.btn-success(type="submit") Submit
               | &nbsp;
-              a.cancel-forgot(href="#") Quay lại
+              a.cancel-forgot(href="#")
+                strong Cancel
 
   script(data-main="/javascripts/app/bootstraps/login", src="/javascripts/libs/require/require-2.1.9.min.js")
