@@ -1,9 +1,37 @@
 @charset 'UTF-8';
 
 @font-face {
+    font-family: 'Poiret_One';
+    src: url('/stylesheets/fonts/poiretone.eot');
+    src: url('/stylesheets/fonts/poiretone.eot?#iefix') format('embedded-opentype'),
+         url('/stylesheets/fonts/poiretone.woff') format('woff'),
+         url('/stylesheets/fonts/poiretone.ttf') format('truetype'),
+         url('/stylesheets/fonts/poiretone.svg#Poiret_One') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'robotoregular';
+    src: url('/stylesheets/fonts/roboto.eot');
+    src: url('/stylesheets/fonts/roboto.eot?#iefix') format('embedded-opentype'),
+         url('/stylesheets/fonts/roboto.woff') format('woff'),
+         url('/stylesheets/fonts/roboto.ttf') format('truetype'),
+         url('/stylesheets/fonts/roboto.svg#robotoregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
   font-family: 'Facebook Letter Faces';
-  src: url('/stylesheets/fonts/facebook.eot'); /* IE */
-  src: local('Facebook Letter Faces'), url('/stylesheets/fonts/facebold.otf'); /* non-IE */
+  src: url('/stylesheets/fonts/faceboook.eot');
+  src: url('/stylesheets/fonts/faceboook.eot?#iefix') format('embedded-opentype'),
+       url('/stylesheets/fonts/faceboook.woff') format('woff'),
+       url('/stylesheets/fonts/faceboook.ttf') format('truetype'),
+       url('/stylesheets/fonts/faceboook.svg#Facebook Letter Faces') format('svg');
+  font-weight: normal;
+  font-style: normal;
 }
 
 // disalbe responsiveness
@@ -102,7 +130,7 @@ html.login-page {
       h1 {
         color: #fff;
         text-align: center;
-        font-family: 'Poiret One', cursive;
+        font-family: 'Poiret_One', cursive;
         letter-spacing: 3px;
         font-size: 3em;
       }
@@ -156,7 +184,7 @@ html.login-page {
           &:before {
             content: 'Google';
           }
-          font-family: 'Roboto',arial,sans-serif;
+          font-family: 'robotoregular',arial,sans-serif;
           font-weight: bold;
         }
       }
@@ -223,6 +251,15 @@ html.login-page {
 }
 
 // ** Begin navbar
+.navbar-brand {
+  font-family: 'Poiret_One', cursive;
+  letter-spacing: 3px;
+  font-size: 2em;
+  font-weight: bold;
+}
+.navbar, .navbar-brand, .navbar-nav > li > a {
+  color: #fff !important;
+}
 .navbar-nav {
   margin: 0px;
   li {
