@@ -4,8 +4,8 @@ nav.navbar.navbar-default
       span.spinner
       a(class="navbar-brand", href='/') TWEET
     form.navbar-form.navbar-left(role="search")
-      .form-group
-        input.form-control(type="text", placeholder="Search")
+        span.search-icon &nbsp;
+        input.form-control.search(type="text", placeholder="Search")
     if (session.user)
       ul.nav.navbar-nav.navbar-right
         li.unread-notifications

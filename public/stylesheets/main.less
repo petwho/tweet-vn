@@ -252,6 +252,7 @@ html.login-page {
 
 // ** Begin navbar
 .navbar-brand {
+  max-width: 118px;
   font-family: 'Poiret_One', cursive;
   letter-spacing: 3px;
   font-size: 2em;
@@ -280,6 +281,21 @@ html.login-page {
   border-color: #122c4b;
   .border-radius(0px);
   min-width: 980px;
+}
+
+.navbar-form {
+  input.search {
+    width: 450px;
+    padding-left: 30px;
+    .border-radius(2px)
+  }
+  span.search-icon {
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    background: url("/images/search-icon.png") no-repeat;
+    background-position: 5px 5px;
+  }
 }
 
 .dropdown-menu {
