@@ -184,8 +184,17 @@ module.exports = function (app) {
           Activity.populate(activities, [
             { path: 'posted.answer_id.question_id', model: 'Question' }
           ], function (err, activities) {
+            var i;
             if (err) { return next(err); }
             req.activities = activities;
+            for (i = 0; i < activities.length; i++) {
+              switch (activities[i].type) {
+              case 20:
+                req.questionCount++;
+              case 21:
+                req.answerCount++;
+              }
+            }
             next();
           });
         });

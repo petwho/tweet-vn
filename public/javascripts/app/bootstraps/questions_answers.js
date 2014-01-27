@@ -31,5 +31,6 @@ require([
   'share/add_question',
   'views/questions_answers/app'
 ], function (bootstrap, Backbone, addQuestionView, AppView) {
+  $('.sub-menu li.qas').addClass('active');
   new AppView();
 });

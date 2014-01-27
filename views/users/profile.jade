@@ -7,8 +7,6 @@ block content
         .short-bio
           - if (user.short_bio)
             span= user.short_bio
-          - else
-            span Bio: N/A
       .col-xs-2.follow-btn-switcher
         - if (session.user.username !== user.username)
           - if (session.user.following.user_ids.indexOf(user._id.toString()) === -1)
@@ -21,39 +19,46 @@ block content
         .picture
           img(src=user.picture)
         .following
-          strong Following&nbsp;
+          a(href="#following")
+            strong Following
+          span &nbsp;
           span.following-count.light-gray= user.following.user_ids.length
           .following-user-link
             - for (var i = 0; i < user.following.user_ids.length; i++)
               a(href="/users/#{user.following.user_ids[i].username}", data-username=user.following.user_ids[i].username)
                 img(src=user.following.user_ids[i].picture, width="28", height="28")
-        .follower
-          strong Follower&nbsp;
+        .followers
+          a(href="#followers")
+            strong Followers
+          span &nbsp;
           span.follower-count.light-gray= followers.length
           .follower-user-link
             - for (var i = 0; i < followers.length; i++)
               a(href="/users/#{followers[i].username}", data-username=followers[i].username)
                 img(src=followers[i].picture, width="28", height="28")
         .followed-topics
-          a.link-text(href="/#{user.username}/topics")
-            strong Topics&nbsp;
-            span.light-gray= user.following.topic_ids.length
+          a(href="#followed-topics")
+            strong Topics
+          span &nbsp;
+          span.light-gray= user.following.topic_ids.length
         .questions
-          a.link-text(href="/#{user.username}/questions")
-            strong Questions&nbsp;
-            span.light-gray= questionCount
+          a(href="#questions")
+            strong Questions
+          span &nbsp;
+          span.light-gray= questionCount
         .answers
-          a.link-text(href="/#{user.username}/answers")
-            strong Answers&nbsp;
-            span.light-gray= answerCount
+          a(href="#answers")
+            strong Answers
+          span &nbsp;
+          span.light-gray= answerCount
 
-      .col-xs-9.activities
+      .col-xs-7.activities
         - for (var i = 0; i < activities.length; i++)
           - if (activities[i].type === 10)
             .pagelist-item
               strong #{session.user.first_name}&nbsp;
               span.light-gray voted an answer
-              .link-text.question-title
+              .question-title
                 a(href="/questions/#{activities[i].voted.answer_id.question_id}")
                   .anwswer!=activities[i].voted.answer_id.contentHtml
 
@@ -61,14 +66,14 @@ block content
             .pagelist-item
               strong #{session.user.first_name}&nbsp;
               span.light-gray added a new question
-              .link-text.question-title
+              .question-title
                 a(href="/questions/#{activities[i].posted.question_id._id}")!=activities[i].posted.question_id.title
 
           - if (activities[i].type === 21)
             .pagelist-item
               strong #{session.user.first_name}&nbsp;
               span.light-gray added a new answer
-              .link-text.question-title
+              .question-title
                 a(href="/questions/#{activities[i].posted.answer_id.question_id._id}")!=activities[i].posted.answer_id.question_id.title
               .anwswer.light-gray!=activities[i].posted.answer_id.content
 

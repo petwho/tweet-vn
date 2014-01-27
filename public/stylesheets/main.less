@@ -15,8 +15,33 @@
   color: #333;
 }
 
-#qa-items, #question, #open-questions, #question, #user-profile {
+.sub-menu {
+  li.active a, li.active a:hover, li a:hover {
+    background-color: #fff;
+    color: #edaa15;
+  }
+  a {
+    color: #333;
+  }
+}
+
+#qa-items, #question, #open-questions, #activity-feed, #notifications {
   margin-top: 10px;
+}
+
+.qa-row, .open-question-row {
+  border: 1px solid #e0e0e0;
+  border-top: none;
+  padding: 10px 10px;
+}
+
+#qa-items, #open-questions {
+  > div:first-child > div:first-child {
+    border-top: 1px solid #e0e0e0;
+  }
+}
+
+#qa-items, #question, #open-questions, #user-profile {
   word-wrap: break-word;
   h1#title-editor {
     word-wrap: break-word;

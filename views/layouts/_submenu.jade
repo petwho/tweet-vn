@@ -1,15 +1,28 @@
 ul.nav.nav-pills.nav-stacked.sub-menu
-  li
-    a(href='/') Câu Hỏi & Trả Lời
-  li
-    a(href='/open-questions') Câu Hỏi Mở
-  li
-    a(href='/activities') Hoạt Động
-  li
-    a(href="/notifications") Thông Báo
+  li.qas
+    a(href='/')
+      span.glyphicon.glyphicon-list-alt
+      span &nbsp;&nbsp;
+      strong Hỏi & Trả Lời
+  li.open-questions
+    a(href='/open-questions')
+      span.glyphicon.glyphicon-th-list
+      span &nbsp;&nbsp;
+      strong Câu Hỏi Mở
+  li.activities
+    a(href='/activities')
+      span.glyphicon.glyphicon-star
+      span &nbsp;&nbsp;
+      strong Hoạt Động
+  li.notifications
+    a(href="/notifications")
+      span.glyphicon.glyphicon-info-sign
+      span &nbsp;&nbsp;
+      strong Thông Báo
       span.badge
   li
     form(method="POST", action="/sessions", class="navbar-form navbar-left")
       input(type="hidden", name="_method", value="DELETE")
       input(type="hidden", name="_csrf", value=csrfToken)
-      button(type="submit", class="btn btn-default") Đăng xuất
+      button(type="submit", class="btn btn-default")
+        strong Đăng xuất
