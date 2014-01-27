@@ -1,0 +1,138 @@
+@import "helpers.less";
+html.login-page {
+  overflow-y: auto;
+  body {
+    background: #2c4762 url('/images/background.png') top repeat-x;
+    a, h1, button, div, span {
+      color: #fff;
+    }
+    a:hover {
+      text-decoration: none;
+    }
+    .login, .signup-form {
+      margin-top: 20px;
+    }
+    .forgot-password-form {
+      margin-top: 150px;
+    }
+    .forgot-btn {
+      position: relative;
+      top: 12px;
+    }
+    input, button {
+      .border-radius(3px);
+    }
+    button {
+      background: #4e96c2;
+      border-color: #4e96c2;
+      color: #fff;
+      font-weight: bold;
+    }
+    header {
+      width: 150px;
+      margin: auto;
+      .spinner {
+        float: left;
+        padding-top: 10px;
+      }
+      h1 {
+        color: #fff;
+        text-align: center;
+        font-family: 'Poiret_One', cursive;
+        letter-spacing: 3px;
+        font-size: 3em;
+      }
+    }
+    .container {
+      margin-top: 50px;
+    }
+    .signup-link {
+      margin-top: 20px;
+    }
+    .message {
+      background: rgba(0,0,0,0.33);
+      color: #fff;
+      text-align: center;
+      .border-radius(2px);
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+    .social-signup-btns {
+      margin-top: 100px;
+      margin-left: 20px;
+      text-align: center;
+      .google-signup-btn {
+        text-align: left;
+        float: left;
+        margin-right: 20px;
+        height: 35px;
+        background: #dd4b39;
+        color: white;
+        width: 120px;
+        .border-radius(5px);
+        white-space: nowrap;
+        &:hover {
+          background: #e74b37;
+          cursor: pointer;
+        }
+        .icon {
+          left: 15px;
+          background: url('/images/google_btn.png') transparent 5px 50% no-repeat;
+          display: inline-block;
+          vertical-align: middle;
+          width: 35px;
+          height: 35px;
+          border-right: #bb3f30 1px solid;
+        }
+        .buttonText {
+          display: inline-block;
+          vertical-align: middle;
+          font-size: 14px;
+          margin-left: 5px;
+          &:before {
+            content: 'Google';
+          }
+          font-family: 'robotoregular',arial,sans-serif;
+          font-weight: bold;
+        }
+      }
+
+      .facebook-signup-btn {
+        .border-radius(5px);
+        text-align: left;
+        position: absolute;
+        left: 170px;
+        width: 120px;
+        height: 35px;
+        line-height: 35px;
+        font-size: 1em;
+        font-family: "facebook_letter_facesregular", Helvetica, sans-serif;
+        background-color: #4365a9;
+        color: white;
+        white-space: nowrap;
+        &:hover {
+          background: #4f6aa3;
+          cursor: pointer;
+        }
+        .icon {
+          position: relative;
+          margin-left: 10px;
+          margin-right: 10px;
+          &:before {
+            content: "f";
+          }
+        }
+        .buttonText {
+          &:before {
+            content: "Facebook";
+          }
+          padding-left: 5px;
+          border-left: 1px solid rgba(34,34,34,0.18);
+          display: inline-block;
+          vertical-align: middle;
+          margin-top: 2px;
+        }
+      }
+    }
+  }
+}

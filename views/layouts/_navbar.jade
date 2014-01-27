@@ -2,32 +2,34 @@ nav.navbar.navbar-default
   .container
     .navbar-header
       span.spinner
-      a(class="navbar-brand", href='/') TWEET
+      a.navbar-brand(href='/') TWEET
     form.navbar-form.navbar-left(role="search")
-        span.search-icon &nbsp;
+        span.glyphicon.glyphicon-search
         input.form-control.search(type="text", placeholder="Search")
     if (session.user)
       ul.nav.navbar-nav.navbar-right
-        li.unread-notifications
-          a(href="/users/#{session.user.username}/notifications") Home &nbsp;
-            span.badge
+        li
+          a(href="/")
+            span.glyphicon.glyphicon-home &nbsp;
+            strong Home
+        li.unread-msg
+          a(href="/") Inbox&nbsp;
+            span.badge 0
         li.dropdown
           - if (session.user.picture)
             a.user-link.dropdown-toggle(href="/users/#{session.user.username}", data-toggle='dropdown')
               img.user-picture(src=session.user.picture, width="28", height="28")
-              |&nbsp;
               b.caret
           - else
             a.dropdown-toggle(href="/users/#{session.user.username}", data-toggle='dropdown')= session.user.first_name + ' ' + session.user.last_name
-              |&nbsp;
               b.caret
           ul.dropdown-menu(role='menu')
             li
-              a(href="/users/#{session.user.username}") Thông tin cá nhân
+              a(href="/users/#{session.user.username}") Profile
             li
-              a(href="/users/#{session.user.username}/edit") Chỉnh sửa Thông tin
+              a(href="/users/#{session.user.username}/edit") Settings
             - if (session.user && session.user.account_type == 'register')
               li
-                a(href="/users/#{session.user.username}/change_password") Đổi mật khẩu
+                a(href="/users/#{session.user.username}/change_password") Change Password
         li
-          button.btn.btn-danger.navbar-btn#add-question(type="button") Đặt câu hỏi
+          button.btn.btn-default.navbar-btn#add-question(type="button") Add Question

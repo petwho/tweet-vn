@@ -1,0 +1,83 @@
+@import "helpers";
+
+html {
+  overflow-y: scroll;
+}
+
+.btn-default {
+  padding: 5px 10px;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.5);
+  text-shadow: 0 1px #f0f0f0;
+  background-color: #ccc;
+  background-repeat: no-repeat;
+  .boxGradient(#fff, #ddd);
+  border: 1px solid #ccc;
+}
+
+.col-img-1-left {
+  float: left;
+}
+
+.col-img-1-right {
+  float: right;
+}
+
+.col-xs-mixin-3 {
+  width: 20%;
+}
+
+.navbar-brand {
+  max-width: 118px;
+  font-family: 'Poiret_One', cursive;
+  letter-spacing: 3px;
+  font-size: 2em;
+}
+
+.navbar, .navbar-brand, .navbar-nav > li > a {
+  color: #fff !important;
+  font-weight: bold;
+}
+
+.navbar-nav {
+  margin: 0px;
+  li {
+    float: left !important;
+    a.user-link, a.user-link:hover {
+      padding: 0 0 0 0;
+      margin: 10px 10px;
+      background-color: rgba(255,255,255,0.15);
+      .border-radius(0 2px 2px 0);
+    }
+    b.caret {
+      margin: 0 2px 0 2px;
+    }
+  }
+}
+
+.navbar-nav > li > a.user-link:focus, .navbar-nav > li.open > a.user-link {
+  background-color: rgba(255,255,255,0.15) !important;
+}
+
+.navbar-default {
+  background-color: #122c4b;
+  border-color: #122c4b;
+  .border-radius(0px);
+  min-width: 980px;
+}
+
+h1 {
+  font-size: 1.4em;
+  margin: 0 0 10px;
+  color: #161f21;
+  font-size: 20px;
+  line-height: 24px;
+  letter-spacing: -1px;
+  font-weight: bold;
+}
+
+a.edit {
+  color: #999;
+  font-weight: normal;
+  font-size: 14px;
+  padding: 0 5px;
+}

@@ -1,0 +1,58 @@
+// ** Begin helper functions
+.border-radius(@border) {
+  -webkit-border-radius: @border;
+  -moz-border-radius: @border;
+  border-radius: @border;
+}
+
+.center {
+  text-align: center;
+}
+
+.clear {
+  clear: both;
+}
+
+.light-gray {
+  color: #999;
+}
+
+.link-text {
+  color: #19558d;
+}
+
+.question-link {
+  .link-text;
+  font-weight: bold;
+}
+
+.boxGradient(@top, @bottom) {
+  background-color: @top;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(@top), to(@bottom)); /* Chrome, Safari 4+ */
+  background-image: -webkit-linear-gradient(top, @top, @bottom); /* Chrome 10-25, iOS 5+, Safari 5.1+ */
+  background-image:    -moz-linear-gradient(top, @top, @bottom); /* Firefox 3.6-15 */
+  background-image:      -o-linear-gradient(top, @top, @bottom); /* Opera 11.10-12.00 */
+  background-image:         linear-gradient(to bottom, @top, @bottom); /* Chrome 26, Firefox 16+, IE 10+, Opera 12.10+ */
+}
+
+.form-btn(@border-color, @border-bottom-color) {
+  text-shadow: none;
+  border: 1px solid #bbb;
+  border-color: @border-color;
+  border-bottom: 1px solid @border-bottom-color;
+  .border-radius(3px);  font-weight: bold;
+  font-size: .9em;
+}
+
+.submit-btn {
+  background: #19558d;
+  color: #fff;
+  .form-btn(#062c50, #003);
+}
+
+.cancel-btn {
+  background: linear-gradient(to bottom, #fefefe 0, #e0e0e0 70%);
+  color: #333;
+  .form-btn(#999, #777);
+}
+// ** End functions definition

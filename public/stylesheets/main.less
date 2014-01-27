@@ -1,233 +1,10 @@
 @charset 'UTF-8';
-
-@font-face {
-    font-family: 'Poiret_One';
-    src: url('/stylesheets/fonts/poiretone.eot');
-    src: url('/stylesheets/fonts/poiretone.eot?#iefix') format('embedded-opentype'),
-         url('/stylesheets/fonts/poiretone.woff') format('woff'),
-         url('/stylesheets/fonts/poiretone.ttf') format('truetype'),
-         url('/stylesheets/fonts/poiretone.svg#Poiret_One') format('svg');
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'robotoregular';
-    src: url('/stylesheets/fonts/roboto.eot');
-    src: url('/stylesheets/fonts/roboto.eot?#iefix') format('embedded-opentype'),
-         url('/stylesheets/fonts/roboto.woff') format('woff'),
-         url('/stylesheets/fonts/roboto.ttf') format('truetype'),
-         url('/stylesheets/fonts/roboto.svg#robotoregular') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
-
-@font-face {
-  font-family: 'Facebook Letter Faces';
-  src: url('/stylesheets/fonts/faceboook.eot');
-  src: url('/stylesheets/fonts/faceboook.eot?#iefix') format('embedded-opentype'),
-       url('/stylesheets/fonts/faceboook.woff') format('woff'),
-       url('/stylesheets/fonts/faceboook.ttf') format('truetype'),
-       url('/stylesheets/fonts/faceboook.svg#Facebook Letter Faces') format('svg');
-  font-weight: normal;
-  font-style: normal;
-}
-
-// disalbe responsiveness
-@screen-xs-min: 0px;
-
-@media (min-width: @screen-xs-min) {
-  .container {
-    width: 980px !important;
-    .navbar-header {
-      float: left;
-    }
-
-    .navbar-right {
-    float: right !important;
-    }
-  }
-}
-
-// ** Begin mixin
-html {
-  overflow-y: scroll;
-}
-.col-img-1-left {
-  float: left;
-}
-.col-img-1-right {
-  float: right;
-}
-.col-xs-mixin-3 {
-  width: 20%;
-}
-
-#open-questions, #qa-items {
-  .col-xs-1 {
-    width: 9%;
-  }
-  .col-xs-11 {
-    width: 91%;
-  }
-}
-
-h1 {
-  font-size: 1.4em;
-  margin: 0 0 10px;
-  color: #161f21;
-  font-size: 20px;
-  line-height: 24px;
-  letter-spacing: -1px;
-  font-weight: bold;
-}
-
-a.edit {
-  color: #999;
-  font-weight: normal;
-  font-size: 14px;
-  padding: 0 5px;
-}
-// ** End of mixin
-
-html.login-page {
-  overflow-y: auto;
-  body {
-    background: #2c4762 url('/images/background.png') top repeat-x;
-    a, h1, button, div, span {
-      color: #fff;
-    }
-    a:hover {
-      text-decoration: none;
-    }
-    .login, .signup-form {
-      margin-top: 20px;
-    }
-    .forgot-password-form {
-      margin-top: 150px;
-    }
-    .forgot-btn {
-      position: relative;
-      top: 12px;
-    }
-    input, button {
-      .border-radius(3px);
-    }
-    button {
-      background: #4e96c2;
-      border-color: #4e96c2;
-      color: #fff;
-      font-weight: bold;
-    }
-    header {
-      width: 150px;
-      margin: auto;
-      .spinner {
-        float: left;
-        padding-top: 10px;
-      }
-      h1 {
-        color: #fff;
-        text-align: center;
-        font-family: 'Poiret_One', cursive;
-        letter-spacing: 3px;
-        font-size: 3em;
-      }
-    }
-    .container {
-      margin-top: 50px;
-    }
-    .signup-link {
-      margin-top: 20px;
-    }
-    .message {
-      background: rgba(0,0,0,0.33);
-      color: #fff;
-      text-align: center;
-      .border-radius(2px);
-      padding: 15px;
-      margin-bottom: 20px;
-    }
-    .social-signup-btns {
-      margin-top: 100px;
-      margin-left: 20px;
-      text-align: center;
-      .google-signup-btn {
-        text-align: left;
-        float: left;
-        margin-right: 20px;
-        height: 35px;
-        background: #dd4b39;
-        color: white;
-        width: 120px;
-        .border-radius(5px);
-        white-space: nowrap;
-        &:hover {
-          background: #e74b37;
-          cursor: pointer;
-        }
-        .icon {
-          left: 15px;
-          background: url('/images/google_btn.png') transparent 5px 50% no-repeat;
-          display: inline-block;
-          vertical-align: middle;
-          width: 35px;
-          height: 35px;
-          border-right: #bb3f30 1px solid;
-        }
-        .buttonText {
-          display: inline-block;
-          vertical-align: middle;
-          font-size: 14px;
-          margin-left: 5px;
-          &:before {
-            content: 'Google';
-          }
-          font-family: 'robotoregular',arial,sans-serif;
-          font-weight: bold;
-        }
-      }
-
-      .facebook-signup-btn {
-        .border-radius(5px);
-        text-align: left;
-        position: absolute;
-        left: 170px;
-        width: 120px;
-        height: 35px;
-        line-height: 35px;
-        font-size: 1em;
-        font-family: "Facebook Letter Faces", Helvetica, sans-serif;
-        background-color: #4365a9;
-        color: white;
-        white-space: nowrap;
-        &:hover {
-          background: #4f6aa3;
-          cursor: pointer;
-        }
-        .icon {
-          position: relative;
-          margin-left: 10px;
-          margin-right: 10px;
-          &:before {
-            content: "f";
-          }
-        }
-        .buttonText {
-          &:before {
-            content: "Facebook";
-          }
-          padding-left: 5px;
-          border-left: 1px solid rgba(34,34,34,0.18);
-          display: inline-block;
-          vertical-align: middle;
-          margin-top: 2px;
-        }
-      }
-    }
-  }
-}
+@import "helpers.less";
+@import "media_queries.css";
+@import "fonts.css";
+@import "mixins.css";
+@import "box_modal.css";
+@import "login.css";
 
 .banner-msg {
   width: 100%;
@@ -250,110 +27,33 @@ html.login-page {
   }
 }
 
-// ** Begin navbar
-.navbar-brand {
-  max-width: 118px;
-  font-family: 'Poiret_One', cursive;
-  letter-spacing: 3px;
-  font-size: 2em;
-  font-weight: bold;
-}
-.navbar, .navbar-brand, .navbar-nav > li > a {
-  color: #fff !important;
-}
-.navbar-nav {
-  margin: 0px;
-  li {
-    float: left !important;
-    a.user-link {
-      padding-top: 10px;
-      padding-bottom: 10px;
-    }
+
+#open-questions, #qa-items {
+  .col-xs-1 {
+    width: 9%;
+  }
+  .col-xs-11 {
+    width: 91%;
   }
 }
 
-.navbar-nav > li > a.user-link:focus, .navbar-nav > li.open > a.user-link {
-  background-color: #122c4b !important;
-}
-
-.navbar-default {
-  background-color: #122c4b;
-  border-color: #122c4b;
-  .border-radius(0px);
-  min-width: 980px;
-}
-
+// ** Begin navbar
 .navbar-form {
   input.search {
-    width: 450px;
+    width: 400px;
     padding-left: 30px;
     .border-radius(2px)
   }
-  span.search-icon {
-    width: 30px;
-    height: 30px;
-    position: absolute;
-    background: url("/images/search-icon.png") no-repeat;
-    background-position: 5px 5px;
+  span.glyphicon-search {
+    left: 25px;
+    .light-gray;
   }
 }
 
 .dropdown-menu {
   margin-top: 2px !important;
 }
-// ** End navbar
 
-// ** Begin helper functions
-.border-radius(@border) {
-  -webkit-border-radius: @border;
-  -moz-border-radius: @border;
-  border-radius: @border;
-}
-
-.center {
-  text-align: center;
-}
-
-.clear {
-  clear: both;
-}
-
-.light-gray {
-  color: #999;
-}
-
-.link-text {
-  color: #19558d;
-}
-
-.question-link {
-  .link-text;
-  font-weight: bold;
-}
-
-.form-btn(@border-color, @border-bottom-color) {
-  text-shadow: none;
-  border: 1px solid #bbb;
-  border-color: @border-color;
-  border-bottom: 1px solid @border-bottom-color;
-  .border-radius(3px);  font-weight: bold;
-  font-size: .9em;
-}
-
-.submit-btn {
-  background: #19558d;
-  color: #fff;
-  .form-btn(#062c50, #003);
-}
-
-.cancel-btn {
-  background: linear-gradient(to bottom, #fefefe 0, #e0e0e0 70%);
-  color: #333;
-  .form-btn(#999, #777);
-}
-// ** End functions definition
-
-// ** Begin spinner
 .navbar-header .spinner {
   margin-left: -35px;
   padding: 15px 15px;
@@ -366,110 +66,7 @@ html.login-page {
   margin-top: 50px;
 }
 
-// ** Begin modal box
-.modal-open {
-  overflow: visible;
-}
 
-.modal-backdrop.in {
-  opacity: 0;
-}
-
-#question-modal {
-
-  overflow:hidden;
-
-  textarea {
-    resize: vertical;
-  }
-
-  .modal-content {
-    background: #eaeaea;
-    border: 1px solid #aaa;
-    border-bottom-color: #999;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.2);
- }
-
-  .modal-title {
-    color: #333;
-    font-weight: bold;
-  }
-
-  .modal-footer {
-    padding-top: 0;
-    margin-top: 0;
-  }
-
-  .notice {
-    padding: 10px;
-    margin-top: 0;
-    margin-bottom: 15px;
-    background: #fff8a6;
-    border-radius: 0;
-    border: 1px solid #e5dd7e;
-  }
-
-  .search-input {
-    width: 50%;
-    .border-radius(0);
-  }
-
-  .followers {
-    color: #999;
-  }
-
-  .suggested-topics, .added-topics {
-    label {
-      font-weight: normal;
-      cursor: pointer;
-    }
-    .name {
-      display: inline-block;
-      background: #dfeaf4;
-      padding: 1px 5px;
-      margin-top: -1px;
-      border-radius: 3px;
-      font-weight: normal;
-      color: #19558d;
-      border: 1px solid rgba(25,85,141,0.09);
-      margin-right: 3px
-    }
-  }
-
-  .search-results {
-    background: #fff;
-    color: #333;
-    margin-top: -2px;
-    width: 60%;
-    z-index: 9999;
-    border: 1px solid #999;
-    border-bottom: 1px solid #666;
-    cursor: pointer;
-
-    ul {
-      margin: 0 0;
-      padding: 0 0;
-      list-style: none;
-
-      li {
-        padding: 5px 7px;
-        font-family: "Helvetica Neue",Arial,sans-serif;
-        font-size: 0.8em;
-
-        .picture {
-          float: left;
-          margin: 1px 5px 0 0;
-        }
-
-        &:hover {
-          background-color: #dfeaf4;
-          color: #19558d;
-        }
-
-      }
-    }
-  }
-}
 
 #qa-items {
   .inline-answer {
