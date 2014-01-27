@@ -16,6 +16,7 @@
 }
 
 #qa-items, #question, #open-questions, #question, #user-profile {
+  margin-top: 10px;
   word-wrap: break-word;
   h1#title-editor {
     word-wrap: break-word;
@@ -27,16 +28,6 @@
   }
 }
 
-
-#open-questions, #qa-items {
-  .col-xs-1 {
-    width: 9%;
-  }
-  .col-xs-11 {
-    width: 91%;
-  }
-}
-
 // ** Begin navbar
 .navbar-form {
   input.search {
@@ -45,7 +36,10 @@
     .border-radius(2px)
   }
   span.glyphicon-search {
-    left: 25px;
+    // left: 25px;
+    position: absolute;
+    margin-top: 15px;
+    margin-left: 10px;
     .light-gray;
   }
 }
@@ -65,8 +59,10 @@
   text-align: center;
   margin-top: 50px;
 }
-
-
+// ** End navbar
+.submenu {
+  padding-left: 0;
+}
 
 #qa-items {
   .inline-answer {
