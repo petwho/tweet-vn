@@ -42,7 +42,7 @@
         <a class="question-link" href="/questions/<%= posted.answer_id.question_id._id %>" target="_blank"><%= posted.answer_id.question_id.title %></a>
       </div>
       <div class="answer-user">
-        <a href="/users/<%= posted.answer_id.user_id.username %>" target="_blank"><%= posted.answer_id.user_id.fullname %></a>
+        <a href="/@<%= posted.answer_id.user_id.username %>" target="_blank"><%= posted.answer_id.user_id.fullname %></a>
       </div>
       <div><%= posted.answer_id.content %></div>
     </div>

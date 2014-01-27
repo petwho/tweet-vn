@@ -17,19 +17,19 @@ nav.navbar.navbar-default
             span.badge 0
         li.dropdown
           - if (session.user.picture)
-            a.user-link.dropdown-toggle(href="/users/#{session.user.username}", data-toggle='dropdown')
+            a.user-link.dropdown-toggle(href="/@#{session.user.username}", data-toggle='dropdown')
               img.user-picture(src=session.user.picture, width="28", height="28")
               b.caret
           - else
-            a.dropdown-toggle(href="/users/#{session.user.username}", data-toggle='dropdown')= session.user.first_name + ' ' + session.user.last_name
+            a.dropdown-toggle(href="/@#{session.user.username}", data-toggle='dropdown')= session.user.first_name + ' ' + session.user.last_name
               b.caret
           ul.dropdown-menu(role='menu')
             li
-              a(href="/users/#{session.user.username}") Profile
+              a(href="/@#{session.user.username}") Profile
             li
-              a(href="/users/#{session.user.username}/edit") Settings
+              a(href="/@#{session.user.username}/edit") Settings
             - if (session.user && session.user.account_type == 'register')
               li
-                a(href="/users/#{session.user.username}/change_password") Change Password
+                a(href="/@#{session.user.username}/change_password") Change Password
         li
           button.btn.btn-default.navbar-btn#add-question(type="button") Add Question

@@ -159,7 +159,7 @@ module.exports = function (app) {
     });
   });
 
-  app.get('/users/:username', loggedIn, function (req, res, next) {
+  app.get('/@:username', loggedIn, function (req, res, next) {
     var find_user, find_activity, find_follower;
     find_user = function (next) {
       User.findOne({username: req.params.username})
