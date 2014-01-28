@@ -56,6 +56,9 @@ module.exports = function (app) {
   });
 
   app.get('/topics/new', [loggedIn, loadSubTopics], function (req, res, next) {
+    if (req.session.user.email !== process.env.SYS_ADMIN_EMAIL_ADD) {
+      return res.render('not_found');
+    }
     return res.render('topics/new', { subtopics : subtopics });
   });
 
@@ -161,7 +164,9 @@ module.exports = function (app) {
         'followed.topic_id': req.body._id
       }, function (err, activity) {
         if (err) { return next(err); }
-        if (!activity) { return res.json(403, {msg: 'invalid topic'}); }
+        if (!activity) {
+          return res.json(403, {msg: 'Your request was invalid. That"all we know.'});
+        }
         activity.is_hidden = true;
         activity.save(function (err, activity) {
           if (err) { return next(err); }

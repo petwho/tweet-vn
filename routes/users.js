@@ -71,7 +71,6 @@ module.exports = function (app) {
 
     googleapis.discover('oauth2', 'v2').execute(function (err, client) {
       var url = oauth2Client.generateAuthUrl({
-        access_type: 'offline',
         scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email'
       });
       res.send(200, url);
