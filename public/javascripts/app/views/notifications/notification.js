@@ -5,6 +5,8 @@ define([
   var View = Backbone.View.extend({
     template: _.template(notificationTpl),
 
+    className: 'notification row',
+
     initialize: function () {
       this.render();
     },

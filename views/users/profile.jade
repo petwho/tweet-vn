@@ -3,7 +3,7 @@ block content
   #user-profile(data-username=user.username, data-session-userid=session.user._id)
     .row.user-profile
       .col-xs-10
-        h1.full-name= user.fullname
+        h1.fullname= user.fullname
         .short-bio
           - if (user.short_bio)
             span= user.short_bio
@@ -13,7 +13,7 @@ block content
             button.btn.btn-sm.follow-btn.follow-user Folllow
           - else
             button.btn.btn-sm.unfollow-btn.unfollow-user Unfolllow
-
+    .page-callout
     .row.profile-feed
       .col-xs-3
         .picture
@@ -52,7 +52,7 @@ block content
           span &nbsp;
           span.light-gray= answerCount
 
-      .col-xs-7.activities
+      .col-xs-9.activities
         - for (var i = 0; i < activities.length; i++)
           - if (activities[i].type === 10)
             .pagelist-item

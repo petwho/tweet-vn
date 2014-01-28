@@ -21,8 +21,11 @@ define([
     },
 
     addNotification: function (notification) {
-      var ntfView = new NotificationView({model: notification});
-      this.$el.append(ntfView.el);
+      var ntfView;
+      if (notification.get('type') !== 20) {
+        ntfView = new NotificationView({model: notification});
+        this.$el.append(ntfView.el);
+      }
     }
   });
 
