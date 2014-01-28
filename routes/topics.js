@@ -40,7 +40,7 @@ module.exports = function (app) {
     }, 1000);
   });
 
-  app.get('/topics/index', loggedInAjax, function (req, res, next) {
+  app.get('/topics/index', loggedIn, function (req, res, next) {
     return res.render('topics/index');
   });
 
