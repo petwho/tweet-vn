@@ -122,11 +122,11 @@ define([
           return setTimeout(that.reRenderFeed(that), 200);
         }
         that.is_rerendering = true;
-        that.$('.open-question-row').addClass('old');
+        that.$('.open-question-row').parent().addClass('old');
         that.questions.reset();
         that.questions.fetch({
           success: function () {
-            that.$('.open-question-row.old').remove();
+            that.$('.old').remove();
             that.$('.open-question-row').removeClass('hidden');
             that.is_rerendering = false;
             spinner.stop();

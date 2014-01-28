@@ -131,11 +131,11 @@ define([
           return setTimeout(that.reRenderFeed(that), 200);
         }
         that.is_rerendering = true;
-        that.$('.qa-row').addClass('old');
+        that.$('.qa-row').parent().addClass('old');
         that.qas.reset();
         that.qas.fetch({
           success: function () {
-            that.$('.qa-row.old').remove();
+            that.$('.old').remove();
             that.$('.qa-row').removeClass('hidden');
             that.is_rerendering = false;
             spinner.stop();

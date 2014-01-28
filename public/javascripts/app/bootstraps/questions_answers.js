@@ -26,11 +26,14 @@ require.config({
   }
 });
 
+require(['jquery'], function ($) {
+  $('.sub-menu li.qas').addClass('active');
+});
+
 require([
   'bootstrap', 'backbone',
   'share/add_question',
   'views/questions_answers/app'
 ], function (bootstrap, Backbone, addQuestionView, AppView) {
-  $('.sub-menu li.qas').addClass('active');
   new AppView();
 });
