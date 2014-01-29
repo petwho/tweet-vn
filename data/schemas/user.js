@@ -17,6 +17,7 @@ UserSchema = new Schema({
   first_name: { type: String, required: true},
   last_name : { type: String, required: true},
   email     : { type: String, required: true, unique: true},
+  has_photo : { type: Boolean, default: false},
 
   following : {
     user_ids     : [{ type : Schema.Types.ObjectId, ref : 'User' }],
@@ -265,6 +266,9 @@ UserSchema.static('oauthSignUp', function (req, res, next) {
 
     req.body.username = auto_username;
     req.body.status = 2;
+    if (req.body.picture) {
+      req.body.has_photo = true;
+    }
 
     self.create(req.body, function (err, user) {
       if (err) {
@@ -275,9 +279,11 @@ UserSchema.static('oauthSignUp', function (req, res, next) {
         }
         return self.errorHandler(err, req, res, next);
       }
-
-      request(req.body.picture).pipe(fs.createWriteStream('./public/pictures/users/' + user.sign_up_type + '/' + user.username + '.jpg'));
+      if (req.body.picture) {
+        request(req.body.picture).pipe(fs.createWriteStream('./public/pictures/users/' + user.sign_up_type + '/' + user.username + '.jpg'));
+      }
       new_user = user;
+      next();
     });
   };
 
@@ -443,7 +449,11 @@ UserSchema.virtual('fullname').get(function () {
 });
 
 UserSchema.virtual('picture').get(function () {
-  return '/pictures/users/' + this.sign_up_type + '/' + this.username + '.jpg'
+  if (this.has_photo) {
+    return '/pictures/users/' + this.sign_up_type + '/' + this.username + '.jpg'
+  } else {
+    return '/pictures/users/default.jpg';
+  }
 });
 
 UserSchema.set('toJSON', { virtuals: true });

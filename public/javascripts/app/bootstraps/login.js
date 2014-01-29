@@ -21,9 +21,14 @@ require.config({
   }
 });
 
+require(['spinner'], function (spinner) {
+  spinner.start({el: '.spinner-large', width: '15px', translateX: '10px'});
+})
+
 require([
-  'bootstrap', 'backbone', 'routers/login', 'views/login'
-], function (bootstrap, Backbone, LoginRouter, LoginView) {
+  'bootstrap', 'backbone', 'spinner', 'routers/login', 'views/login'
+], function (bootstrap, Backbone, spinner, LoginRouter, LoginView) {
+  spinner.stop();
   new LoginView();
   new LoginRouter();
   Backbone.history.start();

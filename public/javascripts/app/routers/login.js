@@ -12,7 +12,7 @@ define(['backbone'], function (Backbone) {
       $('.signup-form').addClass('hidden');
       $('.forgot-password-form').addClass('hidden');
       $('.msg-wrapper').empty();
-      $('.spinner-large').remove();
+      // $('.spinner-large').remove();
     },
 
     index: function () {
