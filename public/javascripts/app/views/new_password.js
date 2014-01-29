@@ -3,7 +3,7 @@ define(['backbone'], function (Backbone) {
     el: 'body',
 
     initialize : function () {
-      this.$message         = $('.message .non-session-msg');
+      this.$message         = $('.msg-wrapper');
       this.crsfToken        = $('meta[name="csrf-token"]').attr('content');
       this.reset_pwd_token  = $('input[name="reset-pwd-token"]');
       this.password         = $('#password');
@@ -20,9 +20,7 @@ define(['backbone'], function (Backbone) {
       if (this.password.val() !== this.password_confirm.val()) {
         this.$message.fadeOut(50, function () {
           self.$message.empty().css({display : 'block'});
-          self.$message.html('<div class="alert alert-danger alert-dismissable">'
-            + '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'
-            + 'Password confirm does not match' + '</div>');
+          self.$message.html('<div class="message">Password confirmation does not match.</div>');
         });
         return false;
       }
@@ -48,9 +46,7 @@ define(['backbone'], function (Backbone) {
         error   : function (jqXHR, textStatus, errorThrow) {
           self.$message.fadeOut(50, function () {
             self.$message.empty().css({display : 'block'});
-            self.$message.html('<div class="alert alert-danger alert-dismissable">'
-              + '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'
-              + jqXHR.responseJSON.msg + '</div>');
+            self.$message.html('<div class="message">' + jqXHR.responseJSON.msg + '</div>');
           });
         },
         success : function (data, textStatus, jqXHR) {
