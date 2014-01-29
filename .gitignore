@@ -1,4 +1,5 @@
 /node_modules
+TODOS
+/publics/uploads/
 .env
 .config.js
-TODOS
