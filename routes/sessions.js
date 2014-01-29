@@ -28,7 +28,7 @@ module.exports = function (app) {
         if (err) { return next(err); }
 
         if (hash === user.password) {
-          if (req.body.remember) {
+          if (req.body.remember === 'true') {
             req.session.cookie.maxAge = 10 * 365 * 24 * 60 * 60;
           }
 
