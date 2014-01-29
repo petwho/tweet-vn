@@ -18,6 +18,7 @@ define(['backbone', 'spinner'], function (Backbone, spinner) {
       this.$emailLogin = $('#email_login');
       this.$passwordLogin = $('#password_login');
       this.$emailForgotPwd = $('#email_forgot_password');
+      this.$remember = $('input[name="remember"]');
       this.$message = $('.msg-wrapper');
       this.crsfToken = $('meta[name="csrf-token"]').attr('content');
     },
@@ -119,7 +120,8 @@ define(['backbone', 'spinner'], function (Backbone, spinner) {
         data  : {
           _csrf     : this.crsfToken,
           email     : this.$emailLogin.val(),
-          password  : this.$passwordLogin.val()
+          password  : this.$passwordLogin.val(),
+          remember  : this.$remember.prop('checked')
         },
         error : function (jqXHR, textStatus, errorThrow) {
           self.errorCallback(jqXHR, textStatus, errorThrow);

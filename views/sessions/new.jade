@@ -6,7 +6,7 @@ block content
       a(href="/", title="Tweet", alt="Tweet") Tweet
   .row.login.hidden
     .col-xs-offset-4.col-xs-4
-      form(role="form", method='POST', action="/sessions")
+      form(role="form", method="POST", action="/sessions")
         .form-group
           label(for="email_login") Email
           input#email_login.form-control(name="email", type="email")
@@ -15,7 +15,7 @@ block content
           input#password_login.form-control(name="password", type="password")
         .checkbox
           label
-            input(type="checkbox", name="remember", checked = "checked")
+            input(type="checkbox", name="remember")
             small remember me
         .msg-wrapper
         button.btn.btn-success.col-xs-5.pull-right(type="submit") Sign in
