@@ -280,7 +280,7 @@ UserSchema.static('oauthSignUp', function (req, res, next) {
         return self.errorHandler(err, req, res, next);
       }
       if (req.body.picture) {
-        request(req.body.picture).pipe(fs.createWriteStream('./public/pictures/users/' + user.sign_up_type + '/' + user.username + '.jpg'));
+        request(req.body.picture).pipe(fs.createWriteStream('./public/uploads/pictures/users/' + user.sign_up_type + '/' + user.username + '.jpg'));
       }
       new_user = user;
       next();
@@ -450,9 +450,9 @@ UserSchema.virtual('fullname').get(function () {
 
 UserSchema.virtual('picture').get(function () {
   if (this.has_photo) {
-    return '/pictures/users/' + this.sign_up_type + '/' + this.username + '.jpg'
+    return '/uploads/pictures/users/' + this.sign_up_type + '/' + this.username + '.jpg'
   } else {
-    return '/pictures/users/default.jpg';
+    return '/uploads/pictures/users/default.jpg';
   }
 });
 
