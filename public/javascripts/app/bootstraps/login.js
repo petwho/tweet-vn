@@ -28,7 +28,7 @@ require(['spinner'], function (spinner) {
 require([
   'bootstrap', 'backbone', 'spinner', 'routers/login', 'views/login'
 ], function (bootstrap, Backbone, spinner, LoginRouter, LoginView) {
-  spinner.stop();
+  $('.welcome-spinner').remove();
   new LoginView();
   new LoginRouter();
   Backbone.history.start();
