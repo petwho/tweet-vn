@@ -17,27 +17,21 @@ module.exports = function (app) {
   };
 
   app.get('/topics/list', loggedIn, function (req, res, next) {
-    setTimeout(function () {
-      Topic.find({}, '-created_at -updated_at').exec(function (err, topics) {
-        var i, topic_obj, topic_obj_list;
-        topic_obj_list = [];
+    Topic.find({}, '-created_at -updated_at').exec(function (err, topics) {
+      var i;
 
-        if (err) { return next(err); }
+      if (err) { return next(err); }
 
-        for (i = 0; i < topics.length; i++) {
-          topic_obj = topics[i].toObject();
-          if (req.session.user.following.topic_ids.indexOf(topic_obj._id.toString()) !== -1) {
-            topic_obj.is_following = true;
-          } else {
-            topic_obj.is_following = false;
-          }
-
-          topic_obj_list.push(topic_obj);
+      for (i = 0; i < topics.length; i++) {
+        if (req.session.user.following.topic_ids.indexOf(topics[i]._id.toString()) !== -1) {
+          topics[i].set('is_following', true, {strict: false});
+        } else {
+          topics[i].set('is_following', false, {strict: false});
         }
+      }
 
-        return res.json(200, topic_obj_list);
-      });
-    }, 1000);
+      return res.json(200, topics);
+    });
   });
 
   app.get('/topics/index', loggedIn, function (req, res, next) {

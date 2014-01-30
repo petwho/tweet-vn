@@ -8,7 +8,6 @@ TopicSchema = new Schema({
   subtopic_ids    : [{ type: Schema.Types.ObjectId, ref: 'Topics', sparse: true }],
   related_words   : Array,
   description     : String,
-  picture         : String,
   follower_count  : { type: Number, default: 0 },
   created_at      : { type: Date, default: Date.now },
   updated_at      : { type: Date, default: Date.now }
@@ -36,5 +35,11 @@ TopicSchema.static('filterInputs', function (req_body) {
   delete req_body.created_at;
   delete req_body.updated_at;
 });
+
+TopicSchema.virtual('picture').get(function () {
+  return '/public/assets/pictures/topics/' + this.name + '.jpg';
+});
+
+TopicSchema.set('toJSON', { virtuals: true });
 
 module.exports = TopicSchema;
