@@ -23,6 +23,7 @@ TopicSchema.pre('save', function (next) {
 TopicSchema.static('filterInputs', function (req_body) {
   // capitalize first letter of topic name
   if (req_body.name) {
+    req_body.name = req_body.name.toLowerCase();
     req_body.name = req_body.name.charAt(0).toUpperCase() + req_body.name.slice(1);
   }
 
@@ -37,7 +38,7 @@ TopicSchema.static('filterInputs', function (req_body) {
 });
 
 TopicSchema.virtual('picture').get(function () {
-  return '/public/assets/pictures/topics/' + this.name + '.jpg';
+  return '/assets/pictures/topics/' + this.name.toLowerCase() + '.jpg';
 });
 
 TopicSchema.set('toJSON', { virtuals: true });

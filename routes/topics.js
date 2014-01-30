@@ -3,6 +3,8 @@ var loggedIn = require('./middleware/logged_in'),
   Activity = require('../data/models/activity'),
   Topic = require('../data/models/topic'),
   User = require('../data/models/user'),
+  request = require('request'),
+  fs = require('fs'),
   async = require('async'),
   util = require('util');
 
@@ -78,13 +80,13 @@ module.exports = function (app) {
     Topic.create(req.body, function (err, topic) {
       if (err) {
         if (err.code === 11000) {
-          req.session.message.info.push('Name was already taken :(. Please, take a new one :D!');
+          req.session.message.info.push('Name was already taken.');
           return res.redirect('back');
         }
         return next(err);
       }
-
-      req.session.message.info.push('Good job! :D.<span class="pull-right">Hate to see me? Why not ;-) <strong>-----></strong><span>');
+      request(req.body.picture).pipe(fs.createWriteStream('./public/assets/pictures/topics/' + req.body.name.toLowerCase() + '.jpg'));
+      req.session.message.info.push('Topic has been created successfully.');
       return res.redirect('/topics/index');
     });
   });
@@ -105,7 +107,7 @@ module.exports = function (app) {
     Topic.update({ _id: req.params.id }, req.body, function (err, topic) {
       if (err) { return next(err); }
 
-      req.session.message.info.push('Good job! :D.<span class="pull-right">Hate to see me? Why not ;-) <strong>-----></strong><span>');
+      req.session.message.info.push('Topic has been updated successfully');
       return res.redirect('/topics/index');
     });
   });

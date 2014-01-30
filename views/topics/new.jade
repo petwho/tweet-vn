@@ -1,6 +1,7 @@
 extends ../layouts/topics
 
 block content
+  include ../layouts/_message
   .row
     .col-xs-12
       form.form-horizontal(method="POST", action="/topics")
