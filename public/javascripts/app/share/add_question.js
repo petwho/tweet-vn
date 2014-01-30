@@ -148,7 +148,7 @@ define([
     searchTopic : function () {
       if (this.timer) { clearTimeout(this.timer); }
 
-      this.timer = setTimeout(this.searchTopicCallback(this), 100);
+      this.timer = setTimeout(this.searchTopicCallback(this), 150);
     },
 
     clearSearchResults : function () {
@@ -156,33 +156,35 @@ define([
     },
 
     searchTopicCallback : function (self) {
-      var that = self,
-        term = that.$searchInput.val();
+      return function () {
+        var that = self,
+          term = that.$searchInput.val();
 
-      if (!term.trim()) {
-        that.clearSearchResults();
-        return;
-      }
-
-      spinner.start();
-
-      $.ajax({
-        type  : 'GET',
-        url   : '/topics/search?name=' + term,
-        error : function (jqXHR, textStatus, errorThrow) {
-          spinner.stop();
-        },
-        success : function (topics, textStatus, jqXHR) {
+        if (!term.trim()) {
           that.clearSearchResults();
-          spinner.stop();
-          if (topics.length !== 0) {
-            that.$searchResults.find('ul').append(_.template(searchTemplate)({
-              topics: topics
-            }));
-            that.$searchResults.show();
-          }
+          return;
         }
-      });
+
+        spinner.start();
+
+        $.ajax({
+          type  : 'GET',
+          url   : '/topics/search?name=' + term,
+          error : function (jqXHR, textStatus, errorThrow) {
+            spinner.stop();
+          },
+          success : function (topics, textStatus, jqXHR) {
+            that.clearSearchResults();
+            spinner.stop();
+            if (topics.length !== 0) {
+              that.$searchResults.find('ul').append(_.template(searchTemplate)({
+                topics: topics
+              }));
+              that.$searchResults.show();
+            }
+          }
+        });
+      };
     },
 
     addTopic: function (e) {
