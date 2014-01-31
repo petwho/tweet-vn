@@ -3,14 +3,14 @@ var TopicSchema,
   Schema      = require('mongoose').Schema;
 
 TopicSchema = new Schema({
-  name            : { type: String,   required: true, unique  : true },
-  is_primary      : { type: Boolean,  required: true },
-  subtopic_ids    : [{ type: Schema.Types.ObjectId, ref: 'Topics', sparse: true }],
-  related_words   : Array,
-  description     : String,
-  follower_count  : { type: Number, default: 0 },
-  created_at      : { type: Date, default: Date.now },
-  updated_at      : { type: Date, default: Date.now }
+  name             : { type: String,   required: true, unique  : true },
+  is_primary       : { type: Boolean,  required: true },
+  related_topic_ids: [{ type: Schema.Types.ObjectId, ref: 'Topics', sparse: true }],
+  related_words    : Array,
+  description      : String,
+  follower_count   : { type: Number, default: 0 },
+  created_at       : { type: Date, default: Date.now },
+  updated_at       : { type: Date, default: Date.now }
 });
 
 TopicSchema.pre('save', function (next) {
@@ -21,6 +21,8 @@ TopicSchema.pre('save', function (next) {
 });
 
 TopicSchema.static('filterInputs', function (req_body) {
+  req_body.is_primary = (req_body.is_primary === 'true') ? true : false;
+
   // capitalize first letter of topic name
   if (req_body.name) {
     req_body.name = req_body.name.toLowerCase();
@@ -30,6 +32,9 @@ TopicSchema.static('filterInputs', function (req_body) {
   // convert related_word into array
   if (req_body.related_words) {
     req_body.related_words = req_body.related_words.split(',');
+    req_body.related_words.map(function (word) {
+      word = word.trim();
+    });
   }
 
   delete req_body.follower_count;

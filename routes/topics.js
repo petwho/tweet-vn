@@ -3,21 +3,13 @@ var loggedIn = require('./middleware/logged_in'),
   Activity = require('../data/models/activity'),
   Topic = require('../data/models/topic'),
   User = require('../data/models/user'),
+  loadTopics = require('./middleware/load_topics'),
   request = require('request'),
   fs = require('fs'),
   async = require('async'),
   util = require('util');
 
 module.exports = function (app) {
-  var subtopics, loadSubTopics;
-
-  loadSubTopics = function (req, res, next) {
-    Topic.find({ is_primary: false }, '_id name').exec(function (err, returned_topics) {
-      subtopics = returned_topics;
-      next();
-    });
-  };
-
   app.get('/topics/list', loggedIn, function (req, res, next) {
     Topic.find({}, '-created_at -updated_at').exec(function (err, topics) {
       var i;
@@ -51,49 +43,77 @@ module.exports = function (app) {
     });
   });
 
-  app.get('/topics/new', [loggedIn, loadSubTopics], function (req, res, next) {
+  app.get('/topics/new', [loggedIn, loadTopics.list], function (req, res, next) {
     if (req.session.user.email !== process.env.SYS_ADMIN_EMAIL_ADD) {
       return res.render('not_found');
     }
-    return res.render('topics/new', { subtopics : subtopics });
+    return res.render('topics/new', { topics : req.topics });
   });
 
-  app.post('/topics', [loggedIn, loadSubTopics], function (req, res, next) {
-    var i,
-      topic_id_list = [];
+  app.post('/topics', [loggedIn, loadTopics.list], function (req, res, next) {
+    var validate_related_topics, create_topic, update_related_topics;
 
-    Topic.filterInputs(req.body);
-
-    // ** Begin validate sub-topics
-    for (i = 0; i < subtopics; i++) {
-      topic_id_list.push(subtopics[i]._id);
-    }
-
-    for (i = 0; i < req.body.subtopic_ids; i++) {
-      if (topic_id_list.indexOf(req.body.subtopic_ids[i]) !== -1) {
-        req.session.message.error.push('Invalid sub-topic.');
-        return res.redirect('back');
+    validate_related_topics = function (next) {
+      var i, topic_id_list = [];
+      for (i = 0; i < req.topics.length; i++) {
+        topic_id_list.push(req.topics[i]._id);
       }
-    }
-    // ** End of validate sub-topics
 
-    Topic.create(req.body, function (err, topic) {
-      if (err) {
-        if (err.code === 11000) {
-          req.session.message.info.push('Name was already taken.');
+      for (i = 0; i < req.body.related_topic_ids; i++) {
+        if (topic_id_list.indexOf(req.body.related_topic_ids[i]) !== -1) {
+          req.session.message.error.push('Invalid related topics.');
           return res.redirect('back');
         }
-        return next(err);
       }
-      request(req.body.picture).pipe(fs.createWriteStream('./public/assets/pictures/topics/' + req.body.name.toLowerCase() + '.jpg'));
-      req.session.message.info.push('Topic has been created successfully.');
+      next();
+    };
+
+    create_topic = function (next) {
+      Topic.filterInputs(req.body);
+
+      Topic.create(req.body, function (err, topic) {
+        var writer;
+        if (err) {
+          if (err.code === 11000) {
+            req.session.message.info.push('Name was already taken.');
+            return res.redirect('back');
+          }
+          return next(err);
+        }
+
+        req.topic = topic;
+
+        writer = request(req.body.picture).pipe(fs.createWriteStream('./public/assets/pictures/topics/' + req.body.name.toLowerCase() + '.jpg'));
+
+        writer.on('error', function (err) {
+          return next(err);
+        });
+
+        writer.on('close', function () {
+          return next();
+        });
+      });
+    };
+
+    update_related_topics = function (next) {
+      if (!req.body.related_topic_ids) {
+        return next();
+      }
+      Topic.update({ _id: { $in: (typeof req.body.related_topic_ids === 'string') ? [req.body.related_topic_ids] : req.body.related_topic_ids } }, { $push: { related_topic_ids: req.topic._id } }, { multi: true}, function (err, numberAffected) {
+        if (err) { return next(err); }
+        next();
+      });
+    };
+
+    async.series([validate_related_topics, create_topic, update_related_topics], function (err, results) {
+      if (err) { return next(err); }
       return res.redirect('/topics/index');
     });
   });
 
-  app.get('/topics/:id/edit', [loggedIn, loadSubTopics], function (req, res, next) {
+  app.get('/topics/:id/edit', [loggedIn, loadTopics.list], function (req, res, next) {
     Topic.findById(req.params.id, function (err, topic) {
-      return res.render('topics/edit', { topic: topic, subtopics : subtopics });
+      return res.render('topics/edit', { topic: topic, topics : req.topics });
     });
   });
 

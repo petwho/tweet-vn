@@ -14,9 +14,7 @@
 !/public/assets/pictures/users/facebook
 !/public/assets/pictures/users/default.jpg
 !/public/assets/pictures/topics/.gitkeep
-!/public/assets/pictures/users/email/.gitkeep
-!/public/assets/pictures/users/google/.gitkeep
-!/public/assets/pictures/users/facebook/.gitkeep
+!/public/assets/pictures/users/.gitkeep
 TODOS
 .env
 .config.js

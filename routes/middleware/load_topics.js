@@ -13,3 +13,11 @@ exports.toObject = function (req, res, next) {
     next();
   });
 };
+
+exports.list = function (req, res, next) {
+  Topic.find({}, function (err, topics) {
+    if (err) { return next(err); }
+    req.topics = topics;
+    next();
+  });
+};

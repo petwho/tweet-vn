@@ -271,6 +271,7 @@ UserSchema.static('oauthSignUp', function (req, res, next) {
     }
 
     self.create(req.body, function (err, user) {
+      var writer;
       if (err) {
         if (err.code === 11000) {
           if (err.err.indexOf(req.body.token) !== -1 || err.err.indexOf(req.body.username) !== -1) {
@@ -279,11 +280,20 @@ UserSchema.static('oauthSignUp', function (req, res, next) {
         }
         return self.errorHandler(err, req, res, next);
       }
-      if (req.body.picture) {
-        request(req.body.picture).pipe(fs.createWriteStream('./public/assets/pictures/users/' + user.sign_up_type + '/' + user.username + '.jpg'));
-      }
+
       new_user = user;
-      next();
+
+      if (req.body.picture) {
+        writer = request(req.body.picture).pipe(fs.createWriteStream('./public/assets/pictures/users/' + user.username + '.jpg'));
+      }
+
+      writer.on('error', function (err) {
+        next(err);
+      });
+
+      writer.on('close', function () {
+        next();
+      });
     });
   };
 
@@ -386,7 +396,6 @@ UserSchema.static('emailSignUp', function (req, res, next) {
       if (err) {
         // ** TODO 30-12-2013 trankhanh - implement send email error
       }
-      console.log(json);
     });
   };
 
@@ -450,10 +459,9 @@ UserSchema.virtual('fullname').get(function () {
 
 UserSchema.virtual('picture').get(function () {
   if (this.has_photo) {
-    return '/assets/pictures/users/' + this.sign_up_type + '/' + this.username + '.jpg'
-  } else {
-    return '/assets/pictures/users/default.jpg';
+    return '/assets/pictures/users/' + this.username + '.jpg';
   }
+  return '/assets/pictures/users/default.jpg';
 });
 
 UserSchema.set('toJSON', { virtuals: true });

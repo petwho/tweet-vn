@@ -11,22 +11,27 @@ block content
           .col-xs-4
             input#name.form-control(type="text", name="name", placeholder="Eg: animals.", required)
         .form-group
-          label.control-label.col-xs-2(for="type") Type
-          .col-xs-4
-            select#type.form-control(name="is_primary", required)
-              option
-              option(value="true") Primary Topics
-              option(value="false") Sub-Topics
-        .form-group.sub-topic-group.hidden
-          label.control-label.col-xs-2 Sub-topic
+          .col-xs-4.col-xs-offset-2
+            .radio
+              label
+                input(type="radio", name="is_primary", value="true")
+                | Primary topic
+            .radio
+              label
+                input(type="radio", name="is_primary", value="false", checked)
+                | None-primary topic
+        .form-group
+          label.control-label.col-xs-2 Related topics
           .col-xs-10
             .row
               .col-xs-4
-                - for (var i = 0; i < subtopics.length; i++)
+                - for (var i = 0; i < topics.length; i++)
                   .checkbox
                     label
-                      input(type="checkbox", name="subtopic_ids", value!= subtopics[i]._id, disabled)
-                      span!= subtopics[i].name
+                      input(type="checkbox", name="related_topic_ids", value!= topics[i]._id)
+                      span!= topics[i].name
+                - if (topics.length === 0)
+                  input.form-control(type="text", placeholder="No topics found.", disabled)
         .form-group
           label.control-label.col-xs-2(for="related_words") Related Words
           .col-xs-4
@@ -38,21 +43,3 @@ block content
         .form-group
           .col-xs-offset-2.col-xs-2
             button.btn.btn-primary(type="submit") Submit
-
-  script(src="/javascripts/libs/jquery/jquery-2.0.3.min.js")
-  script.
-    $(function () {
-      var $is_primary     = $('select[name="is_primary"]'),
-        $sub_topic_inputs = $('input[name="subtopic_ids"]'),
-        $sub_topic_group  = $('.sub-topic-group');
-
-      $is_primary.on('change', function (e) {
-        if ($(e.target).val() === 'true') {
-          $sub_topic_inputs.prop('disabled', false);
-          $sub_topic_group.removeClass('hidden');
-        } else {
-          $sub_topic_inputs.prop('disabled', true);
-          $sub_topic_group.addClass('hidden');
-        }
-      });
-    });
