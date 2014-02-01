@@ -5,7 +5,7 @@ var TopicSchema,
 TopicSchema = new Schema({
   name             : { type: String,   required: true, unique  : true },
   is_primary       : { type: Boolean,  required: true },
-  related_topic_ids: [{ type: Schema.Types.ObjectId, ref: 'Topics', sparse: true }],
+  related_topic_ids: [{ type: Schema.Types.ObjectId, ref: 'Topic', sparse: true }],
   related_words    : Array,
   description      : String,
   follower_count   : { type: Number, default: 0 },

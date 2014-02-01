@@ -23,7 +23,7 @@ require.config({
 });
 
 require([
-  'bootstrap', 'backbone', 'views/profile/app'
-], function (bootstrap, Backbone, ProfileView) {
+  'bootstrap', 'backbone', 'share/add_question', 'views/profile/app'
+], function (bootstrap, Backbone, addQuestionView, ProfileView) {
   new ProfileView();
 });

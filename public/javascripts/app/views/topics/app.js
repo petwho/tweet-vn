@@ -1,6 +1,6 @@
 define([
-  'backbone', 'spinner', 'collections/topics', 'views/topics/topic'
-], function (Backbone, spinner, Topics, TopicView) {
+  'backbone', 'spinner', 'collections/topics', 'views/topics/topic', 'views/topics/related_topics',
+], function (Backbone, spinner, Topics, TopicView, RelatedTopicView) {
   var AppView = Backbone.View.extend({
     el: '#welcome-flow',
 
@@ -12,10 +12,10 @@ define([
 
     initialize: function () {
       var that = this;
-      this.topics   = new Topics();
+      this.topics = new Topics();
       this.listenTo(this.topics, 'change:is_following', this.followingTopic);
       this.listenTo(this.topics, 'addPrimaryTopic', this.addPrimaryTopic);
-      this.listenTo(this.topics, 'addSubTopic', this.addSubTopic);
+      this.listenTo(this.topics, 'addRelatedTopics', this.addRelatedTopics);
     },
 
     step1: function () {
@@ -43,14 +43,14 @@ define([
       });
     },
 
-    addSubTopic: function (topics) {
+    addRelatedTopics: function (topics) {
       var counter = 0,
         that = this;
 
       topics.each(function (topic) {
-        if (topic.get('is_primary') === false) {
-          var topicView = new TopicView({ model: topic });
-          that.$('.col-xs-4:nth-child(' + (counter % 3 + 1) + ')').append(topicView.render().el);
+        if (topic.get('is_following') && topic.get('is_primary')) {
+          var relatedTopicView = new RelatedTopicView({ model: topic, collection: that.topics });
+          that.$('.col-xs-6:nth-child(' + (counter % 2 + 1) + ')').append(relatedTopicView.render().el);
           counter++;
         }
       });

@@ -11,21 +11,30 @@ var loggedIn = require('./middleware/logged_in'),
 
 module.exports = function (app) {
   app.get('/topics/list', loggedIn, function (req, res, next) {
-    Topic.find({}, '-created_at -updated_at').exec(function (err, topics) {
-      var i;
+    Topic.find({}, '-created_at -updated_at')
+      .populate({path: 'related_topic_ids', select: '-related_words'})
+      .exec(function (err, topics) {
+        var i, j;
 
-      if (err) { return next(err); }
+        if (err) { return next(err); }
 
-      for (i = 0; i < topics.length; i++) {
-        if (req.session.user.following.topic_ids.indexOf(topics[i]._id.toString()) !== -1) {
-          topics[i].set('is_following', true, {strict: false});
-        } else {
-          topics[i].set('is_following', false, {strict: false});
+        for (i = 0; i < topics.length; i++) {
+          if (req.session.user.following.topic_ids.indexOf(topics[i]._id.toString()) !== -1) {
+            topics[i].set('is_following', true, {strict: false});
+          } else {
+            topics[i].set('is_following', false, {strict: false});
+          }
+          for (j = 0; j < topics[i].related_topic_ids.length; j++) {
+            if (req.session.user.following.topic_ids.indexOf(topics[i].related_topic_ids[j]._id.toString()) !== -1) {
+              topics[i].related_topic_ids[j].set('is_following', true, {strict: false});
+            } else {
+              topics[i].related_topic_ids[j].set('is_following', false, {strict: false});
+            }
+          }
         }
-      }
 
-      return res.json(200, topics);
-    });
+        return res.json(200, topics);
+      });
   });
 
   app.get('/topics/index', loggedIn, function (req, res, next) {
@@ -148,9 +157,9 @@ module.exports = function (app) {
     update_user = function (next) {
       var topic_id_list, index;
 
-      topic_id_list  = req.session.user.following.topic_ids;
-      topic_id_list  = topic_id_list.slice(0, topic_id_list.length);
-      index       = topic_id_list.indexOf(req.body._id);
+      topic_id_list = req.session.user.following.topic_ids;
+      topic_id_list = topic_id_list.slice(0, topic_id_list.length);
+      index = topic_id_list.indexOf(req.body._id);
 
       if (req.body.is_following === false) {
         if (index === -1) {

@@ -36,36 +36,26 @@ define([
 
     setupView: function () {
       appView.$('.topic-list .col-xs-4').empty();
+      appView.$('.related-topics .col-xs-6').empty();
       this.$headSteps.children().removeClass('current');
       this.$instSteps.hide();
       $('.spinner-large').remove();
       appView.$el.removeClass('hidden');
     },
 
-    updateFollowing: function (self) {
-      if (typeof self === 'undefined') {
-        self = this;
-      }
-
+    updateView: function (self) {
       // update clickable class
       self.$headSteps.removeClass('clickable');
       self.$instruction.find('.steps a').removeClass('clickable');
+      self.$headline.find('.step-1').addClass('clickable');
+      self.$instruction.find('.step-1 a').addClass('clickable');
 
       if (self.validateFollowingPrimaryTopic()) {
-        self.$headline.find('.step-1').addClass('clickable');
         self.$headline.find('.step-2').addClass('clickable');
+        self.$headline.find('.step-3').addClass('clickable');
 
-        self.$instruction.find('.step-1 a').addClass('clickable');
-
-        if (self.validateFollowingSubTopic()) {
-          self.$headline.find('.step-1').addClass('clickable');
-          self.$headline.find('.step-2').addClass('clickable');
-          self.$headline.find('.step-3').addClass('clickable');
-
-          self.$instruction.find('.step-1 a').addClass('clickable');
-          self.$instruction.find('.step-2 a').addClass('clickable');
-          self.$instruction.find('.step-3 a').addClass('clickable');
-        }
+        self.$instruction.find('.step-2 a').addClass('clickable');
+        self.$instruction.find('.step-3 a').addClass('clickable');
       }
 
       // update remain num
@@ -73,19 +63,21 @@ define([
         primary_topic_remain: 5 - appView.topics.followingPrimaryCount().length
       }));
 
-      self.$instruction.find('.step-2 a').text(self.template({
-        sub_topic_remain: 5 - appView.topics.followingSubTopicCount().length
-      }));
-
       self.$instruction.find('.step-3 a').text(self.template());
+    },
+
+    updateFollowing: function (self) {
+      if (typeof self === 'undefined') {
+        self = this;
+      }
+
+      appView.topics.fetch().then(function () {
+        self.updateView(self);
+      });
     },
 
     validateFollowingPrimaryTopic: function () {
       return (appView.topics.followingPrimaryCount().length >= 5) ? true : false;
-    },
-
-    validateFollowingSubTopic: function () {
-      return (appView.topics.followingSubTopicCount().length >= 5) ? true : false;
     },
 
     step1: function () {
@@ -128,7 +120,7 @@ define([
         that.setupView();
         that.$headline.find('.step-2').children().addClass('current');
         that.$instruction.find('.step-2').show();
-        appView.topics.trigger('addSubTopic', appView.topics);
+        appView.topics.trigger('addRelatedTopics', appView.topics);
         that.updateFollowing(that);
       };
 
@@ -150,7 +142,7 @@ define([
         that = this;
 
       filter_callback = function (self) {
-        if (!self.validateFollowingSubTopic() || !self.validateFollowingPrimaryTopic()) {
+        if (!self.validateFollowingPrimaryTopic()) {
           return self.navigate('#step-2', { trigger: true });
         }
 

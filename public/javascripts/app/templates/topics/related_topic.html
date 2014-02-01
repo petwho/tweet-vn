@@ -1,0 +1,18 @@
+<div class="picture col-xs-1 no-padding-left-right">
+  <img src="/assets/pictures/topics/<%= name.toLowerCase() %>.jpg" width="40" height="40">
+</div>
+<div class="col-xs-11">
+  <h2 class="name">Topics related to <%= name %></h2>
+  <% for (var i = 0; i < related_topic_ids.length; i++) { %>
+    <div class="checkbox">
+      <label>
+        <% if (related_topic_ids[i].is_following) { %>
+          <input type="checkbox" value="<%= related_topic_ids[i]._id %>" checked>
+        <% } else { %>
+          <input type="checkbox" value="<%= related_topic_ids[i]._id %>">
+        <% } %>
+        <strong><%= related_topic_ids[i].name %></strong>
+      </label>
+    </div>
+  <% } %>
+</div>

@@ -6,14 +6,14 @@
   <% } %>
 <% } %>
 
-<% if (typeof sub_topic_remain !== 'undefined') { %>
-  <% if (sub_topic_remain > 0) { %>
-      Choose <%= sub_topic_remain %> More Topics to Continue
+<% if (typeof related_topic_remain !== 'undefined') { %>
+  <% if (related_topic_remain > 0) { %>
+      Choose <%= related_topic_remain %> More Topics to Continue
   <% } else { %>
     Save & Continue
   <% } %>
 <% } %>
 
-<% if ((typeof primary_topic_remain === 'undefined') && (typeof sub_topic_remain === 'undefined')) { %>
+<% if ((typeof primary_topic_remain === 'undefined') && (typeof related_topic_remain === 'undefined')) { %>
   Go to home page
 <% } %>

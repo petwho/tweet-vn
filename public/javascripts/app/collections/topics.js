@@ -11,15 +11,6 @@ define([ 'backbone', 'models/topic'], function (Backbone, Topic) {
         }
         return false;
       });
-    },
-
-    followingSubTopicCount: function () {
-      return this.filter(function (topic) {
-        if (topic.get('is_primary') === false) {
-          return topic.get('is_following');
-        }
-        return false;
-      });
     }
   });
 
