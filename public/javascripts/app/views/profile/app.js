@@ -69,7 +69,7 @@ define([
       that.$('.follower-user-link').append(_.template(newFollowerTpl)(activity.user_id));
 
       if (that.$('.follow-btn-switcher button').length !== 0) {
-        that.$('.follow-btn-switcher').html('<button class="btn btn-sm unfollow-btn unfollow-user">Unfolllow</button>');
+        that.$('.follow-btn-switcher').html('<button class="pull-right btn btn-sm unfollow-btn unfollow-user">Unfolllow</button>');
       }
     },
 
@@ -79,7 +79,7 @@ define([
       that.$('.follower-user-link').find('a[data-username="' + activity.user_id.username + '"]').remove();
 
       if (that.$('.follow-btn-switcher button').length !== 0) {
-        that.$('.follow-btn-switcher').html('<button class="btn btn-sm follow-btn follow-user">Folllow</button>');
+        that.$('.follow-btn-switcher').html('<button class="pull-right btn btn-sm follow-btn follow-user">Folllow</button>');
       }
     },
 
@@ -90,7 +90,7 @@ define([
 
       that.$('.activities .pagelist-item:first').before(_.template(newFollowerActivityTpl)(activity));
       if (that.$('.follow-btn-switcher button').length !== 0) {
-        that.$('.follow-btn-switcher').html('<button class="btn btn-sm unfollow-btn unfollow-user">Unfolllow</button>');
+        that.$('.follow-btn-switcher').html('<button class="pull-right btn btn-sm unfollow-btn unfollow-user">Unfolllow</button>');
       }
     },
 
@@ -100,7 +100,7 @@ define([
       that.$('.following-user-link').find('a[data-username="' + activity.followed.user_id.username + '"]').remove();
       that.$('.pagelist-item.following-user[data-username="' + activity.followed.user_id.username + '"]').remove();
       if (that.$('.follow-btn-switcher button').length !== 0) {
-        that.$('.follow-btn-switcher').html('<button class="btn btn-sm follow-btn follow-user">Folllow</button>');
+        that.$('.follow-btn-switcher').html('<button class="pull-right btn btn-sm follow-btn follow-user">Folllow</button>');
       }
     }
 
