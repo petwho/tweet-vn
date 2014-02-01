@@ -187,7 +187,7 @@ module.exports = function (app) {
         user_id: req.session.user._id,
         type: 32,
         'followed.topic_id': req.body._id
-      }, function (err, activity) {
+      }).sort({created_at: -1}).exec(function (err, activity) {
         if (err) { return next(err); }
         if (!activity) {
           return res.json(403, {msg: 'Your request was invalid. That"all we know.'});
