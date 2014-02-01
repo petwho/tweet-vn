@@ -1,1 +1,1 @@
-.activities>div:first-child{border-top:1px solid #e0e0e0}
+#user-profile .activities>div:first-child{border-top:1px solid #e0e0e0}#user-profile .picture{margin-bottom:30px}#user-profile .following,#user-profile .followers,#user-profile .followed-topics,#user-profile .questions,#user-profile .answers{margin-bottom:10px}
