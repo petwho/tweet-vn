@@ -1,0 +1,135 @@
+@import 'helpers.less';
+
+#question {
+  .question-text {
+    border-bottom: 1px solid #c0c0c0;
+  }
+
+  .fake-editor-wrapper {
+    border: 1px solid #999;
+    padding: 5px;
+  }
+
+  .fake-answer-editor {
+    min-height: 40px;
+    cursor: text;
+  }
+
+  a.user {
+    color: #333;
+    font-weight: bold;
+  }
+
+  .topic-item, .editing-topic-item {
+    .border-radius(3px);
+    background-color: #dfeaf4;
+    display: inline-block;
+    margin-right: 5px;
+    padding: 0 0;
+    a {
+      color: #19558d;
+      margin: 5px 5px;
+      height: 100%;
+    }
+  }
+
+  .topic-item:hover {
+    background-color: #19558d;
+    a {
+      color: #fff;
+    }
+  }
+
+  .editing-topic-item {
+    button.remove-topic {
+      border:0;
+      margin: 0 0;
+      padding: 0 0;
+      height: 100%;
+      display: inline-block;
+      background-image: url('data:image/gif;base64,R0lGODlhEAAwAJEDAFONwhlVjf///////yH5BAEAAAMALAAAAAAQADAAAAJSnI+py+2PwpEt2GHpEtkKx3lPpy1ZWCbct4LHB8XyTNf2LcODvgmsD/IBH0KIcMgoFhs6Hu4JjUqnNMDB2gBoB1oso7t9dCFg72I8zl6p7DaiAAA7');
+      background-position: center 2px;
+      background-color: #dfeaf4;
+      width: 15px;
+      &:hover {
+        background-color: #19558d;
+        background-position: center -14px;
+        .border-radius(2px);
+      }
+    }
+  }
+
+  .topic-selector input {
+    .border-radius(0px);
+    height: 100%;
+    padding: 5px 5px;
+  }
+
+  .done {
+    margin-top: 7px;
+    font-weight: bold;
+    padding-left: 0;
+  }
+
+  .search-results {
+    background: #fff;
+    color: #333;
+    margin-top: -1px;
+    width: 100%;
+    z-index: 9999;
+    border: 1px solid #999;
+    border-bottom: 1px solid #666;
+    cursor: pointer;
+
+    ul {
+      margin: 0 0;
+      padding: 0 0;
+      list-style: none;
+
+      li {
+        padding: 5px 7px;
+        font-family: "Helvetica Neue",Arial,sans-serif;
+        font-size: 0.8em;
+
+        .picture {
+          float: left;
+          margin: 1px 5px 0 0;
+        }
+
+        &:hover {
+          background-color: #dfeaf4;
+          color: #19558d;
+        }
+
+      }
+    }
+  }
+
+  .title-text {
+    h1[contenteditable=true] {
+      display: block;
+      font-size: 1.6em;
+      font-weight: bold;
+      white-space: normal;
+      letter-spacing: -1px;
+      line-height: 1.2em;
+      &[contenteditable=true] {
+        border: 1px solid #999;
+        outline: 0;
+        padding: 4px;
+        &:focus {
+          border-color: #538dc2;
+          box-shadow: 0 0 4px rgba(83,141,194,0.5);
+        }
+      }
+    }
+
+    h1 {
+      display: inline-block;
+      margin: 2px 2px;
+    }
+    .edit-title-actions {
+      margin-top: 3px;
+    }
+  }
+}

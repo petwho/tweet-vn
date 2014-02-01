@@ -1,11 +1,15 @@
 !!! 5
 html(lang="vi")
   head
-    include ../headers/topics
+    include ../headers/questions_answers
   body
-    .container
+    .banner-msg
+    include _navbar
+    .container.content
       .row
-        .col-xs-12
+        .col-xs-2.submenu
+          include _submenu
+        .col-xs-7(role="main")
           block content
           .row.spinner-large
             .col-xs-12

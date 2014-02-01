@@ -1,13 +1,13 @@
 !!! 5
 html(lang="vi")
   head
-    include _header
+    include ../headers/activities
   body
     .banner-msg
     include _navbar
-    .container
+    .container.content
       .row
-        .col-xs-3.submenu
+        .col-xs-2.submenu
           include _submenu
         .col-xs-6(role="main")
           block content
