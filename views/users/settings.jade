@@ -1,0 +1,38 @@
+extends ../layouts/settings
+block content
+  .row#settings(data-username=session.user.username)
+    .col-xs-8
+      h1.page-callout Account settings
+      .row
+        .col-xs-2 Picture
+        .col-xs-10
+          img(src=session.user.picture)
+      .row
+        .col-xs-2 Email
+        .col-xs-10
+          strong=session.user.email
+      .row
+        .col-xs-2 Password
+        .col-xs-10
+          a.change-password-link(href="#change-password")
+            strong change password
+          form.change-password-form.hidden.form-horizontal(role="form")
+            .form-group
+              label.control-label.col-xs-5(for="old-password") Old password
+              .col-xs-7
+                input.form-control#old-password(name="old_password", type="password", pattern=".{6,}", required, title="This field requires at lest 6 characters")
+            .form-group
+              label.control-label.col-xs-5(for="password") Password
+              .col-xs-7
+                input.form-control#password(name="password", type="password", pattern=".{6,}", required, title="This field requires at lest 6 characters")
+            .form-group
+              label.control-label.col-xs-5(name="password-confirmation", for="password-confirmation") Password confirmation
+              .col-xs-7
+                input.form-control#password-confirmation(type="password", pattern=".{6,}", required, title="This field requires at lest 6 characters")
+            .form-group
+              .col-xs-7.col-xs-offset-5
+                .msg-wrapper
+                  .message
+                button.btn.btn-primary(type="submit") Submit
+                a.btn.btn-warning.cancel(role="button", href="#") Cancel
+  script(data-main="/javascripts/app/bootstraps/settings", src="/javascripts/libs/require/require-2.1.9.min.js")

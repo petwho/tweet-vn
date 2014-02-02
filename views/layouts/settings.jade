@@ -1,0 +1,13 @@
+!!! 5
+html(lang="vi")
+  head
+    include ../headers/settings
+  body
+    .banner-msg
+    include _navbar
+    .container.content
+      .row
+        .col-xs-12(role="main")
+          block content
+    include _footer
+    include _dialog

@@ -3,6 +3,7 @@ var oauth2Client, googleapis, Facebook,
   loggedIn = require('./middleware/logged_in'),
   loggedInAjax = require('./middleware/logged_in_ajax'),
   loadUser = require('./middleware/load_user'),
+  restrictUserToSelf = require('./middleware/restrict_user_to_self'),
   User = require('../data/models/user'),
   Comment = require('../data/models/comment'),
   Activity = require('../data/models/activity'),
@@ -18,6 +19,10 @@ module.exports = function (app) {
     User.emailSignUp(req, res, next);
   });
 
+  app.put('/@:username/update-password', [loggedIn, restrictUserToSelf.byRequestParamUsername, loadUser.byRequestParamUsername], function (req, res, next) {
+    User.updateDoc({change_pwd: true}, req, res, next);
+  });
+
   app.get('/activate/:token', notLoggedIn, function (req, res, next) {
     User.update({'token.activation' : req.params.token}, { $unset : { 'token.activation' : '' }, $set : { status: 2 } }).exec(function (err, user) {
       if (err) { return next(err); }
@@ -30,7 +35,7 @@ module.exports = function (app) {
     });
   });
 
-  app.post('/reset-password', loadUser.byRequestEmail, function (req, res, next) {
+  app.post('/reset-password', loadUser.byRequestBodyEmail, function (req, res, next) {
     User.resetPassword(req, res, next);
   });
 
@@ -190,8 +195,10 @@ module.exports = function (app) {
               switch (activities[i].type) {
               case 20:
                 req.questionCount++;
+                break;
               case 21:
                 req.answerCount++;
+                break;
               }
             }
             next();
@@ -359,5 +366,9 @@ module.exports = function (app) {
       if (err) { return next(err); }
       return res.json(200, req.activity);
     });
+  });
+
+  app.get('/@:username/settings', [loggedIn, restrictUserToSelf.byRequestParamUsername], function (req, res, next) {
+    res.render('users/settings');
   });
 };

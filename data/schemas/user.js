@@ -64,29 +64,26 @@ UserSchema.static('filterInputs', function (req_body) {
 
 UserSchema.static('errorHandler', function (err, req, res, next) {
   var message, indexName, suffixes, suffix,
-    error_msg_list = [];
+    error_msg = '';
 
   if ((err.name !== 'ValidationError') && (err.code !== 11000)) {
     return next(err);
   }
 
   if (err.name === 'ValidationError') {
-    if (err.errors.fullname) {
-      error_msg_list.push('Fullname is not valid');
-    }
     if (err.errors.email) {
-      error_msg_list.push('Email is not valid');
+      error_msg += 'Email is not valid<br>';
     }
   }
 
   if (err.code === 11000) {
     message = err.err;
     if (message.indexOf(req.body.email) !== -1) {
-      error_msg_list.push('This email address is already in use');
+      error_msg += 'This email address is already in use<br>';
     }
   }
 
-  return res.json({msg: error_msg_list}, 400);
+  return res.json({msg: error_msg}, 400);
 });
 
 UserSchema.static('newPassword', function (req, res, next) {
@@ -203,7 +200,7 @@ UserSchema.static('updateDoc', function (config, req, res, next) {
   delete req.body.email;
   req.body.updated_at = new Date();
 
-  update_user = function () {
+  update_user = function (next) {
     self.findOne({username: req.user.username}, function (err, user) {
       if (err) { return next(err); }
 
@@ -215,7 +212,11 @@ UserSchema.static('updateDoc', function (config, req, res, next) {
           return self.errorHandler(err, req, res, next);
         }
         req.session.user = user;
-        return res.json({msg: 'profile update success'}, 200);
+        if (config.change_pwd) {
+          delete req.session.user;
+          req.session.message.success.push('Password updated successfully.')
+        }
+        return res.json({msg: 'Profile update success'}, 200);
       });
     });
   };
@@ -226,25 +227,25 @@ UserSchema.static('updateDoc', function (config, req, res, next) {
   if (!config.change_pwd) {
     delete req.body.password;
     delete req.body.password_salt;
-    update_user();
+    update_user(next);
   } else {
     if (!req.body.password || (req.body.password.length < 6)) {
-      return res.json({msg: 'password too short'}, 400);
+      return res.json({msg: 'Password too short'}, 400);
     }
 
-    hash(req.body.old_password, req.user.password_salt, function (err, hash) {
+    hash(req.body.old_password, req.user.password_salt, function (err, hashed_pwd) {
       if (err) { return next(err); }
 
-      if (hash !== req.user.password) {
-        return res.json({msg: 'old password does not match'}, 400);
+      if (hashed_pwd !== req.user.password) {
+        return res.json({msg: 'Old password does not match'}, 400);
       }
 
-      hash(req.body.password, function (err, salt, hash) {
+      hash(req.body.password, function (err, salt, hashed_pwd) {
         if (err) { return next(err); }
 
         req.body.password_salt = salt;
-        req.body.password = hash;
-        update_user();
+        req.body.password = hashed_pwd;
+        update_user(next);
       });
     });
   }

@@ -27,7 +27,7 @@ nav.navbar.navbar-default.navbar-fixed-top
             li
               a(href="/@#{session.user.username}") Profile
             li
-              a(href="/@#{session.user.username}/edit") Settings
+              a(href="/@#{session.user.username}/settings") Settings
             - if (session.user && session.user.account_type == 'register')
               li
                 a(href="/@#{session.user.username}/change_password") Change Password

@@ -46,7 +46,6 @@ module.exports = function (app) {
 
     async.series([check_email, check_password], function (err, results) {
       if (err) { return next(err); }
-      req.session.message.info.push('login success');
       return res.json({msg : 'Login success'}, 200);
     });
   });
