@@ -12,9 +12,9 @@ nav.navbar.navbar-default.navbar-fixed-top
           a(href="/")
             span.glyphicon.glyphicon-home &nbsp;
             strong Home
-        li.unread-msg
-          a(href="/") Inbox&nbsp;
-            span.badge 0
+        //- li.unread-msg
+        //-   a(href="/") Inbox&nbsp;
+        //-     span.badge 0
         li.dropdown
           - if (session.user.picture)
             a.user-link.dropdown-toggle(href="/@#{session.user.username}", data-toggle='dropdown')
