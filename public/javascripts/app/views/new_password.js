@@ -20,7 +20,7 @@ define(['backbone'], function (Backbone) {
       if (this.password.val() !== this.password_confirm.val()) {
         this.$message.fadeOut(50, function () {
           self.$message.empty().css({display : 'block'});
-          self.$message.html('<div class="message">Password confirmation does not match.</div>');
+          self.$message.html('<div class="message">Password confirmation did not match.</div>');
         });
         return false;
       }
