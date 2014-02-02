@@ -143,9 +143,9 @@ UserSchema.static('newPassword', function (req, res, next) {
   async.series([make_hash_password, update_user], function (err, results) {
     if (err) { return next(err); }
 
-    req.session.message.info.push('Change password successful');
+    req.session.message.info.push('Password reset successful');
 
-    return res.json({msg: 'Change password successful'}, 200);
+    return res.json({msg: 'Password reset successful'}, 200);
   });
 });
 

@@ -45,7 +45,7 @@ module.exports = function (app) {
 
       if (!user) { return res.json({ msg: 'Invalid link' }); }
 
-      return res.render('users/change_password', { reset_pwd_token: req.params.token, title: 'Reset password' });
+      return res.render('users/new_password', { reset_pwd_token: req.params.token, title: 'Reset password' });
     });
   });
 
