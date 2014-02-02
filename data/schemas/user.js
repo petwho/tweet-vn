@@ -300,7 +300,7 @@ UserSchema.static('oauthSignUp', function (req, res, next) {
 
   create_session_and_send_respond = function (user) {
     req.session.user = user;
-    req.session.message.info.push('Sign up success.');
+    req.session.message.info.push('Enter your new password to begin.');
 
     return res.redirect('/');
   };

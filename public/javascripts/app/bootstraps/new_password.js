@@ -19,7 +19,7 @@ require.config({
   }
 });
 
-require(['views/new_password'], function (newPassword) {
+require(['bootstrap', 'views/new_password'], function (bootstrap, newPassword) {
     new newPassword;
     $('.spinner-large').remove();
 });
