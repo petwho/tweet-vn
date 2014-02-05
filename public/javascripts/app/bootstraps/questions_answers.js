@@ -32,8 +32,8 @@ require(['jquery'], function ($) {
 
 require([
   'bootstrap', 'backbone',
-  'share/add_question',
+  'share/add_question', 'share/search',
   'views/questions_answers/app'
-], function (bootstrap, Backbone, addQuestionView, AppView) {
+], function (bootstrap, Backbone, addQuestionView, search, AppView) {
   new AppView();
 });

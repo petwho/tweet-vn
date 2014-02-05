@@ -37,6 +37,7 @@ a {
   padding-right: 0;
 }
 
+// Navbar
 .navbar-header .spinner {
   margin-left: -35px;
   padding: 15px 15px;
@@ -49,6 +50,48 @@ a {
   font-family: 'Poiret_One', cursive;
   letter-spacing: 3px;
   font-size: 2em;
+}
+
+.navbar {
+  .form-control:focus {
+    border-color: #ccc;
+  }
+
+  .search-results {
+    position: absolute;
+    background-color: #fff;
+    color: #333;
+    overflow: hidden;
+    z-index: 10;
+    top: 40px;
+    width: 450px;
+    border: 1px solid #ddd;
+    .border-radius(0 0 2px 2px);
+
+    ul {
+      list-style: none;
+      padding: 5px 5px;
+      margin-bottom: 0;
+
+      li {
+        margin: 10px 5px;
+      }
+    }
+  }
+
+  .navbar-form {
+    input.search {
+      width: 450px;
+      padding-left: 30px;
+      .border-radius(2px)
+    }
+    span.glyphicon-search {
+      position: absolute;
+      margin-top: 15px;
+      margin-left: 10px;
+      .light-gray;
+    }
+  }
 }
 
 a.brand {

@@ -6,6 +6,8 @@ nav.navbar.navbar-default.navbar-fixed-top
     form.navbar-form.navbar-left(role="search")
         span.glyphicon.glyphicon-search
         input.form-control.search(type="text", placeholder="Search")
+        .search-results.hidden
+          ul
     if (session.user)
       ul.nav.navbar-nav.navbar-right
         li

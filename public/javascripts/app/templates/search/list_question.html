@@ -1,0 +1,8 @@
+<% _.each(questions, function (question) { %>
+  <li>
+    <img src="<%= question.topic_ids[0].picture %>" width=25 height=25>
+    <a href="/questions/<%= question._id %>" target="_blank">
+      <%= question.title %>
+    </a>
+  </li>
+<% }) %>
