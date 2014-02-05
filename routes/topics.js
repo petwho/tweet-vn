@@ -127,16 +127,34 @@ module.exports = function (app) {
   });
 
   app.put('/topics/:id', [loggedIn], function (req, res, next) {
+    var rename_file, update_topic;
+
     Topic.filterInputs(req.body);
 
-    if (req.body.subtopic_ids === undefined) {
-      req.body.subtopic_ids = [];
+    if (!req.body.related_topic_ids || !util.isArray(req.body.related_topic_ids)) {
+      req.body.related_topic_ids = [];
     }
 
-    Topic.update({ _id: req.params.id }, req.body, function (err, topic) {
-      if (err) { return next(err); }
+    rename_file = function (next) {
+      if (!req.body.name) { return next(); }
+      Topic.findById(req.params.id, function (err, topic) {
+        if (err) { return next(err); }
+        fs.rename('./public' + topic.picture, './public/assets/pictures/topics/' + req.body.name.toLowerCase() + '.jpg', function (err) {
+          if (err) { return next(err); }
+          next();
+        });
+      });
+    };
 
-      req.session.message.info.push('Topic has been updated successfully');
+    update_topic = function (next) {
+      Topic.update({ _id: req.params.id }, req.body, function (err, topic) {
+        if (err) { return next(err); }
+        next();
+      });
+    };
+
+    async.series([rename_file, update_topic], function (err, results) {
+      if (err) { return next(err); }
       return res.redirect('/topics/index');
     });
   });
