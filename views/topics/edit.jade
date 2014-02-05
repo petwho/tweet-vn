@@ -1,6 +1,8 @@
-extends ../layouts/login
+extends ../layouts/simple
 
 block content
+  h2.well Edit topic
+  a(href="/topics/all") Back to list
   .row
     .col-xs-12
       form.form-horizontal(method="POST", action="/topics/#{topic._id}")
@@ -10,12 +12,12 @@ block content
           label.control-label.col-xs-2(for="name") Name
           .col-xs-4
             .topic-name= topic.name
-              a(href="#").small.edit-name.light-gray [edit]
+              a(href="#").small.edit-name [edit]
             .row
               .col-xs-10
                 input#name.form-control.hidden(type="text", name="name", value!= topic.name, disabled)
               .col-xs-2
-                a(href="#").hidden.small.cancel-edit-name.light-gray [cancel]
+                a(href="#").hidden.small.cancel-edit-name [cancel]
         .form-group
           .col-xs-4.col-xs-offset-2
             .radio
@@ -75,7 +77,6 @@ block content
       padding-top: 8px;
     }
     .edit-name, .cancel-edit-name { margin-left: 5px; }
-    .light-gray {color: #ccc !important;}
 
   script(type="text/javascript", src="/javascripts/libs/jquery/jquery-2.0.3.min.js")
   script(type="text/javascript")

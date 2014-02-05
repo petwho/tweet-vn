@@ -4,6 +4,7 @@ var loggedIn = require('./middleware/logged_in'),
   Topic = require('../data/models/topic'),
   User = require('../data/models/user'),
   loadTopics = require('./middleware/load_topics'),
+  authAdmin = require('./middleware/auth_admin'),
   request = require('request'),
   fs = require('fs'),
   async = require('async'),
@@ -41,6 +42,13 @@ module.exports = function (app) {
     return res.render('topics/index');
   });
 
+  app.get('/topics/all', [loggedIn, authAdmin], function (req, res, next) {
+    Topic.find({}, function (err, topics) {
+      if (err) { return next(); }
+      res.render('topics/all', {topics: topics});
+    });
+  });
+
   app.get('/topics/search', loggedInAjax, function (req, res, next) {
     if (!req.query.name) {
       return res.json(200, {});
@@ -52,14 +60,11 @@ module.exports = function (app) {
     });
   });
 
-  app.get('/topics/new', [loggedIn, loadTopics.list], function (req, res, next) {
-    if (req.session.user.email !== process.env.SYS_ADMIN_EMAIL_ADD) {
-      return res.render('not_found');
-    }
+  app.get('/topics/new', [loggedIn, authAdmin, loadTopics.list], function (req, res, next) {
     return res.render('topics/new', { topics : req.topics });
   });
 
-  app.post('/topics', [loggedIn, loadTopics.list], function (req, res, next) {
+  app.post('/topics', [loggedIn, authAdmin, loadTopics.list], function (req, res, next) {
     var validate_related_topics, create_topic, update_related_topics;
 
     validate_related_topics = function (next) {
@@ -126,7 +131,7 @@ module.exports = function (app) {
     });
   });
 
-  app.put('/topics/:id', [loggedIn], function (req, res, next) {
+  app.put('/topics/:id', [loggedIn, authAdmin], function (req, res, next) {
     var rename_file, update_topic;
 
     Topic.filterInputs(req.body);

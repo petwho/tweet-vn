@@ -1,7 +1,8 @@
-extends ../layouts/topics
+extends ../layouts/simple
 
 block content
   include ../layouts/_message
+  h2.well Create topic
   .row
     .col-xs-12
       form.form-horizontal(method="POST", action="/topics")

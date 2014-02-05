@@ -1,0 +1,18 @@
+extends ../layouts/simple
+
+block content
+  h2.well Manage topics
+  table.table.table-striped
+    thead
+      tr 
+        th #
+        th name
+        th Manage
+    tbody
+      - for (var i = 0; i < topics.length; i++)
+        tr
+          td=i + 1
+          td
+            strong= topics[i].name
+          td
+            a(href="/topics/#{topics[i]._id}/edit").small.pull-right edit
