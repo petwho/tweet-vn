@@ -116,7 +116,7 @@ module.exports = function (app) {
 
     async.series([validate_related_topics, create_topic, update_related_topics], function (err, results) {
       if (err) { return next(err); }
-      return res.redirect('/topics/index');
+      return res.redirect('/topics/new');
     });
   });
 
