@@ -47,6 +47,8 @@ block content
                   - related_topic_id_list.push(topics[i]._id)
 
                 - for (i = 0; i < topics.length; i++)
+                  - if (topics[i]._id.toString() == topic._id)
+                    - continue
                   .checkbox
                     label
                       - if (topic.related_topic_ids.indexOf(related_topic_id_list[i]) !== -1)

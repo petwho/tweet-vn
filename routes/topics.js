@@ -125,7 +125,7 @@ module.exports = function (app) {
     });
   });
 
-  app.get('/topics/:id/edit', [loggedIn, loadTopics.list], function (req, res, next) {
+  app.get('/topics/:id/edit', [loggedIn, authAdmin, loadTopics.list], function (req, res, next) {
     Topic.findById(req.params.id, function (err, topic) {
       return res.render('topics/edit', { topic: topic, topics : req.topics });
     });
