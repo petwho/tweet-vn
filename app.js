@@ -72,6 +72,9 @@ if ('production' === app.get('env')) {
     }
     res.json({msg: 'server error'}, 500);
   });
+  app.use(function (req, res, next) {
+    res.render('not_found');
+  });
 }
 // * End error handler in production environment
 
