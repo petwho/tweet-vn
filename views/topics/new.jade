@@ -3,6 +3,7 @@ extends ../layouts/simple
 block content
   include ../layouts/_message
   h2.well Create topic
+  a(role="button", href="/topics/all").btn.btn-primary.btn-xs back to list
   .row
     .col-xs-12
       form.form-horizontal(method="POST", action="/topics")

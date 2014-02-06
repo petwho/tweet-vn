@@ -160,7 +160,7 @@ module.exports = function (app) {
 
     async.series([rename_file, update_topic], function (err, results) {
       if (err) { return next(err); }
-      return res.redirect('/topics/index');
+      return res.redirect('/topics/all');
     });
   });
 

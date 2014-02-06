@@ -2,7 +2,7 @@ extends ../layouts/simple
 
 block content
   h2.well Edit topic
-  a(href="/topics/all") Back to list
+  a(href="/topics/all").btn.btn-primary.btn-xs Back to list
   .row
     .col-xs-12
       form.form-horizontal(method="POST", action="/topics/#{topic._id}")
