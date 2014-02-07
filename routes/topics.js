@@ -149,10 +149,12 @@ module.exports = function (app) {
 
     Topic.filterInputs(req.body);
 
-    if (!req.body.related_topic_ids || !util.isArray(req.body.related_topic_ids)) {
+    if (!req.body.related_topic_ids) {
       req.body.related_topic_ids = [];
     }
-
+    if (!util.isArray(req.body.related_topic_ids)) {
+      req.body.related_topic_ids = [req.body.related_topic_ids];
+    }
     rename_file = function (next) {
       if (!req.body.name) { return next(); }
       Topic.findById(req.params.id, function (err, topic) {
