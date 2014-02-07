@@ -109,7 +109,7 @@ module.exports = function (app) {
 
           s3 = new AWS.S3();
           s3.client.putObject({
-            ACL: process.env.AWS_PUT_OBJECT_ACL,
+            ACL: 'public-read',
             Bucket: process.env.AWS_BUCKET_NAME,
             ContentType: 'image/jpeg',
             Key: 'pictures/topics/' + req.body.name.toLowerCase() + '.jpg',
