@@ -5,6 +5,7 @@ var loggedIn = require('./middleware/logged_in'),
   User = require('../data/models/user'),
   loadTopics = require('./middleware/load_topics'),
   authAdmin = require('./middleware/auth_admin'),
+  AWS = require('aws-sdk'),
   request = require('request'),
   fs = require('fs'),
   async = require('async'),
@@ -97,14 +98,26 @@ module.exports = function (app) {
 
         req.topic = topic;
 
-        writer = request(req.body.picture).pipe(fs.createWriteStream('./public/assets/pictures/topics/' + req.body.name.toLowerCase() + '.jpg'));
+        request({uri: req.body.picture, encoding: 'binary'}, function (err, response, body) {
+          var s3;
 
-        writer.on('error', function (err) {
-          return next(err);
-        });
+          AWS.config.update({
+            accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+            secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+            region: process.env.AWS_REGION
+          });
 
-        writer.on('close', function () {
-          return next();
+          s3 = new AWS.S3();
+          s3.client.putObject({
+            ACL: process.env.AWS_PUT_OBJECT_ACL,
+            Bucket: process.env.AWS_BUCKET_NAME,
+            ContentType: 'image/jpeg',
+            Key: 'pictures/topics/' + req.body.name.toLowerCase() + '.jpg',
+            Body: new Buffer(body, 'binary'),
+          }, function (err, data) {
+            if (err) { return next(err); }
+            next();
+          });
         });
       });
     };
@@ -143,10 +156,33 @@ module.exports = function (app) {
     rename_file = function (next) {
       if (!req.body.name) { return next(); }
       Topic.findById(req.params.id, function (err, topic) {
+        var s3;
         if (err) { return next(err); }
-        fs.rename('./public' + topic.picture, './public/assets/pictures/topics/' + req.body.name.toLowerCase() + '.jpg', function (err) {
-          if (err) { return next(err); }
-          next();
+        if (!topic) { return res.json({msg: 'Invalid topic'}); }
+
+        AWS.config.update({
+          accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+          secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+          region: process.env.AWS_REGION
+        });
+
+        s3 = new AWS.S3();
+
+        s3.client.copyObject({
+          ACL: 'public-read',
+          Bucket: process.env.AWS_BUCKET_NAME,
+          Key: 'pictures/topics/' + req.body.name.toLowerCase() + '.jpg',
+          ContentType: 'image/jpeg',
+          CopySource: encodeURIComponent(process.env.AWS_BUCKET_NAME + '/pictures/topics/' + topic.name.toLowerCase() + '.jpg')
+        }, function (err, data) {
+          if (err) { next(err); }
+          s3.client.deleteObject({
+            Bucket: process.env.AWS_BUCKET_NAME,
+            Key: 'pictures/topics/' + topic.name.toLowerCase() + '.jpg'
+          }, function (err, data) {
+            if (err) { next(err); }
+            next();
+          });
         });
       });
     };

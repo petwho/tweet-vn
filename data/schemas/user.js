@@ -1,5 +1,6 @@
 var UserSchema, activationMsgMap, resetPasswordMsgMap,
   Schema = require('mongoose').Schema,
+  AWS = require('aws-sdk'),
   async = require('async'),
   fs = require('fs'),
   request = require('request'),
@@ -258,9 +259,9 @@ UserSchema.static('oauthSignUp', function (req, res, next) {
 
   create_valid_user = function (next) {
     if (counter === 0) {
-      auto_username = req.body.first_name + '-' + req.body.last_name;
+      auto_username = req.body.first_name.toLowerCase() + req.body.last_name.toLowerCase();
     } else {
-      auto_username = req.body.first_name + '-' + req.body.last_name + '-' + counter;
+      auto_username = req.body.first_name.toLowerCase() + req.body.last_name.toLowerCase() + '-' + counter;
     }
 
     counter++;
@@ -284,16 +285,26 @@ UserSchema.static('oauthSignUp', function (req, res, next) {
 
       new_user = user;
 
-      if (req.body.picture) {
-        writer = request(req.body.picture).pipe(fs.createWriteStream('./public/assets/pictures/users/' + user.username + '.jpg'));
-      }
+      request({uri: req.body.picture, encoding: 'binary'}, function (err, response, body) {
+        var s3;
 
-      writer.on('error', function (err) {
-        next(err);
-      });
+        AWS.config.update({
+          accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+          secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+          region: process.env.AWS_REGION
+        });
 
-      writer.on('close', function () {
-        next();
+        s3 = new AWS.S3();
+        s3.client.putObject({
+          ACL: process.env.AWS_PUT_OBJECT_ACL,
+          Bucket: process.env.AWS_BUCKET_NAME,
+          ContentType: 'image/jpeg',
+          Key: 'pictures/users/' + user.username + '.jpg',
+          Body: new Buffer(body, 'binary'),
+        }, function (err, data) {
+          if (err) { return next(err); }
+          next();
+        });
       });
     });
   };
@@ -354,9 +365,9 @@ UserSchema.static('emailSignUp', function (req, res, next) {
     random_token = randomString(100, '#aA!');
 
     if (counter) {
-      auto_username = req.body.first_name + '-' + req.body.last_name + '-' + counter;
+      auto_username = req.body.first_name.toLowerCase() + req.body.last_name.toLowerCase() + '-' + counter;
     } else {
-      auto_username = req.body.first_name + '-' + req.body.last_name;
+      auto_username = req.body.first_name.toLowerCase() + req.body.last_name.toLowerCase();
       counter = 0;
     }
     counter++;
@@ -460,9 +471,9 @@ UserSchema.virtual('fullname').get(function () {
 
 UserSchema.virtual('picture').get(function () {
   if (this.has_photo) {
-    return '/assets/pictures/users/' + this.username + '.jpg';
+    return 'https://s3-' + process.env.AWS_REGION + '.amazonaws.com/' + process.env.AWS_BUCKET_NAME + '/pictures/users/' + this.username + '.jpg';
   }
-  return '/assets/pictures/users/default.jpg';
+  return 'https://s3-' + process.env.AWS_REGION + '.amazonaws.com/' + process.env.AWS_BUCKET_NAME + '/pictures/users/' + 'default.jpg';
 });
 
 UserSchema.set('toJSON', { virtuals: true });

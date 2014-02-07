@@ -43,7 +43,7 @@ TopicSchema.static('filterInputs', function (req_body) {
 });
 
 TopicSchema.virtual('picture').get(function () {
-  return '/assets/pictures/topics/' + this.name.toLowerCase() + '.jpg';
+  return 'https://s3-' + process.env.AWS_REGION + '.amazonaws.com/' + process.env.AWS_BUCKET_NAME + '/pictures/topics/' + this.name.toLowerCase() + '.jpg';
 });
 
 TopicSchema.set('toJSON', { virtuals: true });

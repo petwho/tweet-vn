@@ -16,6 +16,7 @@
     "mongoose": "3.8.1",
     "async": "0.1.22",
     "request": "2.10.0",
+    "connect": "2.12.0",
     "connect-mongo": "0.4.0",
     "sendgrid": "0.4.4",
     "googleapis": "0.4.6",
@@ -24,6 +25,7 @@
     "socket.io": "0.9.16",
     "escape-html": "1.0.1",
     "cookie": "0.1.0",
-    "jquery": "1.8.x"
+    "jquery": "1.8.x",
+    "aws-sdk": "2.0.0-rc9"
   }
 }
