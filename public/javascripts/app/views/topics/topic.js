@@ -1,8 +1,7 @@
 define([
   'backbone', 'spinner',
-  'text!templates/topics/topic.html',
-  'text!/stylesheets/topic.css'
-], function (Backbone, spinner, topicTemplate, topicCSS) {
+  'text!templates/topics/topic.html'
+], function (Backbone, spinner, topicTemplate) {
   var TopicView = Backbone.View.extend({
 
     events: {
@@ -37,9 +36,6 @@ define([
     },
 
     render: function () {
-      if (!$('head style[name="topic"]').length) {
-        $('head').append("<style name='topic'>" + topicCSS + "</style>");
-      }
       this.$el.html(this.template(this.model.toJSON()));
       this.afterRender();
       return this;

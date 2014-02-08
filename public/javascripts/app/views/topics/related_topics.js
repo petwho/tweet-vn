@@ -1,10 +1,8 @@
 define([
   'backbone', 'spinner',
-  'views/topics/app',
   'text!templates/topics/related_topic.html',
-  'text!templates/topics/link_button.html',
-  'text!/stylesheets/topic.css'
-], function (Backbone, spinner, appView, topicTemplate, linkText, topicCSS) {
+  'text!templates/topics/link_button.html'
+], function (Backbone, spinner, topicTemplate, linkText) {
   var TopicView = Backbone.View.extend({
 
     className: 'topic row',
@@ -38,9 +36,6 @@ define([
     },
 
     render: function () {
-      if (!$('head style[name="topic"]').length) {
-        $('head').append("<style name='topic'>" + topicCSS + "</style>");
-      }
       this.$el.html(this.template(this.model.toJSON()));
       return this;
     }

@@ -1,8 +1,7 @@
 define([
   'backbone', 'spinner', 'views/topics/app',
-  'text!templates/topics/link_button.html',
-  'text!/stylesheets/topic.css'
-], function (Backbone, spinner, appView, linkText, topicCSS) {
+  'text!templates/topics/link_button.html'
+], function (Backbone, spinner, appView, linkText) {
   var Router = Backbone.Router.extend({
     routes: {
       'step-1' : 'step1',
@@ -159,9 +158,6 @@ define([
 
       appView.topics.fetch({
         success: function () {
-          if (!$('head style[name="topic"]').length) {
-            $('head').append("<style name='topic'>" + topicCSS + "</style>");
-          }
           filter_callback(that);
         }
       });
