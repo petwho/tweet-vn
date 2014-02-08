@@ -21,7 +21,7 @@
     backbone  : '../libs/backbone/backbone-1.1.0.min',
     socket    : 'empty:',
     bootstrap : '../vendor/bootstrap.min',
-    tinymce   : '../vendor/tinymce/tinymce.min',
+    tinymce   : 'empty:',
     spinner   : '../libs/spinner',
     text      : '../libs/require/text'
   },
