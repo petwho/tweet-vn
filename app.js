@@ -8,12 +8,10 @@ var  server, dbUrl, facebookSDK,
   app           = express(),
   io            = require('socket.io');
 
-// development configuration
-if ('development' === app.get('env')) {
-  // * note: loading process variables must be performed before
-  //          calling any process environment variables
-  require('./.config');
-  // output pretty html
+// load configuration file
+require('./.config');
+
+if ('development' === process.env.NODE_ENV) {
   app.locals.pretty = true;
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 }
@@ -31,7 +29,7 @@ require('mongoose').connect(dbUrl,  function (err) {
 
 // all environments configuration
 app.configure(function () {
-  app.set('port', process.env.PORT || 5000);
+  app.set('port', process.env.PORT || 3000);
   app.set('views', path.join(__dirname, 'views'));
   app.set('view engine', 'jade');
   app.use(express.logger('dev'));
@@ -65,7 +63,7 @@ app.configure(function () {
 });
 
 // * Begin error handler in production environment
-if ('production' === app.get('env')) {
+if ('production' === process.env.NODE_ENV) {
   app.use(function (err, req, res, next) {
     if (err.message === 'Forbidden') {
       return res.json({msg: 'forbidden'}, 403);
