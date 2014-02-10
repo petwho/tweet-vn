@@ -6,25 +6,23 @@ define([
     el: 'nav.navbar',
 
     events: {
-      'keyup .search': 'search',
-      'blur .search': 'onBlur'
+      'keyup .search': 'search'
     },
 
     initialize: function () {
+      var that = this;
       this.$searchInput = this.$('.search');
       this.$searchResults = this.$('.search-results');
       this.$ul = this.$('.search-results ul');
+      $('html').click(function () {
+        that.clearSearchResults();
+      });
     },
 
     search: function (e) {
       if (this.timer) { clearTimeout(this.timer); }
 
       this.timer = setTimeout(this.searchCallback(this), 200);
-    },
-
-    onBlur: function (e) {
-      this.clearSearchResults();
-      this.$searchInput.val('');
     },
 
     clearSearchResults : function () {
