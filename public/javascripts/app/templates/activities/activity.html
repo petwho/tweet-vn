@@ -5,7 +5,7 @@
   <div class="col-xs-11">
   <% if (type === 10) { %>
     <div class="activity-description">
-        <a class="username" href="/users/<%= user_id.username %>"><%= user_id.fullname %></a>
+        <a class="username" href="/@<%= user_id.username %>"><%= user_id.fullname %></a>
         <span>voted up an answer</span>
     </div>
     <div>
@@ -18,7 +18,7 @@
 
   <% if (type === 20) { %>
     <div class="activity-description">
-        <a class="username" href="/users/<%= user_id.username %>"><%= user_id.fullname %></a>
+        <a class="username" href="/@<%= user_id.username %>"><%= user_id.fullname %></a>
         <span>added new question</span>
     </div>
     <div>
@@ -30,7 +30,7 @@
 
   <% if (type === 21) { %>
     <div class="activity-description">
-        <a class="username" href="/users/<%= user_id.username %>"><%= user_id.fullname %></a>
+        <a class="username" href="/@<%= user_id.username %>"><%= user_id.fullname %></a>
         <span>added new answer</span>
     </div>
     <div>
@@ -43,7 +43,7 @@
 
   <% if (type === 30) { %>
     <div class="activity-description">
-      <a class="username" href="/users/<%= user_id.username %>"><%= user_id.fullname %></a>
+      <a class="username" href="/@<%= user_id.username %>"><%= user_id.fullname %></a>
       <span>followed</span>
       <span class="user-link">
         <a href="/users/<%= followed.user_id.username %>" target="_blank"><img src="<%= followed.user_id.picture %>" width="25" heigth="25"></a>
@@ -55,7 +55,7 @@
 
   <% if (type === 31) { %>
     <div class="activity-description">
-      <a class="username" href="/users/<%= user_id.username %>"><%= user_id.fullname %></a>
+      <a class="username" href="/@<%= user_id.username %>"><%= user_id.fullname %></a>
       <span>followed a question</span>
     </div>
     <div class="question-link">
@@ -65,7 +65,7 @@
 
   <% if (type === 32) { %>
     <div class="activity-description">
-      <a class="username" href="/users/<%= user_id.username %>"><%= user_id.fullname %></a>
+      <a class="username" href="/@<%= user_id.username %>"><%= user_id.fullname %></a>
       <span>followed topic</span>
       <span class="topic-text">
         <a href="/topics/<%= followed.topic_id.name %>" target="_blank"><img src="<%= followed.topic_id.picture %>" width="25" height="25"></a>
