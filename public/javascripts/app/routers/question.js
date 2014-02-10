@@ -57,7 +57,7 @@ define([
     },
 
     cancelEditTitle: function () {
-      this.$titleHeader.html(appView.question.get('title'));
+      this.$titleHeader.text(appView.question.get('title'));
       this.setupView();
     },
 

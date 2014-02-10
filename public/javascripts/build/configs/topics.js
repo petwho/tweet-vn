@@ -1,5 +1,5 @@
 ({
-  baseUrl: '../..',
+  baseUrl: '../../app',
   shim: {
     underscore: { exports: '_' },
     backbone  : {
