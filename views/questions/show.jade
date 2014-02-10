@@ -34,8 +34,6 @@ block content
           - if (!question.detail)
             strong
               a.add-question-detail(href="#add-details") Add Question Details
-            br
-            strong
               a(href="#share") Share
         .answer-count-text
           strong
@@ -57,13 +55,13 @@ block content
         .answer-list
           - for (var i = 0; i < question.answer_ids.length; i++)
             .row
-              .col-xs-1
-                img(src="#{question.topic_ids[0].picture}", width="28", height="28")
+              .col-xs-1.no-padding-right
+                img(src="#{question.topic_ids[0].picture}", width="32", height="32")
               .col-xs-10
                 strong
                   a(href="#")= question.answer_ids[i].user_id.fullname
-              .col-xs-1
-                img.pull-right(src= question.answer_ids[i].user_id.picture, width="28", height="28")
+              .col-xs-1.no-padding-left-right
+                img(src= question.answer_ids[i].user_id.picture, width="32", height="32")
             .row
               .col-xs-11.col-xs-offset-1!= question.answer_ids[i].content
       .col-xs-5.side-bar
