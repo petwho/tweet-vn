@@ -26,6 +26,7 @@
     text      : '../libs/require/text'
   },
   include: 'requireLib',
+  preserveLicenseComments: false,
   name: 'bootstraps/new_password',
   out: '../new_password.js'
 })

@@ -23,7 +23,9 @@ require.config({
 });
 
 require([
-  'bootstrap', 'backbone', 'share/add_question', 'views/notifications/app'
-], function (bootstrap, Backbone, addQuestionView, appView) {
+  'backbone',
+  'views/notifications/app',
+  'bootstrap', 'share/add_question', 'share/search'
+], function (Backbone, appView) {
   $('.sub-menu li.notifications').addClass('active');
 });

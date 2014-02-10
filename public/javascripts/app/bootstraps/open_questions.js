@@ -27,10 +27,10 @@ require.config({
 });
 
 require([
-  'bootstrap', 'backbone',
-  'share/add_question',
-  'views/open_questions/app'
-], function (bootstrap, Backbone, addQuestionView, AppView) {
+  'backbone',
+  'views/open_questions/app',
+  'bootstrap', 'share/add_question', 'share/search'
+], function (Backbone, AppView) {
   $('.sub-menu li.open-questions').addClass('active');
   new AppView();
 });

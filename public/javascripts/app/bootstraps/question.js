@@ -27,10 +27,10 @@ require.config({
 });
 
 require([
-  'bootstrap', 'backbone', 'routers/question',
-  'share/add_question',
-  'views/question/app'
-], function (bootstrap, Backbone, Router, addQuestionView, appView) {
+  'backbone',
+  'routers/question', 'views/question/app',
+  'bootstrap', 'share/add_question', 'share/search'
+], function (Backbone, Router, appView) {
   new Router();
   Backbone.history.start();
 });

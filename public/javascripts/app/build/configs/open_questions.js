@@ -26,6 +26,7 @@
     text      : '../libs/require/text'
   },
   include: 'requireLib',
+  preserveLicenseComments: false,
   name: 'bootstraps/open_questions',
   out: '../open_questions.js'
 })

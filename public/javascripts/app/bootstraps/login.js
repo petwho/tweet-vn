@@ -26,8 +26,10 @@ require(['spinner'], function (spinner) {
 })
 
 require([
-  'bootstrap', 'backbone', 'spinner', 'routers/login', 'views/login'
-], function (bootstrap, Backbone, spinner, LoginRouter, LoginView) {
+  'backbone',
+  'spinner', 'routers/login', 'views/login',
+  'bootstrap',
+], function (Backbone, spinner, LoginRouter, LoginView) {
   $('.welcome-spinner').remove();
   new LoginView();
   new LoginRouter();

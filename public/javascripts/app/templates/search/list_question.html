@@ -2,7 +2,11 @@
   <li>
     <img src="<%= question.topic_ids[0].picture %>" width=25 height=25>
     <a href="/questions/<%= question._id %>" target="_blank">
-      <%= question.title %>
+      <% if (question.title.length > 50) { %>
+        <%= question.title.substring(0, 50) + '...' %>
+      <% } else { %>
+        <%= question.title %>
+      <% } %>
     </a>
   </li>
 <% }) %>

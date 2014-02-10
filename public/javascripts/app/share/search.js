@@ -6,7 +6,8 @@ define([
     el: 'nav.navbar',
 
     events: {
-      'keyup .search': 'search'
+      'keyup .search': 'search',
+      'blur .search': 'onBlur'
     },
 
     initialize: function () {
@@ -19,6 +20,11 @@ define([
       if (this.timer) { clearTimeout(this.timer); }
 
       this.timer = setTimeout(this.searchCallback(this), 200);
+    },
+
+    onBlur: function (e) {
+      this.clearSearchResults();
+      this.$searchInput.val('');
     },
 
     clearSearchResults : function () {
