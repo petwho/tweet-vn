@@ -14,6 +14,7 @@ var loggedIn = require('./middleware/logged_in'),
   Notification = require('../data/models/notification'),
   Log = require('../data/models/log'),
   User = require('../data/models/user');
+  Answer = require('../data/models/answer');
 
 module.exports = function (app) {
 
@@ -39,7 +40,7 @@ module.exports = function (app) {
   });
 
   app.get('/questions/:id', function (req, res, next) {
-    var find_question, question, find_related, related_questions;
+    var find_question, question, is_answered_by_me, find_related, related_questions;
 
     find_question = function (next) {
       Question.findById(req.params.id)
@@ -63,8 +64,17 @@ module.exports = function (app) {
         });
     };
 
+    is_answered_by_me = function (next) {
+      if (!req.session.user) { return next(); };
+      Answer.find({question_id: question._id, user_id: req.session.user_id}, function (err, answer) {
+        if (err) { return next(err); }
+        if (answer) { req.is_answered_by_me = true; }
+        next();
+      });
+    };
+
     find_related = function (next) {
-      Question.find({ topic_ids: {$in: question.topic_ids} })
+      Question.find({ topic_ids: {$in: question.topic_ids}, _id: {$ne: question._id} })
         .populate({path: 'topic_ids'})
         .exec(function (err, questions) {
           if (err) { return next(err); }
@@ -73,9 +83,9 @@ module.exports = function (app) {
         });
     };
 
-    async.series([find_question, find_related], function (err, results) {
+    async.series([find_question, is_answered_by_me, find_related], function (err, results) {
       if (err) { return next(err); }
-      res.render('questions/show', {question: question, related_questions: related_questions});
+      res.render('questions/show', {question: question, related_questions: related_questions, is_answered_by_me: req.is_answered_by_me});
     });
   });
 

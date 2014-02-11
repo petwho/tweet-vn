@@ -42,16 +42,19 @@ block content
         - if (session.user)
           .answer-user-wrapper.row
             .col-xs-12
-              a.user(href="#")= session.user.fullname
-              .fake-editor-wrapper
-                .fake-answer-editor
-                  a.light-gray Add your answer
-              .answer-text.hidden
-                textarea.hidden
-                .inline-editor-btn
-                  .pull-right
-                    button.cancel-btn Cancel
-                    button.submit-btn Add Answer
+              - if (!is_answered_by_me)
+                a.user(href="#")= session.user.fullname
+                .fake-editor-wrapper
+                  .fake-answer-editor
+                    a.light-gray Add your answer
+                .answer-text.hidden
+                  textarea.hidden
+                  .inline-editor-btn
+                    .pull-right
+                      button.cancel-btn Cancel
+                      button.submit-btn Add Answer
+              - else
+                .light-gray You already answered this question
         .answer-list
           - for (var i = 0; i < question.answer_ids.length; i++)
             .row
@@ -64,6 +67,12 @@ block content
                 img(src= question.answer_ids[i].user_id.picture, width="32", height="32")
             .row
               .col-xs-11.col-xs-offset-1!= question.answer_ids[i].content
+            - if (session.user._id === question.answer_ids[i].user_id._id.toString())
+              .row
+                .col-xs-offset-1.col-xs-11.manage-answer
+                  a(href="#edit-answer") edit
+                  | &nbsp;
+                  a(href="#delete-answer") delete
       .col-xs-5.side-bar
         - if (session.user)
           - if (session.user.following.question_ids.indexOf(question._id.toString()) === -1)
