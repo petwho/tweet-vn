@@ -9,7 +9,17 @@ var loggedIn = require('./middleware/logged_in'),
   User = require('../data/models/user');
 
 module.exports = function (app) {
-  app.post('/answers', [loggedIn], function (req, res, next) {
+  var validateAnswered = function (req, res, next) {
+    Answer.findOne({user_id: req.session.user._id, question_id: req.body.question_id}, function (err, answer) {
+      if (err) { return next (err); };
+      if (answer) {
+        return res.json(403, {msg: 'Repeated answer is not allow'});
+      }
+      next();
+    });
+  };
+
+  app.post('/answers', [loggedIn, validateAnswered], function (req, res, next) {
     var validate_question, create_answer, add_author_vote, create_log, create_activity,
       add_log_to_answer, update_question, notifiy_followers;
 

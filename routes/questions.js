@@ -41,6 +41,7 @@ module.exports = function (app) {
 
   app.get('/questions/:id', function (req, res, next) {
     var find_question, question, is_answered_by_me, find_related, related_questions;
+    req.is_answered_by_me = false;
 
     find_question = function (next) {
       Question.findById(req.params.id)
@@ -66,7 +67,7 @@ module.exports = function (app) {
 
     is_answered_by_me = function (next) {
       if (!req.session.user) { return next(); };
-      Answer.find({question_id: question._id, user_id: req.session.user_id}, function (err, answer) {
+      Answer.findOne({question_id: question._id, user_id: req.session.user._id}, function (err, answer) {
         if (err) { return next(err); }
         if (answer) { req.is_answered_by_me = true; }
         next();
