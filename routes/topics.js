@@ -203,14 +203,22 @@ module.exports = function (app) {
   });
 
   app.put('/topics/:id/follow', loggedIn, function (req, res, next) {
-    var validate_topic, update_user, update_activity, create_activity;
+    var validate_topic, update_topic_follower, update_user, update_activity, create_activity;
 
     validate_topic = function (next) {
       Topic.findById(req.body._id, function (err, topic) {
         if (err) { return next(err); }
 
         if (!topic) { return res.json(400, { msg: 'invalid topic' }); }
+        req.topic = topic;
+        next();
+      });
+    };
 
+    update_topic_follower = function (next) {
+      (req.body.is_following === false) ? req.topic.follower_count++ : req.topic.follower_count--;
+      req.topic.save(function (err) {
+        if (err) { return next(err); }
         next();
       });
     };
@@ -273,7 +281,7 @@ module.exports = function (app) {
       });
     };
 
-    async.series([ validate_topic, update_user, update_activity ], function (err, results) {
+    async.series([ validate_topic, update_topic_follower, update_user, update_activity ], function (err, results) {
       if (err) { return next(err); }
 
       return res.json(200, req.body);
