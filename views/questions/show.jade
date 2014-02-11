@@ -31,10 +31,10 @@ block content
                 .pull-right
                   a(href="#cancel-edit-title") cancel
                   button.submit-btn save
-          - if (!question.detail)
-            strong
-              a.add-question-detail(href="#add-details") Add Question Details
-              a(href="#share") Share
+          //- - if (!question.detail)
+          //-   strong
+          //-     a.add-question-detail(href="#add-details") Add Question Details
+          //-     a(href="#share") Share
         .answer-count-text
           strong
             span.answer-num #{question.answer_ids.length}
