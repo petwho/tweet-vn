@@ -4,8 +4,9 @@ var NotificationSchema = new Schema({
   // (10): question edited
   // (11): suggested edit answer
   // (20): answer added to followed question
-  // (30): suggested edit answer accepted
-  // (31): suggested edit answer discarded
+  // (30): author edited his/her answer
+  // (31): suggested edit answer accepted
+  // (32): suggested edit answer discarded
   // (40): new follower (following user OR following user's question)
   // (50): new comment
   type        : Number,

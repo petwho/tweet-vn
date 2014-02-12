@@ -8,9 +8,10 @@ LogSchema = new Schema({
   // * (100): added question (title), (101): added question topics, (102): added question details
   // * (110): edited question title, (111): removed question topics, (112): edidited question details
   // * (200): added answer
-  // * (210): suggested edit answer
+  // * (210): author edited his/her answer
+  // * (211): users suggested edit answer
   // * (220): deleted answer
-  // * (310): answer's author accepted suggested edit, (311): answer's author discarded suggested edit
+  // * (300): answer's author accepted suggested edit, (301): answer's author discarded suggested edit
   // * (400): reverted
   type            : { type: Number, required: true },
   user_id         : { type: Schema.Types.ObjectId, ref: 'User' },
