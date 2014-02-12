@@ -65,14 +65,21 @@ block content
                   a(href="#")= question.answer_ids[i].user_id.fullname
               .col-xs-1.no-padding-left-right
                 img(src= question.answer_ids[i].user_id.picture, width="32", height="32")
-            .row
-              .col-xs-11.col-xs-offset-1!= question.answer_ids[i].content
+            .row(class="answer-item-#{question.answer_ids[i]._id}")
+              .col-xs-11.col-xs-offset-1.answer-content!= question.answer_ids[i].content
             - if (session.user._id === question.answer_ids[i].user_id._id.toString())
               .row
                 .col-xs-offset-1.col-xs-11.manage-answer
-                  a(href="#edit-answer") edit
-                  | &nbsp;
-                  a(href="#delete-answer") delete
+                  .manage-answer-btns
+                    a.light-gray.edit(href="#edit-answer", data-text-class="answer-item-#{question.answer_ids[i]._id}") edit
+                    | &nbsp;
+                    a.light-gray.delete(href="#delete-answer") delete
+                  .edit-answer-text.hidden
+                    textarea.hidden!= question.answer_ids[i].content
+                    .inline-editor-btn
+                      .pull-right
+                        button.cancel-btn Cancel
+                        button.submit-btn(data-answer-id="#{question.answer_ids[i]._id}") Save Answer
       .col-xs-5.side-bar
         - if (session.user)
           - if (session.user.following.question_ids.indexOf(question._id.toString()) === -1)

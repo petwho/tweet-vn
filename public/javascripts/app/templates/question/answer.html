@@ -1,4 +1,4 @@
-<div class="row answer-item-<%= _id %>">
+<div class="row">
   <div class="col-xs-1 no-padding-right">
     <img src="<%= topic_ids[0].picture %>" width="32" height="32">
   </div>
@@ -14,6 +14,24 @@
   </div>
 </div>
 
-<div class="row">
+<div class="row answer-item-<%= _id %>">
   <div class="col-xs-11 col-xs-offset-1"><%= content %></div>
+</div>
+
+<div class="row">
+  <div class="col-xs-offset-1 col-xs-11 manage-answer">
+    <div class="manage-answer-btns">
+      <a class="light-gray edit" href="#edit-answer" data-text-class="answer-item-<%= _id %>">edit</a>&nbsp;
+      <a class="light-gray delete" href="#delete-answer">delete</a>
+    </div>
+    <div class="edit-answer-text hidden">
+      <textarea class="hidden"><%= content %></textarea>
+      <div class="inline-editor-btn">
+        <div class="pull-right">
+          <button class="cancel-btn">Cancel</button>
+          <button class="submit-btn" data-answer-id="<%= _id %>">Save Answer</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

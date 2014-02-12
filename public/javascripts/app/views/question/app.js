@@ -15,8 +15,11 @@ define([
     events: {
       'click .fake-answer-editor': 'initEditor',
       'keyup .topic-selector > input' : 'searchTopic',
-      'click .inline-editor-btn .cancel-btn': 'hideEditor',
-      'click .inline-editor-btn .submit-btn': 'submitAnswer',
+      'click .answer-text .inline-editor-btn .cancel-btn': 'hideEditor',
+      'click .answer-text .inline-editor-btn .submit-btn': 'submitAnswer',
+      'click .manage-answer-btns .edit': 'editAnswer',
+      'click .edit-answer-text .cancel-btn': 'cancelEditAnswer',
+      'click .edit-answer-text .submit-btn': 'saveEditAnswer',
       'click .follow-btn.follow-question': 'followQuestion',
       'click .unfollow-btn.unfollow-question': 'unfollowQuestion',
       'click button.remove-topic': 'removeTopic',
@@ -153,6 +156,89 @@ define([
           that.hideEditor();
           tinyMCE.activeEditor.setContent('');
           socket.emit('soketAddedAnswer', answer);
+        }
+      });
+    },
+
+    showEditAnswerEditor: function () {
+      this.$('.' + this.answerTextClass).hide();
+      this.$('.manage-answer-btns .edit').text('edit');
+      $('.manage-answer-btns').hide();
+      $('.edit-answer-text').removeClass('hidden');
+    },
+
+    onEditAnswerEditorInit: function (editor) {
+      this.editAnswerEditor = editor;
+      if ($('head style[name="tinymce"]').length === 0) {
+        $('head').append('<style name="tinymce">' + skinCSS + '</style>');
+      }
+      tinyMCE.activeEditor.dom.add(tinyMCE.activeEditor.dom.select('head'), 'style', { type : 'text/css' }, contentCSS);
+      tinyMCE.activeEditor.dom.add(tinyMCE.activeEditor.dom.select('head'), 'style', { type : 'text/css' }, contentInlineCSS);
+      this.showEditAnswerEditor();
+      $('.fake-answer-editor .light-gray').text('Add your answer');
+    },
+
+    editAnswer: function (e) {
+      var that = this;
+      this.answerTextClass = $(e.currentTarget).data('text-class');
+      this.$('.manage-answer-btns .edit').text('Loading...');
+
+      if (this.editAnswerEditor) {
+        return this.showEditAnswerEditor();
+      }
+      tinymce.init({
+        setup: function (editor) {
+          editor.addButton('h1', {
+            title : 'Header 1', // tooltip text seen on mouseover
+            icon: "header1",
+            image : false,
+            onclick : function () {
+              editor.execCommand('FormatBlock', false, 'h1');
+            }
+          });
+
+          editor.on('init', function () {
+            that.onEditAnswerEditorInit(editor);
+          });
+        },
+        selector: '.edit-answer-text textarea',
+        skin: false,
+        plugins: "autolink, autoresize, lists, link, image, anchor, paste",
+        toolbar1: "h1 bold italic underline strikethrough hr| bullist numlist | link image",
+        paste_as_text: true,
+        menubar: false,
+        statusbar: false,
+        min_height: 50,
+        autoresize_min_height: 50,
+        autoresize_bottom_margin: 20
+      });
+    },
+
+    cancelEditAnswer: function () {
+      $('.' + this.answerTextClass).show();
+      $('.manage-answer-btns').show();
+      $('.edit-answer-text').addClass('hidden');
+    },
+
+    saveEditAnswer: function (e) {
+      var answer, that = this;
+      answer = new Answer({
+        _id: $(e.currentTarget).data('answer-id'),
+        _csrf: this.csrfToken,
+        content: tinyMCE.activeEditor.getContent()
+      });
+
+      spinner.start();
+      answer.save({}, {
+        error: function () {
+          spinner.stop();
+          that.cancelEditAnswer();
+        },
+        success: function () {
+          spinner.stop();
+          $('.' + that.answerTextClass + ' .answer-content').html(answer.get('content'));
+          that.cancelEditAnswer();
+          tinyMCE.activeEditor.setContent('');
         }
       });
     },
@@ -299,7 +385,7 @@ define([
           error: function (model, xhr, options) {
             spinner.stop();
             if (xhr.responseJSON.msg === 'login required') {
-              window.location.href = '/login'
+              window.location.href = '/login';
             }
           },
           success: function (data, textStatus, jqXHR) {

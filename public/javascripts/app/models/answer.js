@@ -3,7 +3,8 @@ define([
   'backbone'
 ], function (_, Backbone) {
   var Answer = Backbone.Model.extend({
-    url: '/answers'
+    url: '/answers',
+    idAttribute: '_id'
   });
 
   return Answer;

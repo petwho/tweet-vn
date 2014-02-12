@@ -1,6 +1,8 @@
 var loggedIn = require('./middleware/logged_in'),
   loggedInAjax = require('./middleware/logged_in_ajax'),
   async = require('async'),
+  validateAnswer = require('./middleware/validate_answer'),
+  validateQuestion = require('./middleware/validate_question'),
   Activity = require('../data/models/activity'),
   Question = require('../data/models/question'),
   Answer = require('../data/models/answer'),
@@ -9,30 +11,85 @@ var loggedIn = require('./middleware/logged_in'),
   User = require('../data/models/user');
 
 module.exports = function (app) {
-  var validateAnswered = function (req, res, next) {
-    Answer.findOne({user_id: req.session.user._id, question_id: req.body.question_id}, function (err, answer) {
-      if (err) { return next (err); };
-      if (answer) {
-        return res.json(403, {msg: 'Repeated answer is not allow'});
-      }
-      next();
-    });
-  };
-
-  app.post('/answers', [loggedIn, validateAnswered], function (req, res, next) {
-    var validate_question, create_answer, add_author_vote, create_log, create_activity,
-      add_log_to_answer, update_question, notifiy_followers;
-
+  app.put('/answers', [loggedIn, validateAnswer.is_author], function (req, res, next) {
+    var update_answer, create_log, add_log_to_answer, find_question, notifiy_followers;
     req.log = {};
 
-    validate_question = function (next) {
-      Question.findById(req.body.question_id, function (err, question) {
+    update_answer = function (next) {
+      Answer.filterInputs(req.body);
+      req.answer.content = req.body.content;
+      req.answer.save(function (err, answer) {
         if (err) { return next(err); }
-        if (!question) { return res.json(400, { msg: 'Invalid question' }); }
+        req.answer = answer;
+        next();
+      });
+    };
+
+    create_log = function (next) {
+      req.log.type = 210;
+      req.log.user_id = req.session.user._id;
+      req.log.answer = req.answer;
+      req.log.content = req.answer.content;
+
+      Log.create(req.log, function (err, log) {
+        if (err) { return next(err); }
+        req.log = log;
+        next();
+      });
+    };
+
+    add_log_to_answer = function (next) {
+      req.answer.log_ids = req.log._id;
+      req.answer.save(function (err, answer, number_affected) {
+        if (err) { return next(err); }
+        req.answer = answer;
+        next();
+      });
+    };
+
+    find_question = function (next) {
+      Question.findById(req.answer.question_id, function (err, question) {
+        if (err) { return next(err); }
+        if (!question) { return res.render('error'); }
         req.question = question;
         next();
       });
     };
+
+    notifiy_followers = function (next) {
+      var notifiers = [], fn, i;
+      for (i = 0; i < req.question.follower_ids.length; i++) {
+        fn = (function (i) {
+          return function (next) {
+            Notification.create({
+              type: 30,
+              user_id: req.question.follower_ids[i],
+              log_id: req.log
+            }, function (err, notification) {
+              if (err) { return next(err); }
+              next();
+            });
+          };
+        }(i));
+        notifiers.push(fn);
+      }
+      async.parallel(notifiers, function (err, results) {
+        if (err) { return next(err); }
+        next();
+      });
+    };
+
+    async.series([update_answer, create_log, add_log_to_answer, find_question, notifiy_followers], function (err, resuts) {
+      if (err) { return next(err); }
+      res.json(200, req.answer);
+    });
+  });
+
+  app.post('/answers', [loggedIn, validateQuestion.byReqBodyQuestionId, validateAnswer.has_answered], function (req, res, next) {
+    var create_answer, add_author_vote, create_log, create_activity,
+      add_log_to_answer, update_question, notifiy_followers;
+
+    req.log = {};
 
     create_answer = function (next) {
       Answer.filterInputs(req.body);
@@ -63,7 +120,7 @@ module.exports = function (app) {
       req.log.type = 200;
       req.log.user_id = req.session.user._id;
       req.log.answer = req.answer;
-      req.log.content = req.body.content;
+      req.log.content = req.answer.content;
 
       Log.create(req.log, function (err, log) {
         if (err) { return next(err); }
@@ -130,7 +187,7 @@ module.exports = function (app) {
     };
 
     async.series([
-      validate_question, create_answer, add_author_vote, create_log, add_log_to_answer,
+      create_answer, add_author_vote, create_log, add_log_to_answer,
       update_question, create_activity, notifiy_followers
     ], function (err, results) {
       if (err) { return next(err); }
@@ -161,8 +218,8 @@ module.exports = function (app) {
   });
 
   app.post('/answers/:id/vote', loggedInAjax, function (req, res, next) {
-    var update_anwer, update_activity, add_activity, update_user_credit;
-    update_anwer = function (next) {
+    var update_answer, update_activity, add_activity, update_user_credit;
+    update_answer = function (next) {
       Answer.findById(req.params.id, function (err, answer) {
         var voteIndex, i, vote, is_diff;
         if (err) { return next(err); }
@@ -237,7 +294,7 @@ module.exports = function (app) {
         });
       });
     };
-    async.series([update_anwer, update_activity, update_user_credit], function (err, results) {
+    async.series([update_answer, update_activity, update_user_credit], function (err, results) {
       if (err) { return next(err); }
       return res.json(200, req.answer);
     });
