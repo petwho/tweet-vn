@@ -1,7 +1,7 @@
 extends ../layouts/question
 
 block content
-  #question(data-id="#{question._id}")
+  #question(data-id="#{question._id}", data-user-id="#{session.user._id}")
     .row
       .col-xs-7
         .question-text

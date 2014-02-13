@@ -37,6 +37,7 @@ define([
       }).get();
 
       this.csrfToken = $('meta[name="csrf-token"]').attr('content');
+      this.userId = this.$el.data('user-id');
       this.question_id = this.$el.data('id');
       this.$titleHeader = this.$('.title-text h1.title');
       this.$topicList = this.$('.topic-list');
