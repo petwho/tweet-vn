@@ -24,7 +24,9 @@ define([
       'click .unfollow-btn.unfollow-question': 'unfollowQuestion',
       'click button.remove-topic': 'removeTopic',
       'click .search-results .seach-topic-item': 'addTopic',
-      'click .edit-title-actions .submit-btn': 'saveEditingTitle'
+      'click .edit-title-actions .submit-btn': 'saveEditingTitle',
+      'click .vote-btns .upvote-with-number': 'upvoteAnswer',
+      'click .vote-btns .downvote': 'downvoteAnswer'
     },
 
     initialize: function () {
@@ -60,6 +62,10 @@ define([
       socket.on('socketEditQuestionTitle', function (data) {
         that.resetQuestionTitle(data);
         that.reRenderTitle(that)(data);
+      });
+
+      socket.on('voteAnswer', function (options) {
+        that.socketVoteAnswer(that, options);
       });
     },
 
@@ -318,7 +324,7 @@ define([
         error : function (jqXHR, textStatus, errorThrow) {
           spinner.stop();
           if (jqXHR.responseJSON.msg === 'login required') {
-            window.location.href = '/login'
+            window.location.href = '/login';
           }
         },
         success : function (topics, textStatus, jqXHR) {
@@ -437,6 +443,98 @@ define([
             that.trigger('saveEditingTitle');
           }
         });
+      }
+    },
+
+    upvoteAnswer: function (e) {
+      var $currentTarget = $(e.currentTarget),
+        $opposite = $currentTarget.parent().find('.downvote'),
+        answerId = $currentTarget.data('answer-id'),
+        that = this;
+      e.preventDefault();
+      spinner.start();
+      $.ajax({
+        type: 'POST',
+        url: '/answers/' + answerId + '/vote',
+        data: {type: 'upvote', _csrf: that.csrfToken },
+        error: function () {
+          spinner.stop();
+        },
+        success: function () {
+          spinner.stop();
+          if($currentTarget.hasClass('voted')) {
+            socket.emit('voteAnswer', {answerId: answerId, value: -1, userId: that.userId});
+          } else {
+            if ($opposite.hasClass('voted')) {
+              socket.emit('voteAnswer', {answerId: answerId, value: 2, userId: that.userId});
+            } else {
+              socket.emit('voteAnswer', {answerId: answerId, value: 1, userId: that.userId});
+            }
+          }
+        }
+      });
+    },
+
+    downvoteAnswer: function (e) {
+      var $currentTarget = $(e.currentTarget),
+        $opposite = $currentTarget.parent().find('.upvote-with-number'),
+        answerId = $currentTarget.data('answer-id'),
+        that = this;
+      e.preventDefault();
+      spinner.start();
+      $.ajax({
+        type: 'POST',
+        url: '/answers/' + answerId + '/vote',
+        data: {type: 'downvote', _csrf: that.csrfToken },
+        error: function () {
+          spinner.stop();
+        },
+        success: function () {
+          spinner.stop();
+          if($currentTarget.hasClass('voted')) {
+            socket.emit('voteAnswer', {answerId: answerId, value: 1, userId: that.userId});
+          } else {
+            if ($opposite.hasClass('voted')) {
+              socket.emit('voteAnswer', {answerId: answerId, value: -2, userId: that.userId});
+            } else {
+              socket.emit('voteAnswer', {answerId: answerId, value: -1, userId: that.userId});
+            }
+          }
+        }
+      });
+    },
+
+    socketVoteAnswer: function (that, options) {
+      var $voteText = that.$('.upvote-with-number[data-answer-id="' + options.answerId + '"]').parent(),
+        $number = $voteText.find('.number'), len;
+      $number.text(parseInt($number.text()) + options.value);
+
+      if (that.userId === options.userId) {
+        len = $voteText.find('.voted').length;
+        $voteText.find('.voted').removeClass('voted');
+
+        if (options.value === 1) {
+          if (len === 0) {
+            $voteText.find('.upvote-with-number').addClass('voted');
+          } else {
+            $voteText.find('.downvote').removeClass('voted');
+          }
+        }
+
+        if (options.value === -1) {
+          if (len === 0) {
+            $voteText.find('.downvote').addClass('voted');
+          } else {
+            $voteText.find('.upvote-with-number').removeClass('voted');
+          }
+        }
+
+        if (options.value === 2) {
+          $voteText.find('.upvote-with-number').addClass('voted');
+        }
+        if (options.value === -2) {
+          $voteText.find('.downvote').addClass('voted');
+        }
       }
     }
   });

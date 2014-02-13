@@ -66,7 +66,26 @@ block content
               .col-xs-1.no-padding-left-right
                 img(src= question.answer_ids[i].user_id.picture, width="32", height="32")
             .row(class="answer-item-#{question.answer_ids[i]._id}")
-              .col-xs-11.col-xs-offset-1.answer-content!= question.answer_ids[i].content
+              .col-xs-10.col-xs-offset-1.answer-content!= question.answer_ids[i].content
+              .col-xs-1.no-padding-left-right.vote-btns
+                - var j, votecount = 0
+                - for (j = 0; j < question.answer_ids[i].votes.length; j++)
+                  - if (question.answer_ids[i].votes[j].type === 'upvote')
+                    - votecount++
+                  - else
+                    - votecount--
+                - if (question.answer_ids[i].toObject().upvote)
+                  a.upvote-with-number.voted(href="#", data-answer-id="#{question.answer_ids[i]._id}")
+                    .upvote
+                      .number= votecount
+                - else
+                  a.upvote-with-number(href="#", data-answer-id="#{question.answer_ids[i]._id}")
+                    .upvote
+                      .number= votecount
+                - if (question.answer_ids[i].toObject().downvote)
+                  a.downvote.voted(href="#", data-answer-id="#{question.answer_ids[i]._id}") &nbsp;
+                - else
+                  a.downvote(href="#", data-answer-id="#{question.answer_ids[i]._id}") &nbsp;
             - if (session.user._id === question.answer_ids[i].user_id._id.toString())
               .row
                 .col-xs-offset-1.col-xs-11.manage-answer
