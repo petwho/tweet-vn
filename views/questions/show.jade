@@ -1,7 +1,8 @@
 extends ../layouts/question
 
 block content
-  #question(data-id="#{question._id}", data-user-id="#{session.user._id}")
+  - var userId = session.user ? session.user._id.toString() : undefined
+  #question(data-id="#{question._id}", data-user-id=userId)
     .row
       .col-xs-7
         .question-text
@@ -68,25 +69,26 @@ block content
             .row(class="answer-item-#{question.answer_ids[i]._id}")
               .col-xs-10.col-xs-offset-1.answer-content!= question.answer_ids[i].content
               .col-xs-1.no-padding-left-right.vote-btns
-                - var j, votecount = 0
-                - for (j = 0; j < question.answer_ids[i].votes.length; j++)
-                  - if (question.answer_ids[i].votes[j].type === 'upvote')
-                    - votecount++
+                - if (session.user)
+                  - var j, votecount = 0
+                  - for (j = 0; j < question.answer_ids[i].votes.length; j++)
+                    - if (question.answer_ids[i].votes[j].type === 'upvote')
+                      - votecount++
+                    - else
+                      - votecount--
+                  - if (question.answer_ids[i].toObject().upvote)
+                    a.upvote-with-number.voted(href="#", data-answer-id="#{question.answer_ids[i]._id}")
+                      .upvote
+                        .number= votecount
                   - else
-                    - votecount--
-                - if (question.answer_ids[i].toObject().upvote)
-                  a.upvote-with-number.voted(href="#", data-answer-id="#{question.answer_ids[i]._id}")
-                    .upvote
-                      .number= votecount
-                - else
-                  a.upvote-with-number(href="#", data-answer-id="#{question.answer_ids[i]._id}")
-                    .upvote
-                      .number= votecount
-                - if (question.answer_ids[i].toObject().downvote)
-                  a.downvote.voted(href="#", data-answer-id="#{question.answer_ids[i]._id}") &nbsp;
-                - else
-                  a.downvote(href="#", data-answer-id="#{question.answer_ids[i]._id}") &nbsp;
-            - if (session.user._id === question.answer_ids[i].user_id._id.toString())
+                    a.upvote-with-number(href="#", data-answer-id="#{question.answer_ids[i]._id}")
+                      .upvote
+                        .number= votecount
+                  - if (question.answer_ids[i].toObject().downvote)
+                    a.downvote.voted(href="#", data-answer-id="#{question.answer_ids[i]._id}") &nbsp;
+                  - else
+                    a.downvote(href="#", data-answer-id="#{question.answer_ids[i]._id}") &nbsp;
+            - if (session.user && (session.user._id === question.answer_ids[i].user_id._id.toString()))
               .row
                 .col-xs-offset-1.col-xs-11.manage-answer
                   .manage-answer-btns

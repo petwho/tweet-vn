@@ -87,10 +87,12 @@ module.exports = function (app) {
     async.series([find_question, is_answered_by_me, find_related], function (err, results) {
       var i, j;
       if (err) { return next(err); }
-      for (i = 0; i < question.answer_ids.length; i++) {
-        for (j = 0; j < question.answer_ids[i].votes.length; j++) {
-          if (question.answer_ids[i].votes[j].user_id.toString() === req.session.user._id.toString()) {
-            question.answer_ids[i].set(question.answer_ids[i].votes[j].type, true, {strict: false});
+      if (req.session.user) {
+        for (i = 0; i < question.answer_ids.length; i++) {
+          for (j = 0; j < question.answer_ids[i].votes.length; j++) {
+            if (question.answer_ids[i].votes[j].user_id.toString() === req.session.user._id.toString()) {
+              question.answer_ids[i].set(question.answer_ids[i].votes[j].type, true, {strict: false});
+            }
           }
         }
       }
