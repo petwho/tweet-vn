@@ -5,7 +5,7 @@ module.exports = function (content) {
   if ((typeof content !== 'string') || !content.trim()) { return; }
 
   $content = $('<div>' + content + '</div>');
-  $content.find(':not(p, span, h1, strong, em, ul, ol, li, a, img)').remove();
+  $content.find(':not(p, span, h1, strong, em, ul, ol, li, a, img, iframe)').remove();
   $content.find('img').each(function () {
     var attr,
       attributes = this.attributes,
@@ -29,6 +29,24 @@ module.exports = function (content) {
       if (whitelist.indexOf(attr.name) === -1) {
         this.removeAttributeNode(attr);
       }
+    }
+  });
+
+  $content.find('iframe').each(function () {
+    var attr,
+      attributes = this.attributes,
+      i = attributes.length,
+      whitelist = ["width", "height", "src", "frameborder", "allowfullscreen"];
+
+    if (($(this).attr('src').indexOf('http://www.youtube.com') === 0) || $(this).attr('src').indexOf('https://www.youtube.com') === 0) {
+      while (i--) {
+        attr = attributes[i];
+        if (whitelist.indexOf(attr.name) === -1) {
+          this.removeAttributeNode(attr);
+        }
+      }
+    } else {
+      $(this).remove();
     }
   });
 
