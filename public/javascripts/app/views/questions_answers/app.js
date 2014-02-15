@@ -23,7 +23,7 @@ define([
         success: function () {
           that.$('.qa-row').removeClass('hidden');
           $('.spinner-large').css({visibility: 'hidden'});
-          setTimeout( function() { that.checkScroll() }, 500);
+          setTimeout(function () { that.checkScroll(); }, 500);
         }
       });
 
@@ -49,8 +49,8 @@ define([
       var oldLength, pageHeight, scrollDistanceFromBottom, nearBottomOfPage, that;
       oldLength = this.qas.length;
       that = this;
-      pageHeight = Math.max(document.body.scrollHeight, document.body.offsetHeight),
-      scrollDistanceFromBottom = pageHeight - (window.pageYOffset + window.innerHeight),
+      pageHeight = Math.max(document.body.scrollHeight, document.body.offsetHeight);
+      scrollDistanceFromBottom = pageHeight - (window.pageYOffset + window.innerHeight);
       nearBottomOfPage = scrollDistanceFromBottom - 250;
       if (nearBottomOfPage <= 0) {
         this.qas.scrollCount = this.qas.scrollCount + 1;
@@ -59,14 +59,14 @@ define([
           success: function () {
             that.$('.qa-row').removeClass('hidden');
             $('.spinner-large').css({visibility: 'hidden'});
-            if(oldLength != that.qas.length) {
-              setTimeout( function() { that.checkScroll(); }, 500);
+            if (oldLength !== that.qas.length) {
+              setTimeout(function () { that.checkScroll(); }, 500);
             }
           },
           remove: false
         });
       } else {
-        setTimeout( function() { that.checkScroll() }, 500);
+        setTimeout(function () { that.checkScroll(); }, 500);
       }
     },
 
@@ -188,7 +188,7 @@ define([
         },
         success: function () {
           spinner.stop();
-          if($currentTarget.hasClass('voted')) {
+          if ($currentTarget.hasClass('voted')) {
             socket.emit('voteAnswer', {answerId: answerId, value: -1, userId: that.userId});
           } else {
             if ($opposite.hasClass('voted')) {
@@ -217,7 +217,7 @@ define([
         },
         success: function () {
           spinner.stop();
-          if($currentTarget.hasClass('voted')) {
+          if ($currentTarget.hasClass('voted')) {
             socket.emit('voteAnswer', {answerId: answerId, value: 1, userId: that.userId});
           } else {
             if ($opposite.hasClass('voted')) {
@@ -231,8 +231,9 @@ define([
     },
 
     socketVoteAnswer: function (that, options) {
-      var $voteText = that.$('.upvote-with-number[data-answerId="' + options.answerId + '"]').parent(),
-        $number = $voteText.find('.number'), len;
+      var len, $voteText, $number;
+      $voteText = that.$('.upvote-with-number[data-answerId="' + options.answerId + '"]').parent();
+      $number = $voteText.find('.number');
       $number.text(parseInt($number.text()) + options.value);
 
       if (that.userId === options.userId) {

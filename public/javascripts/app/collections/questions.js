@@ -7,9 +7,9 @@ define([ 'backbone', 'models/question'], function (Backbone, Question) {
       this._is_open = bool;
     },
 
-    url   : function () {
+    url : function () {
       if (this._is_open === true) {
-        return '/open-questions/list';
+        return this.scrollCount ? '/open-questions/list?scrollcount=' + this.scrollCount : '/open-questions/list';
       }
     }
   });

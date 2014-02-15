@@ -13,6 +13,7 @@ define([
       var that = this;
       this.csrfToken  = $('meta[name="csrf-token"]').attr('content');
       this.questions  = questions;
+      this.questions.scrollCount = 0;
       this.questions.setOpen(true);
       this.answers    = new Answers();
       this.listenTo(this.questions, 'add',        this.addQuestion);
@@ -22,7 +23,8 @@ define([
       this.questions.fetch({
         success: function () {
           that.$('.open-question-row').removeClass('hidden');
-          $('.spinner-large').remove();
+          $('.spinner-large').css({visibility: 'hidden'});
+          setTimeout(function () { that.checkScroll(); }, 500);
         }
       });
 
@@ -32,6 +34,31 @@ define([
       socket.on('soketAddedAnswer', function () {
         that.reRenderFeed(that)();
       });
+    },
+
+    checkScroll: function () {
+      var oldLength, pageHeight, scrollDistanceFromBottom, nearBottomOfPage, that;
+      oldLength = this.questions.length;
+      that = this;
+      pageHeight = Math.max(document.body.scrollHeight, document.body.offsetHeight);
+      scrollDistanceFromBottom = pageHeight - (window.pageYOffset + window.innerHeight);
+      nearBottomOfPage = scrollDistanceFromBottom - 250;
+      if (nearBottomOfPage <= 0) {
+        this.questions.scrollCount = this.questions.scrollCount + 1;
+        $('.spinner-large').css({visibility: 'visible'});
+        this.questions.fetch({
+          success: function () {
+            that.$('.open-question-row').removeClass('hidden');
+            $('.spinner-large').css({visibility: 'hidden'});
+            if (oldLength !== that.questions.length) {
+              setTimeout(function () { that.checkScroll(); }, 500);
+            }
+          },
+          remove: false
+        });
+      } else {
+        setTimeout(function () { that.checkScroll(); }, 500);
+      }
     },
 
     addQuestion: function (question) {
