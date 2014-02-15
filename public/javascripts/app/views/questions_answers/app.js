@@ -14,6 +14,7 @@ define([
       this.csrfToken = $('meta[name="csrf-token"]').attr('content');
       this.userId = this.$el.data('userid');
       this.qas = qas;
+      this.qas.scrollCount = 0;
       this.listenTo(this.qas, 'added_question', this.addedQuestion);
       this.listenTo(this.qas, 'add', this.addQA);
       this.listenTo(this.qas, 'submit_answer', this.submitAnswer);
@@ -21,7 +22,8 @@ define([
       this.qas.fetch({
         success: function () {
           that.$('.qa-row').removeClass('hidden');
-          $('.spinner-large').remove();
+          $('.spinner-large').css({visibility: 'hidden'});
+          setTimeout( function() { that.checkScroll() }, 500);
         }
       });
 
@@ -41,6 +43,31 @@ define([
     events: {
       'click .vote-btns .upvote-with-number': 'upvoteAnswer',
       'click .vote-btns .downvote': 'downvoteAnswer'
+    },
+
+    checkScroll: function () {
+      var oldLength, pageHeight, scrollDistanceFromBottom, nearBottomOfPage, that;
+      oldLength = this.qas.length;
+      that = this;
+      pageHeight = Math.max(document.body.scrollHeight, document.body.offsetHeight),
+      scrollDistanceFromBottom = pageHeight - (window.pageYOffset + window.innerHeight),
+      nearBottomOfPage = scrollDistanceFromBottom - 250;
+      if (nearBottomOfPage <= 0) {
+        this.qas.scrollCount = this.qas.scrollCount + 1;
+        $('.spinner-large').css({visibility: 'visible'});
+        this.qas.fetch({
+          success: function () {
+            that.$('.qa-row').removeClass('hidden');
+            $('.spinner-large').css({visibility: 'hidden'});
+            if(oldLength != that.qas.length) {
+              setTimeout( function() { that.checkScroll(); }, 500);
+            }
+          },
+          remove: false
+        });
+      } else {
+        setTimeout( function() { that.checkScroll() }, 500);
+      }
     },
 
     onEditorInit: function (qaView, editor) {
