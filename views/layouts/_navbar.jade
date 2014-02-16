@@ -27,11 +27,20 @@ nav.navbar.navbar-default.navbar-fixed-top
               b.caret
           ul.dropdown-menu(role='menu')
             li
-              a(href="/@#{session.user.username}") Profile
+              a(href="/@#{session.user.username}")
+                span.glyphicon.glyphicon-user
+                | &nbsp;&nbsp;&nbsp;&nbsp;Profile
             li
-              a(href="/@#{session.user.username}/settings") Settings
-            - if (session.user && session.user.account_type == 'register')
-              li
-                a(href="/@#{session.user.username}/change_password") Change Password
+              a(href="/@#{session.user.username}/settings")
+                span.glyphicon.glyphicon-cog
+                | &nbsp;&nbsp;&nbsp;&nbsp;Settings
+            li
+              a(href="#")
+                span.glyphicon.glyphicon-log-out
+                form.inline(method="POST", action="/sessions")
+                  input(type="hidden", name="_method", value="DELETE")
+                  input(type="hidden", name="_csrf", value=csrfToken)
+                  | &nbsp;&nbsp;
+                  button.btn.btn-xs.btn-warning.btn-inline(type="submit") Logout
         li
           button.btn.btn-default.navbar-btn#add-question(type="button") Add Question
