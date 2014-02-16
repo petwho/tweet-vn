@@ -1,10 +1,10 @@
 <div class="pagelist-item following-user" data-username="<%= followed.user_id.username %>">
   <strong><%= user_id.first_name %>&nbsp;</strong>
   <span class="light-gray">followed a user&nbsp;
-    <a href="/users/<%= followed.user_id.fullname %>">
+    <a href="/@<%= followed.user_id.fullname %>">
       <img src="<%= followed.user_id.picture %>" width="20" height="20">
     </a>
     <span>&nbsp;</span>
-    <a href="/users/<%= followed.user_id.username %>"><%= followed.user_id.username %></a>
+    <a href="/@<%= followed.user_id.username %>"><%= followed.user_id.username %></a>
   </span>
 </div>

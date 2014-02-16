@@ -25,7 +25,7 @@ block content
           span.following-count.light-gray= user.following.user_ids.length
           .following-user-link
             - for (var i = 0; i < user.following.user_ids.length; i++)
-              a(href="/users/#{user.following.user_ids[i].username}", data-username=user.following.user_ids[i].username)
+              a(href="/@#{user.following.user_ids[i].username}", data-username=user.following.user_ids[i].username)
                 img(src=user.following.user_ids[i].picture, width="28", height="28")
         .followers
           a(href="#followers")
@@ -34,7 +34,7 @@ block content
           span.follower-count.light-gray= followers.length
           .follower-user-link
             - for (var i = 0; i < followers.length; i++)
-              a(href="/users/#{followers[i].username}", data-username=followers[i].username)
+              a(href="/@#{followers[i].username}", data-username=followers[i].username)
                 img(src=followers[i].picture, width="28", height="28")
         .followed-topics
           a(href="#followed-topics")
@@ -86,10 +86,10 @@ block content
             .pagelist-item.following-user(data-username=activities[i].followed.user_id.username)
               strong #{session.user.first_name}&nbsp;
               span.light-gray followed a user&nbsp;
-                a(href="/users/#{activities[i].followed.user_id.username}")
+                a(href="/@#{activities[i].followed.user_id.username}")
                   img(src=activities[i].followed.user_id.picture, width="20", height="20")
                 span &nbsp;
-                a(href="/users/#{activities[i].followed.user_id.username}")= activities[i].followed.user_id.fullname
+                a(href="/@#{activities[i].followed.user_id.username}")= activities[i].followed.user_id.fullname
 
           - if (activities[i].type === 31)
             .pagelist-item
