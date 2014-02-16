@@ -29,18 +29,17 @@ nav.navbar.navbar-default.navbar-fixed-top
             li
               a(href="/@#{session.user.username}")
                 span.glyphicon.glyphicon-user
-                | &nbsp;&nbsp;&nbsp;&nbsp;Profile
+                | &nbsp;&nbsp;&nbsp;&nbsp;
+                | Profile
             li
               a(href="/@#{session.user.username}/settings")
                 span.glyphicon.glyphicon-cog
-                | &nbsp;&nbsp;&nbsp;&nbsp;Settings
+                | &nbsp;&nbsp;&nbsp;&nbsp;
+                | Settings
             li
-              a(href="#")
+              a(href="/logout")
                 span.glyphicon.glyphicon-log-out
-                form.inline(method="POST", action="/sessions")
-                  input(type="hidden", name="_method", value="DELETE")
-                  input(type="hidden", name="_csrf", value=csrfToken)
-                  | &nbsp;&nbsp;
-                  button.btn.btn-xs.btn-warning.btn-inline(type="submit") Logout
+                | &nbsp;&nbsp;&nbsp;&nbsp;
+                | Logout
         li
           button.btn.btn-default.navbar-btn#add-question(type="button") Add Question

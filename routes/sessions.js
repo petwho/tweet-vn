@@ -54,4 +54,9 @@ module.exports = function (app) {
     req.session.destroy();
     return res.redirect('/login');
   });
+
+  app.get('/logout', loggedIn, function (req, res, next) {
+    req.session.destroy();
+    return res.redirect('/login');
+  });
 };
