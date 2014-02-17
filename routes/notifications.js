@@ -1,10 +1,14 @@
-var loggedIn = require('./middleware/logged_in'),
-  loggedInAjax = require('./middleware/logged_in_ajax'),
-  async = require('async'),
-  Notification = require('../data/models/notification');
+var loggedIn, loggedInAjax, getUnreadNotification, async, Notification;
+
+loggedIn = require('./middleware/logged_in');
+loggedInAjax = require('./middleware/logged_in_ajax');
+getUnreadNotification = require('./middleware/get_unread_notifications');
+async = require('async');
+Notification = require('../data/models/notification');
+
 module.exports = function (app) {
-  app.get('/notifications', loggedIn, function (req, res, next) {
-    return res.render('notifications/index');
+  app.get('/notifications', [loggedIn, getUnreadNotification], function (req, res, next) {
+    return res.render('notifications/index', {notification_count: req.notification_count});
   });
 
   app.get('/notifications/list', loggedInAjax, function (req, res, next) {

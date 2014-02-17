@@ -1,25 +1,29 @@
-var loggedIn = require('./middleware/logged_in'),
-  loggedInAjax = require('./middleware/logged_in_ajax'),
-  loadUser = require('./middleware/load_user'),
-  loadTopics = require('./middleware/load_topics'),
-  async = require('async'),
-  util = require('util'),
-  validateTopics = require('./middleware/validate_topics'),
-  validateQuestion = require('./middleware/validate_question'),
-  updateTitle = require('./middleware/update_question_title'),
-  updateTopics = require('./middleware/update_question_topics'),
-  Activity = require('../data/models/activity'),
-  Question = require('../data/models/question'),
-  Topic = require('../data/models/topic'),
-  Notification = require('../data/models/notification'),
-  Log = require('../data/models/log'),
-  User = require('../data/models/user');
-  Answer = require('../data/models/answer');
+var loggedIn, loggedInAjax, loadUser, loadTopics, async, util, validateTopics, validateQuestion, updateTitle, updateTopics,
+  Activity, Question, Topic, Notification, Log, User, Answer;
+
+loggedIn = require('./middleware/logged_in');
+loggedInAjax = require('./middleware/logged_in_ajax');
+loadUser = require('./middleware/load_user');
+loadTopics = require('./middleware/load_topics');
+getUnreadNotification = require('./middleware/get_unread_notifications');
+async = require('async');
+util = require('util');
+validateTopics = require('./middleware/validate_topics');
+validateQuestion = require('./middleware/validate_question');
+updateTitle = require('./middleware/update_question_title');
+updateTopics = require('./middleware/update_question_topics');
+Activity = require('../data/models/activity');
+Question = require('../data/models/question');
+Topic = require('../data/models/topic');
+Notification = require('../data/models/notification');
+Log = require('../data/models/log');
+User = require('../data/models/user');
+Answer = require('../data/models/answer');
 
 module.exports = function (app) {
 
-  app.get('/open-questions', loggedIn, function (req, res, next) {
-    res.render('questions/open');
+  app.get('/open-questions', [loggedIn, getUnreadNotification], function (req, res, next) {
+    res.render('questions/open', {notification_count: req.notification_count});
   });
 
   app.get('/open-questions/list', loggedIn, function (req, res, next) {
@@ -66,7 +70,7 @@ module.exports = function (app) {
     };
 
     is_answered_by_me = function (next) {
-      if (!req.session.user) { return next(); };
+      if (!req.session.user) { return next(); }
       Answer.findOne({question_id: question._id, user_id: req.session.user._id}, function (err, answer) {
         if (err) { return next(err); }
         if (answer) { req.is_answered_by_me = true; }

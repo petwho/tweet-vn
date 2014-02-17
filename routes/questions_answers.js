@@ -1,9 +1,12 @@
-var loggedIn = require('./middleware/logged_in'),
-  Activity = require('../data/models/activity');
+var loggedIn, getUnreadNotification, Activity;
+
+loggedIn = require('./middleware/logged_in');
+getUnreadNotification = require('./middleware/get_unread_notifications');
+Activity = require('../data/models/activity');
 
 module.exports = function (app) {
-  app.get('/questions-answers', loggedIn, function (req, res, next) {
-    return res.render('questions_answers/index');
+  app.get('/questions-answers', [loggedIn, getUnreadNotification], function (req, res, next) {
+    return res.render('questions_answers/index', {notification_count: req.notification_count});
   });
 
   app.get('/questions-answers/list', [loggedIn], function (req, res, next) {

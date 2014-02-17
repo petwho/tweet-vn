@@ -19,7 +19,7 @@ ul.nav.nav-pills.nav-stacked.sub-menu
       span.glyphicon.glyphicon-info-sign
       span &nbsp;&nbsp;
       strong Thông Báo
-      span.badge
+      span.badge= notification_count
   li
     form(method="POST", action="/sessions", class="navbar-form navbar-left")
       input(type="hidden", name="_method", value="DELETE")

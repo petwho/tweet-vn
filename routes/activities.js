@@ -1,5 +1,8 @@
-var Activity = require('../data/models/activity'),
-  loggedIn = require('./middleware/logged_in');
+var Activity, loggedIn, getUnreadNotification;
+
+Activity = require('../data/models/activity');
+loggedIn = require('./middleware/logged_in');
+getUnreadNotification = require('./middleware/get_unread_notifications');
 
 module.exports = function (app) {
   app.get('/activities/list', loggedIn, function (req, res, next) {
@@ -21,7 +24,7 @@ module.exports = function (app) {
       });
   });
 
-  app.get('/activities', loggedIn, function (req, res, next) {
-    return res.render('activities/index');
+  app.get('/activities', [loggedIn, getUnreadNotification], function (req, res, next) {
+    return res.render('activities/index', {notification_count: req.notification_count});
   });
 };
