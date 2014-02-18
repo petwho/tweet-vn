@@ -222,6 +222,7 @@ define([
           that.$addedTopics.empty();
           that.$modal.modal('hide');
           socket.emit('soketAddedQuestion', question);
+          window.location.href = '/questions/' + question.get('_id');
         },
         wait: true
       });
