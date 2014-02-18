@@ -19,6 +19,7 @@ module.exports = function (app) {
         if (err) { return next(err); }
         Notification.populate(notifications, [
           { path: 'log_id.user_id', model: 'User', select: '-email -password -password_salt -token' },
+          { path: 'log_id.answer.question_id', model: 'Question' },
           { path: 'log_id.added_topic_id', model: 'Topic', select: '-related_words'},
           { path: 'log_id.removed_topic_id', model: 'Topic', select: '-related_words'}
         ], function (err, notifications) {

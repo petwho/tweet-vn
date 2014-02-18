@@ -30,6 +30,8 @@ module.exports = function (content) {
         this.removeAttributeNode(attr);
       }
     }
+    // escape invalid character
+    $(this).html($(this).html());
   });
 
   $content.find('iframe').each(function () {
@@ -45,6 +47,8 @@ module.exports = function (content) {
           this.removeAttributeNode(attr);
         }
       }
+      // escape invalid character
+      $(this).html($(this).html());
     } else {
       $(this).remove();
     }
@@ -68,6 +72,8 @@ module.exports = function (content) {
         }
       }
     }
+    // escape invalid character
+    $(this).html($(this).html());
   });
 
   content = $content.html();

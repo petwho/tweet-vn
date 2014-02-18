@@ -13,6 +13,9 @@ define([
 
     render: function () {
       this.$el.html(this.template(this.model.toJSON()));
+      if (!this.model.get('is_read')) {
+        this.$el.addClass('unread');
+      }
       return this;
     }
   });

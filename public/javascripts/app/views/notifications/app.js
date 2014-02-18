@@ -22,10 +22,8 @@ define([
 
     addNotification: function (notification) {
       var ntfView;
-      if (notification.get('type') !== 20) {
-        ntfView = new NotificationView({model: notification});
-        this.$el.append(ntfView.el);
-      }
+      ntfView = new NotificationView({model: notification});
+      this.$el.append(ntfView.el);
     }
   });
 

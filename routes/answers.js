@@ -1,6 +1,8 @@
 var loggedIn = require('./middleware/logged_in'),
   loggedInAjax = require('./middleware/logged_in_ajax'),
   async = require('async'),
+  jsdiff = require('diff'),
+  diffEscape = require('./middleware/diff_escape'),
   validateAnswer = require('./middleware/validate_answer'),
   validateQuestion = require('./middleware/validate_question'),
   Activity = require('../data/models/activity'),
@@ -12,8 +14,9 @@ var loggedIn = require('./middleware/logged_in'),
 
 module.exports = function (app) {
   app.put('/answers', [loggedIn, validateAnswer.is_author], function (req, res, next) {
-    var update_answer, create_log, add_log_to_answer, find_question, notifiy_followers;
+    var oldContent, update_answer, create_log, add_log_to_answer, find_question, notifiy_followers;
     req.log = {};
+    oldContent = req.answer.content;
 
     update_answer = function (next) {
       Answer.filterInputs(req.body);
@@ -26,10 +29,20 @@ module.exports = function (app) {
     };
 
     create_log = function (next) {
+      var diff, raw_diff, oldContentEscape, contentEscape;
+      diff = '';
+      raw_diff = jsdiff.diffWords(diffEscape(oldContent), diffEscape(req.answer.content));
+
+      raw_diff.forEach(function (part) {
+        diff += part.added ? '<span class="added">' + part.value + '</span>' :
+            part.removed ? '<span class="removed">' + part.value + '</span>' : part.value;
+      });
+
       req.log.type = 210;
       req.log.user_id = req.session.user._id;
       req.log.answer = req.answer;
       req.log.content = req.answer.content;
+      req.log.diff = diff;
 
       Log.create(req.log, function (err, log) {
         if (err) { return next(err); }
@@ -58,7 +71,11 @@ module.exports = function (app) {
 
     notifiy_followers = function (next) {
       var notifiers = [], fn, i;
+
       for (i = 0; i < req.question.follower_ids.length; i++) {
+        if (req.session.user._id === req.question.follower_ids[i].toString()) {
+          continue;
+        }
         fn = (function (i) {
           return function (next) {
             Notification.create({

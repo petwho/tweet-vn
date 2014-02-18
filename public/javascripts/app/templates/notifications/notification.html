@@ -1,34 +1,36 @@
 <% if (type === 10) { %>
   <% if (log_id.type === 101) { %>
     <div class="col-xs-1 no-padding-left-right">
-      <a href="/users/<%= log_id.user_id.username %>"><img src="<%= log_id.user_id.picture %>" width="25" height="25"></a>
+      <a href="/@<%= log_id.user_id.username %>"><img src="<%= log_id.user_id.picture %>" width="25" height="25"></a>
     </div>
     <div class="col-xs-11">
-      <a href="/users/<%= log_id.user_id.username %>"><%= log_id.user_id.fullname %></a>
+      <a href="/@<%= log_id.user_id.username %>"><%= log_id.user_id.fullname %></a>
       added topic
       <a href="/topics/<%= log_id.added_topic_id._id %>"><%= log_id.added_topic_id.name %></a>
       to question
+      <a href="/questions/<%= log_id.question[0]._id %>"><%= log_id.question[0].title %></a>
     </div>
   <% } %>
 
   <% if (log_id.type === 111) { %>
     <div class="col-xs-1 no-padding-left-right">
-      <a href="/users/<%= log_id.user_id.username %>"><img src="<%= log_id.user_id.picture %>" width="25" height="25"></a>
+      <a href="/@<%= log_id.user_id.username %>"><img src="<%= log_id.user_id.picture %>" width="25" height="25"></a>
     </div>
     <div class="col-xs-11">
-      <a href="/users/<%= log_id.user_id.username %>"><%= log_id.user_id.fullname %></a>
+      <a href="/@<%= log_id.user_id.username %>"><%= log_id.user_id.fullname %></a>
     removed topic
       <a href="/topics/<%= log_id.removed_topic_id._id %>"><%= log_id.removed_topic_id.name %></a>
       from question
+      <a href="/questions/<%= log_id.question[0]._id %>"><%= log_id.question[0].title %></a>
     </div>
   <% } %>
 
   <% if (log_id.type === 110) { %>
     <div class="col-xs-1 no-padding-left-right">
-      <a href="/users/<%= log_id.user_id.username %>"><img src="<%= log_id.user_id.picture %>" width="25" height="25"></a>
+      <a href="/@<%= log_id.user_id.username %>"><img src="<%= log_id.user_id.picture %>" width="25" height="25"></a>
     </div>
     <div class="col-xs-11">
-      <a href="/users/<%= log_id.user_id.username %>"><%= log_id.user_id.fullname %></a>
+      <a href="/@<%= log_id.user_id.username %>"><%= log_id.user_id.fullname %></a>
       edited the title of the question
       <a href="/questions/<%= log_id.question[0]._id %>" target="_blank"><%= log_id.question[0].title %></a>
       <div class="diff light-gray">
@@ -41,19 +43,52 @@
 <% if (type === 40) { %>
   <% if (!new_follower.question_id) { %>
     <div class="col-xs-1 no-padding-left-right">
-      <a href="/users/<%= new_follower.user_id.username %>"><img src="<%= new_follower.user_id.picture %>" width="25" height="25"></a>
+      <a href="/@<%= new_follower.user_id.username %>"><img src="<%= new_follower.user_id.picture %>" width="25" height="25"></a>
     </div>
     <div class="col-xs-11">
-      <a href="/users/<%= new_follower.user_id.username %>" target="_blank"><%= new_follower.user_id.fullname %></a>
+      <a href="/@<%= new_follower.user_id.username %>" target="_blank"><%= new_follower.user_id.fullname %></a>
       is now following you
     </div>
   <% } else { %>
     <div class="col-xs-1 no-padding-left-right">
-      <a href="/users/<%= new_follower.user_id.username %>"><img src="<%= new_follower.user_id.picture %>" width="25" height="25"></a>
+      <a href="/@<%= new_follower.user_id.username %>"><img src="<%= new_follower.user_id.picture %>" width="25" height="25"></a>
     </div>
     <div class="col-xs-11">
-      <a href="/users/<%= new_follower.user_id.username %>" target="_blank"><%= new_follower.user_id.fullname %></a>
+      <a href="/@<%= new_follower.user_id.username %>" target="_blank"><%= new_follower.user_id.fullname %></a>
       is now following your question <a href="/questions/<%= new_follower.question_id._id %>" target="_blank"><%= new_follower.question_id.title %></a>
     </div>
   <% } %>
+<% } %>
+
+<% if (type === 20) { %>
+  <div class="col-xs-1 no-padding-left-right">
+    <a href="/@<%= log_id.user_id.username %>"><img src="<%= log_id.user_id.picture %>" width="25" height="25"></a>
+  </div>
+  <div class="col-xs-11">
+    <a href="/@<%= log_id.user_id.username %>"><%= log_id.user_id.fullname %></a>
+    Wrote an answer for the question
+    <a href="/questions/<%= log_id.answer[0].question_id._id %>"><%= log_id.answer[0].question_id.title %></a>
+  </div>
+<% } %>
+
+<% if (type === 30) { %>
+  <div class="col-xs-1 no-padding-left-right">
+    <a href="/@<%= log_id.user_id.username %>"><img src="<%= log_id.user_id.picture %>" width="25" height="25"></a>
+  </div>
+  <div class="col-xs-11">
+    <a href="/@<%= log_id.user_id.username %>"><%= log_id.user_id.fullname %></a>
+    edited answer for the question
+    <a href="/questions/<%= log_id.answer[0].question_id._id %>"><%= log_id.answer[0].question_id.title %></a>
+    <div class="diff light-gray">
+      <%= log_id.diff %>
+    </div>
+  </div>
+  <!-- <div class="col-xs-1 no-padding-left-right">
+    <a href="/@<%= log_id.user_id.username %>"><img src="<%= log_id.user_id.picture %>" width="25" height="25"></a>
+  </div>
+  <div class="col-xs-11">
+    <a href="/@<%= log_id.user_id.username %>"><%= log_id.user_id.fullname %></a>
+    Wrote an answer for the question
+    <a href="/questions/<%= log_id.answer[0].question_id._id %>"><%= log_id.answer[0].question_id.title %></a>
+  </div> -->
 <% } %>
