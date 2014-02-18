@@ -24,7 +24,7 @@ module.exports = function (req, res, next) {
 
   create_log = function (next) {
     var diff = '',
-      raw_diff = jsdiff.diffWords(odlTitle, req.question.title);
+      raw_diff = jsdiff.diffLines(odlTitle, req.question.title);
 
     raw_diff.forEach(function (part) {
       diff += part.added ? '<span class="added">' + part.value + '</span>' :

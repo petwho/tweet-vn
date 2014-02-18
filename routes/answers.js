@@ -2,7 +2,6 @@ var loggedIn = require('./middleware/logged_in'),
   loggedInAjax = require('./middleware/logged_in_ajax'),
   async = require('async'),
   jsdiff = require('diff'),
-  diffEscape = require('./middleware/diff_escape'),
   validateAnswer = require('./middleware/validate_answer'),
   validateQuestion = require('./middleware/validate_question'),
   Activity = require('../data/models/activity'),
@@ -31,7 +30,7 @@ module.exports = function (app) {
     create_log = function (next) {
       var diff, raw_diff, oldContentEscape, contentEscape;
       diff = '';
-      raw_diff = jsdiff.diffWords(diffEscape(oldContent), diffEscape(req.answer.content));
+      raw_diff = jsdiff.diffLines(oldContent, req.answer.content);
 
       raw_diff.forEach(function (part) {
         diff += part.added ? '<span class="added">' + part.value + '</span>' :
