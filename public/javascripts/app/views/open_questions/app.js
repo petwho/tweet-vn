@@ -1,11 +1,11 @@
 define([
   'sockets/connect_to_room', 'jquery', 'backbone', 'spinner', 'tinymce',
-  'collections/questions', 'views/open_questions/question',
+  'models/question', 'collections/questions', 'views/open_questions/question',
   'collections/answers', 'models/answer',
   'text!../../../vendor/tinymce/skins/lightgray/skin.min.css',
   'text!../../../vendor/tinymce/skins/lightgray/content.min.css',
   'text!../../../vendor/tinymce/skins/lightgray/content.inline.min.css'
-], function (socket, $, Backbone, spinner, tinymce, questions, QuestionView, Answers, Answer, skinCSS, contentCSS, contentInlineCSS) {
+], function (socket, $, Backbone, spinner, tinymce, Question, questions, QuestionView, Answers, Answer, skinCSS, contentCSS, contentInlineCSS) {
   var AppView = Backbone.View.extend({
     el: '#open-questions',
 
@@ -22,17 +22,16 @@ define([
 
       this.questions.fetch({
         success: function () {
-          that.$('.open-question-row').removeClass('hidden');
           $('.spinner-large').css({visibility: 'hidden'});
           setTimeout(function () { that.checkScroll(); }, 500);
         }
       });
 
-      socket.on('soketAddedQuestion', function () {
-        that.reRenderFeed(that)();
+      socket.on('soketAddedQuestion', function (question) {
+        that.soketAddedQuestion(question);
       });
-      socket.on('soketAddedAnswer', function () {
-        that.reRenderFeed(that)();
+      socket.on('soketAddedAnswer', function (answer) {
+        that.soketAddedAnswer(answer);
       });
     },
 
@@ -48,7 +47,6 @@ define([
         $('.spinner-large').css({visibility: 'visible'});
         this.questions.fetch({
           success: function () {
-            that.$('.open-question-row').removeClass('hidden');
             $('.spinner-large').css({visibility: 'hidden'});
             if (oldLength !== that.questions.length) {
               setTimeout(function () { that.checkScroll(); }, 500);
@@ -63,7 +61,11 @@ define([
 
     addQuestion: function (question) {
       var questionView = new QuestionView({ model: question});
-      this.$el.append(questionView.render().el);
+      if (question.get('_prepend')) {
+        this.$el.prepend(questionView.render().el);
+      } else {
+        this.$el.append(questionView.render().el);
+      }
     },
 
     onEditorInit: function (questionView, editor) {
@@ -142,6 +144,33 @@ define([
       });
     },
 
+    soketAddedQuestion: function (question) {
+      var that = this;
+      $.ajax({
+        type: 'GET',
+        url: '/open-questions/list/' + question._id,
+        success: function (question) {
+          var new_question;
+          if (that.questions.findWhere({_id: question._id}) === undefined) {
+            question._prepend = true;
+            new_question = new Question(question);
+            that.questions.add(new_question);
+          }
+        },
+        error: function () {
+          window.location.href = '/open-questions';
+        }
+      });
+    },
+
+    soketAddedAnswer: function (answer) {
+      var question = this.questions.findWhere({_id: answer.question_id.toString()});
+      if (question) {
+        question.trigger('soketAddedAnswer');
+        this.questions.remove(question);
+      }
+    },
+
     reRenderFeed: function (self) {
       var that = self;
       return function () {
@@ -155,7 +184,6 @@ define([
         that.questions.fetch({
           success: function () {
             that.$('.old').remove();
-            that.$('.open-question-row').removeClass('hidden');
             that.is_rerendering = false;
             spinner.stop();
           }

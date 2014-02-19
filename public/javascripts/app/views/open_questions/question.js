@@ -16,6 +16,11 @@ define([
 
     initialize: function () {
       this.listenTo(this.model, 'added:answer', this.saveAnswer);
+      this.listenTo(this.model, 'soketAddedAnswer', this.clearView);
+    },
+
+    clearView: function () {
+      this.$el.remove();
     },
 
     hideFakeEditor: function (self) {

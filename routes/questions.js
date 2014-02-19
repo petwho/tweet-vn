@@ -43,6 +43,19 @@ module.exports = function (app) {
       });
   });
 
+  app.get('/open-questions/list/:id', loggedIn, function (req, res, next) {
+    Question.findOne({_id: req.params.id, is_open: true, $or: [
+      {topic_ids: {$in: req.session.user.following.topic_ids}},
+      {_id: {$in: req.session.user.following.question_ids}}
+    ]}).populate({
+        path  : 'topic_ids',
+        select: 'name picture follower_count'
+      })
+      .exec(function (err, question) {
+        return res.json(200, question);
+      });
+  });
+
   app.get('/questions/:id', function (req, res, next) {
     var find_question, question, is_answered_by_me, find_related, related_questions;
     req.is_answered_by_me = false;
