@@ -1,10 +1,10 @@
 var loggedIn, getUnreadNotification;
 
-loggedIn = require('./middleware/logged_in');
+loggedInIndex = require('./middleware/logged_in_index');
 getUnreadNotification = require('./middleware/get_unread_notifications');
 
 module.exports = function (app) {
-  app.get('/', [loggedIn, getUnreadNotification], function (req, res, next) {
+  app.get('/', [loggedInIndex, getUnreadNotification], function (req, res, next) {
     if (!req.session.user.password) {
       return res.render('users/new_password');
     }
