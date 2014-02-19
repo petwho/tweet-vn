@@ -19,7 +19,7 @@ module.exports = function (app) {
     Question.find({}, function (err, questions) {
       var el_prefix, el_suffix, xml_prefix, xml_suffix, xml;
 
-      el_prefix = '<url><loc>http://' + req.get('host') +  '/questions/';
+      el_prefix = '<url><loc>http://www.' + req.get('host') +  '/questions/';
       el_suffix = '</loc><changefreq>always</changefreq></url>';
       xml_prefix = '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">';
       xml_suffix = '</urlset>';
