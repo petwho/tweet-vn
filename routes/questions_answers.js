@@ -48,4 +48,67 @@ module.exports = function (app) {
           });
       });
   });
+
+
+  app.get('/questions-answers/question/:id', [loggedIn], function (req, res, next) {
+    Activity.findOne({ type: 20, 'posted.question_id': req.params.id }).populate('posted.question_id posted.answer_id posted.topic_ids')
+      .exec(function (err, activity) {
+        if (err) { return next(err); }
+        if (!activity) { return res.json(403, {msg: 'No activity found'}); }
+
+        Activity.populate(activity,
+          [
+            {
+              path: 'posted.answer_id.question_id',
+              model: 'Question'
+            },
+            {
+              path: 'posted.answer_id.user_id',
+              select: '-email -password -password_salt -token',
+              model: 'User'
+            }
+          ],
+          function (err, activity) {
+            if (activity.posted.answer_id) {
+              activity.posted.answer_id.votes.map(function (vote) {
+                if ((activity.type !== 'hidden') && (vote.user_id.toString() === req.session.user._id)) {
+                  activity.posted.answer_id.set(vote.type, true, {strict: false});
+                }
+              });
+            }
+            return res.json(200, activity);
+          });
+      });
+  });
+
+  app.get('/questions-answers/answer/:id', [loggedIn], function (req, res, next) {
+    Activity.findOne({ type: 21, 'posted.answer_id': req.params.id }).populate('posted.question_id posted.answer_id posted.topic_ids')
+      .exec(function (err, activity) {
+        if (err) { return next(err); }
+        if (!activity) { return res.json(403, {msg: 'No activity found'}); }
+
+        Activity.populate(activity,
+          [
+            {
+              path: 'posted.answer_id.question_id',
+              model: 'Question'
+            },
+            {
+              path: 'posted.answer_id.user_id',
+              select: '-email -password -password_salt -token',
+              model: 'User'
+            }
+          ],
+          function (err, activity) {
+            if (activity.posted.answer_id) {
+              activity.posted.answer_id.votes.map(function (vote) {
+                if ((activity.type !== 'hidden') && (vote.user_id.toString() === req.session.user._id)) {
+                  activity.posted.answer_id.set(vote.type, true, {strict: false});
+                }
+              });
+            }
+            return res.json(200, activity);
+          });
+      });
+  });
 };

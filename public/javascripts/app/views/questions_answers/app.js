@@ -1,11 +1,11 @@
 define([
   'sockets/connect_to_room', 'jquery', 'backbone', 'spinner', 'tinymce',
-  'collections/questions_answers', 'views/questions_answers/qa',
+  'models/question_answer', 'collections/questions_answers', 'views/questions_answers/qa',
   'collections/answers', 'models/answer',
   'text!../../../vendor/tinymce/skins/lightgray/skin.min.css',
   'text!../../../vendor/tinymce/skins/lightgray/content.min.css',
   'text!../../../vendor/tinymce/skins/lightgray/content.inline.min.css'
-], function (socket, $, Backbone, spinner, tinymce, qas, QAView, Answers, Answer, skinCSS, contentCSS, contentInlineCSS) {
+], function (socket, $, Backbone, spinner, tinymce, QA, qas, QAView, Answers, Answer, skinCSS, contentCSS, contentInlineCSS) {
   var AppView = Backbone.View.extend({
     el: '#qa-items',
 
@@ -21,18 +21,17 @@ define([
       this.listenTo(this.qas, 'initEditor', this.initEditor);
       this.qas.fetch({
         success: function () {
-          that.$('.qa-row').removeClass('hidden');
           $('.spinner-large').css({visibility: 'hidden'});
           setTimeout(function () { that.checkScroll(); }, 500);
         }
       });
 
-      socket.on('soketAddedQuestion', function () {
-        that.reRenderFeed(that)();
+      socket.on('soketAddedQuestion', function (question) {
+        that.soketAddedQuestion(question);
       });
 
-      socket.on('soketAddedAnswer', function () {
-        that.reRenderFeed(that)();
+      socket.on('soketAddedAnswer', function (answer) {
+        that.soketAddedAnswer(answer);
       });
 
       socket.on('voteAnswer', function (options) {
@@ -126,7 +125,11 @@ define([
 
     addQA: function (qa) {
       var qaView = new QAView({ model: qa});
-      this.$el.append(qaView.render().el);
+      if (qa.get('_prepend')) {
+        this.$el.prepend(qaView.render().el);
+      } else {
+        this.$el.append(qaView.render().el);
+      }
     },
 
     submitAnswer: function (qaView) {
@@ -151,26 +154,81 @@ define([
       });
     },
 
-    reRenderFeed: function (self) {
-      var that = self;
-      return function () {
-        spinner.start();
-        if (that.is_rerendering) {
-          return setTimeout(that.reRenderFeed(that), 200);
-        }
-        that.is_rerendering = true;
-        that.$('.qa-row').parent().addClass('old');
-        that.qas.reset();
-        that.qas.fetch({
-          success: function () {
-            that.$('.old').remove();
-            that.$('.qa-row').removeClass('hidden');
-            that.is_rerendering = false;
-            spinner.stop();
+    soketAddedQuestion: function (question) {
+      var that = this;
+      $.ajax({
+        type: 'GET',
+        url: '/questions-answers/question/' + question._id,
+        success: function (qa) {
+          var qa;
+          if (that.qas.findWhere({_id: qa._id}) === undefined) {
+            qa._prepend = true;
+            qa = new QA(qa);
+            that.qas.add(qa);
           }
-        });
-      };
+        },
+        error: function () {
+          window.location.href = '/';
+        }
+      });
     },
+
+    soketAddedAnswer: function (answer) {
+      var that = this;
+
+      $.ajax({
+        type: 'GET',
+        url: '/questions-answers/question/' + answer.question_id,
+        success: function (qa) {
+          var new_qa, old_qa;
+          old_qa = that.qas.findWhere({_id: qa._id});
+          if (old_qa !== undefined) {
+            new_qa = new QA(qa);
+            old_qa.set(new_qa.toJSON());
+          }
+        },
+        error: function () {
+          window.location.href = '/';
+        }
+      });
+
+      $.ajax({
+        type: 'GET',
+        url: '/questions-answers/answer/' + answer._id,
+        success: function (qa) {
+          var qa;
+          if (that.qas.findWhere({_id: qa._id}) === undefined) {
+            qa._prepend = true;
+            qa = new QA(qa);
+            that.qas.add(qa);
+          }
+        },
+        error: function () {
+          window.location.href = '/';
+        }
+      });
+    },
+
+    // reRenderFeed: function (self) {
+    //   var that = self;
+    //   return function () {
+    //     spinner.start();
+    //     if (that.is_rerendering) {
+    //       return setTimeout(that.reRenderFeed(that), 200);
+    //     }
+    //     that.is_rerendering = true;
+    //     that.$('.qa-row').parent().addClass('old');
+    //     that.qas.reset();
+    //     that.qas.fetch({
+    //       success: function () {
+    //         that.$('.old').remove();
+    //         that.$('.qa-row').removeClass('hidden');
+    //         that.is_rerendering = false;
+    //         spinner.stop();
+    //       }
+    //     });
+    //   };
+    // },
 
     upvoteAnswer: function (e) {
       var $currentTarget = $(e.currentTarget),
