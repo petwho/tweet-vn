@@ -160,11 +160,11 @@ define([
         type: 'GET',
         url: '/questions-answers/question/' + question._id,
         success: function (qa) {
-          var qa;
+          var new_qa;
           if (that.qas.findWhere({_id: qa._id}) === undefined) {
             qa._prepend = true;
-            qa = new QA(qa);
-            that.qas.add(qa);
+            new_qa = new QA(qa);
+            that.qas.add(new_qa);
           }
         },
         error: function () {
@@ -196,11 +196,11 @@ define([
         type: 'GET',
         url: '/questions-answers/answer/' + answer._id,
         success: function (qa) {
-          var qa;
+          var new_qa;
           if (that.qas.findWhere({_id: qa._id}) === undefined) {
             qa._prepend = true;
-            qa = new QA(qa);
-            that.qas.add(qa);
+            new_qa = new QA(qa);
+            that.qas.add(new_qa);
           }
         },
         error: function () {
