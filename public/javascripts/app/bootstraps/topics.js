@@ -24,7 +24,7 @@ require.config({
 require([
   'backbone',
   'routers/topics', 'views/topics/app',
-  'bootstrap'
+  'bootstrap', 'share/analytic'
 ], function (Backbone, topicsRouter, appView) {
   Backbone.history.start();
 });

@@ -29,7 +29,7 @@ require.config({
 require([
   'backbone',
   'views/activities/app',
-  'bootstrap', 'share/add_question', 'share/search'
+  'bootstrap', 'share/add_question', 'share/search', 'share/analytic'
 ], function (Backbone, AppView) {
   $('.sub-menu li.activities').addClass('active');
   new AppView();

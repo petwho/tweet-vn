@@ -27,6 +27,6 @@ require.config({
 });
 
 require([
-  'bootstrap', 'share/add_question', 'share/search'
+  'bootstrap', 'share/add_question', 'share/search', 'share/analytic'
 ], function (Backbone, AppView) {
 });

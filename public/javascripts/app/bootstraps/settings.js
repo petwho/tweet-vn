@@ -25,7 +25,7 @@ require.config({
 require([
   'backbone',
   'routers/settings', 'views/settings/app',
-  'bootstrap', 'share/add_question', 'share/search'
+  'bootstrap', 'share/add_question', 'share/search', 'share/analytic'
 ], function (Backbone, SettingsRouter, settingsView) {
   new SettingsRouter();
   Backbone.history.start();
