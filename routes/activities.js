@@ -10,7 +10,7 @@ module.exports = function (app) {
         user_id: {$in: req.session.user.following.user_ids},
         is_hidden: false
       }]}).sort({created_at: -1})
-      .populate('posted.question_id posted.answer_id voted.answer_id followed.user_id followed.question_id followed.topic_id')
+      .populate('posted.question_id posted.answer_id posted.tweet_id voted.answer_id followed.user_id followed.question_id followed.topic_id')
       .populate({path: 'user_id', select: '_id first_name last_name username picture sign_up_type'})
       .exec(function (err, activities) {
         Activity.populate(activities, [

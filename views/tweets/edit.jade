@@ -1,0 +1,32 @@
+extends ../layouts/tweets
+
+block content
+  #tweets.row(data-userid=session.user._id)
+    .col-xs-9
+      .notice.hidden
+      form.hidden.edit-tweet(action="/tweets/#{tweet._id}", method="PUT", role="form", data-tweet-id="#{tweet._id}")
+        input(type="hidden", name="_csrf", value=csrfToken)
+        .form-group
+          input.form-control#title(type="text", name="title", value!=tweet.title)
+        .form-group.content-area
+          label(for="content") Content:
+          textarea.tweet-content.hidden!= tweet.content
+        .row.search-area
+          .col-xs-6
+            label(for="topics") Add topics
+          .col-xs-6
+            input.form-control(type="text", placeholder="search topics")
+            .tweet-search-results.hidden
+              ul
+        .tweet-added-topics
+          - for (var i = 0; i < tweet.topic_ids.length; i++)
+            div.checkbox
+              label
+                input(type="checkbox", name="topics", value=tweet.topic_ids[i]._id, checked)
+                span.name= tweet.topic_ids[i].name
+                span.followers= tweet.topic_ids[i].follower_count + ' followers'
+        .page-callout
+        button.btn.btn-primary(type="submit") Save
+        | &nbsp;&nbsp;
+        a.btn.btn-warning(href="/tweets/#{tweet._id}", type="submit", role="button") Cancel
+  script(src="/javascripts/build/edit_tweet.js")

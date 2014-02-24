@@ -1,0 +1,16 @@
+!!! 5
+html(lang="vi")
+  head
+    include ../headers/tweets
+  body
+    .banner-msg
+    include _navbar
+    .container.content
+      .row
+        .col-xs-12(role="main")
+          block content
+          .row.spinner-large
+            .col-xs-12
+              img(src="/images/spinner_large.gif", alt="Loading...", title="Loading...")
+    include _footer
+    include _dialog

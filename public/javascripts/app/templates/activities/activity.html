@@ -41,6 +41,15 @@
     <div class="answer-text"><%= posted.answer_id.content %></div>
   <% } %>
 
+  <% if (type === 23) { %>
+    <div class="activity-description">
+      <a class="username" href="/@<%= user_id.username %>"><%= user_id.fullname %></a>
+      <span>added new tweet</span>
+      <a href="/@<%= user_id.username %>/tweets/<%= posted.tweet_id._id %>" target="_blank"><%= posted.tweet_id.title %></a>
+    </div>
+    <div class="answer-text"><%= posted.tweet_id.content %></div>
+  <% } %>
+
   <% if (type === 30) { %>
     <div class="activity-description">
       <a class="username" href="/@<%= user_id.username %>"><%= user_id.fullname %></a>

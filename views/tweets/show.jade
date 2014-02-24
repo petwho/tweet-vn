@@ -1,0 +1,32 @@
+extends ../layouts/tweets
+
+block content
+  #tweets(data-user-id=session.user._id)
+    .row
+      .col-xs-1.no-padding-left-right.invisible.vote-btns
+        - if (session.user)
+          - var j, votecount = 0
+          - for (j = 0; j < tweet.votes.length; j++)
+            - if (tweet.votes[j].type === 'upvote')
+              - votecount++
+            - else
+              - votecount--
+          - if (tweet.toObject().upvote)
+            a.upvote-with-number.voted(href="#", data-tweet-id="#{tweet._id}")
+              .upvote
+                .number= votecount
+          - else
+            a.upvote-with-number(href="#", data-tweet-id="#{tweet._id}")
+              .upvote
+                .number= votecount
+          - if (tweet.toObject().downvote)
+            a.downvote.voted(href="#", data-tweet-id="#{tweet._id}") &nbsp;
+          - else
+            a.downvote(href="#", data-tweet-id="#{tweet._id}") &nbsp;
+      .col-xs-11
+        h1.title= tweet.title
+        strong.author-link
+          a(href="/@#{tweet.user_id.username}")= tweet.user_id.fullname
+        .content!= tweet.content
+        a.edit-link.light-gray(href="/tweets/#{tweet._id}/edit") Edit
+  script(src="/javascripts/build/show_tweet.js")

@@ -1,0 +1,26 @@
+extends ../layouts/tweets
+
+block content
+  #tweets.row(data-userid=session.user._id)
+    .col-xs-9
+      .notice.hidden
+      form.hidden.new-tweet(action="/tweets", method="POST", role="form")
+        input(type="hidden", name="_csrf", value=csrfToken)
+        .form-group
+          input.form-control#title(type="text", name="title", placeholder="Enter title")
+        .form-group.content-area
+          label(for="content") Content:
+          textarea.tweet-content.hidden
+        .row.search-area
+          .col-xs-6
+            label(for="topics") Add topics
+          .col-xs-6
+            input.form-control(type="text", placeholder="search topics")
+            .tweet-search-results.hidden
+              ul
+        .tweet-added-topics
+        .page-callout
+        button.btn.btn-primary(type="submit") Tweet
+        | &nbsp;&nbsp;
+        a.btn.btn-warning(href="/", role="button") Cancel
+  script(src="/javascripts/build/add_tweet.js")

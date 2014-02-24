@@ -76,7 +76,16 @@ if ('production' === process.env.NODE_ENV) {
 }
 // * End error handler in production environment
 
+// Redirect non-www to www
+app.all(/.*/, function (req, res, next) {
+  if (req.subdomains[0] === undefined) {
+    return res.redirect(301, req.protocol + '://www.' + req.get('host') + req.url);
+  }
+  next();
+});
+
 // * Begin load routes
+require('./routes/tweets')(app);
 require('./routes/index')(app);
 require('./routes/sessions')(app);
 require('./routes/users')(app);

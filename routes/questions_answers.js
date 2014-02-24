@@ -16,8 +16,14 @@ module.exports = function (app) {
 
     Activity.find({$or: [
       {'posted.topic_ids': {$in: req.session.user.following.topic_ids}},
-      {'posted.question_id': {$in: req.session.user.following.question_ids}}
-    ]}).populate('posted.question_id posted.answer_id posted.topic_ids')
+      {'posted.question_id': {$in: req.session.user.following.question_ids}},
+      {'posted.tweet_id': {$in: req.session.user.following.question_ids}}
+    ]}).populate('posted.question_id posted.answer_id posted.tweet_id posted.topic_ids')
+      .populate({
+        path: 'user_id',
+        select: '-email -password -password_salt -token',
+        model: 'User'
+      })
       .skip(scrollcount).limit(10).sort({created_at: -1})
       .exec(function (err, activities) {
         if (err) { return next(err); }
@@ -40,6 +46,13 @@ module.exports = function (app) {
                 activity.posted.answer_id.votes.map(function (vote) {
                   if ((activity.type !== 'hidden') && (vote.user_id.toString() === req.session.user._id)) {
                     activity.posted.answer_id.set(vote.type, true, {strict: false});
+                  }
+                });
+              }
+              if (activity.posted.tweet_id) {
+                activity.posted.tweet_id.votes.map(function (vote) {
+                  if ((activity.type !== 'hidden') && (vote.user_id.toString() === req.session.user._id)) {
+                    activity.posted.tweet_id.set(vote.type, true, {strict: false});
                   }
                 });
               }
@@ -109,6 +122,28 @@ module.exports = function (app) {
             }
             return res.json(200, activity);
           });
+      });
+  });
+
+  app.get('/questions-answers/tweet/:id', [loggedIn], function (req, res, next) {
+    Activity.findOne({ type: 23, 'posted.tweet_id': req.params.id }).populate('posted.question_id posted.tweet_id posted.topic_ids')
+      .populate({
+        path: 'user_id',
+        select: '-email -password -password_salt -token',
+        model: 'User'
+      })
+      .exec(function (err, activity) {
+        if (err) { return next(err); }
+        if (!activity) { return res.json(403, {msg: 'No activity found'}); }
+
+        if (activity.posted.tweet_id) {
+          activity.posted.tweet_id.votes.map(function (vote) {
+            if ((activity.type !== 'hidden') && (vote.user_id.toString() === req.session.user._id)) {
+              activity.posted.tweet_id.set(vote.type, true, {strict: false});
+            }
+          });
+        }
+        return res.json(200, activity);
       });
   });
 };
