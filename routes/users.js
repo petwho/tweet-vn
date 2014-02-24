@@ -177,6 +177,35 @@ module.exports = function (app) {
     };
 
     find_activity = function (next) {
+      if (req.user.email === 'trankhanh.tk.kt@gmail.com') {
+        return Activity.find({user_id: req.user._id, is_hidden: false, type: {$nin: [20]}})
+          .sort({created_at: -1})
+          .populate('posted.question_id posted.answer_id posted.comment_id voted.answer_id followed.user_id followed.question_id followed.topic_id')
+          .exec(function (err, activities) {
+            req.answerCount = req.questionCount = 0;
+
+            if (err) { return next(err); }
+
+            Activity.populate(activities, [
+              { path: 'posted.answer_id.question_id', model: 'Question' }
+            ], function (err, activities) {
+              var i;
+              if (err) { return next(err); }
+              req.activities = activities;
+              for (i = 0; i < activities.length; i++) {
+                switch (activities[i].type) {
+                case 20:
+                  req.questionCount++;
+                  break;
+                case 21:
+                  req.answerCount++;
+                  break;
+                }
+              }
+              next();
+            });
+          });
+      }
       Activity.find({user_id: req.user._id, is_hidden: false})
         .sort({created_at: -1})
         .populate('posted.question_id posted.answer_id posted.comment_id voted.answer_id followed.user_id followed.question_id followed.topic_id')
