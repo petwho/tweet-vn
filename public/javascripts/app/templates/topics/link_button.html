@@ -1,19 +1,19 @@
 <% if (typeof primary_topic_remain !== 'undefined') { %>
   <% if (primary_topic_remain > 0) { %>
-    Choose <%= primary_topic_remain %> More Topics to Continue
+    Vui lòng chọn ít nhất <%= primary_topic_remain %> chủ đề
   <% } else { %>
-    Save & Continue
+    Tiếp tục
   <% } %>
 <% } %>
 
 <% if (typeof related_topic_remain !== 'undefined') { %>
   <% if (related_topic_remain > 0) { %>
-      Choose <%= related_topic_remain %> More Topics to Continue
+      Vui lòng chọn ít nhất <%= related_topic_remain %> chủ đề
   <% } else { %>
-    Save & Continue
+    kết thúc
   <% } %>
 <% } %>
 
 <% if ((typeof primary_topic_remain === 'undefined') && (typeof related_topic_remain === 'undefined')) { %>
-  Go to home page
+  Về trang chủ
 <% } %>
