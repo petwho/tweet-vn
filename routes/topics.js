@@ -13,7 +13,7 @@ var loggedIn = require('./middleware/logged_in'),
 
 module.exports = function (app) {
   app.get('/topics/list', loggedIn, function (req, res, next) {
-    Topic.find({}, '-created_at -updated_at')
+    Topic.find({is_hidden: {$ne: true}}, '-created_at -updated_at')
       .populate({path: 'related_topic_ids', select: '-related_words'})
       .exec(function (err, topics) {
         var i, j;
@@ -55,7 +55,7 @@ module.exports = function (app) {
       return res.json(200, {});
     }
 
-    Topic.find({name: {$regex: req.query.name, $options: 'i'}}, '_id name picture follower_count').exec(function (err, topics) {
+    Topic.find({name: {$regex: req.query.name, $options: 'i'}, is_hidden: {$ne: true}}, '_id name picture follower_count').exec(function (err, topics) {
       if (err) { return next(err); }
       res.json(200, topics);
     });

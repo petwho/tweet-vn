@@ -5,6 +5,7 @@ var TopicSchema,
 TopicSchema = new Schema({
   name             : { type: String,   required: true, unique  : true },
   is_primary       : { type: Boolean,  required: true },
+  is_hidden        : {type: Boolean, default: false},
   related_topic_ids: [{ type: Schema.Types.ObjectId, ref: 'Topic', sparse: true }],
   related_words    : Array,
   description      : String,
@@ -22,12 +23,6 @@ TopicSchema.pre('save', function (next) {
 
 TopicSchema.static('filterInputs', function (req_body) {
   req_body.is_primary = (req_body.is_primary === 'true') ? true : false;
-
-  // capitalize first letter of topic name
-  if (req_body.name) {
-    req_body.name = req_body.name.toLowerCase();
-    req_body.name = req_body.name.charAt(0).toUpperCase() + req_body.name.slice(1);
-  }
 
   // convert related_word into array
   if (req_body.related_words) {
