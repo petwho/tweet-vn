@@ -29,7 +29,7 @@ module.exports = function (app) {
   app.get('/open-questions/list', loggedIn, function (req, res, next) {
     var scrollcount = (req.query.scrollcount || 0) * 10;
 
-    Question.find({is_open: true, $or: [
+    Question.find({is_open: true, is_hidden: {$ne: true}, $or: [
       {topic_ids: {$in: req.session.user.following.topic_ids}},
       {_id: {$in: req.session.user.following.question_ids}}
     ]})

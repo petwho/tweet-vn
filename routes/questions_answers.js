@@ -14,7 +14,7 @@ module.exports = function (app) {
 
     scrollcount = (req.query.scrollcount || 0) * 10;
 
-    Activity.find({$or: [
+    Activity.find({is_hidden: false, $or: [
       {'posted.topic_ids': {$in: req.session.user.following.topic_ids}},
       {'posted.question_id': {$in: req.session.user.following.question_ids}},
       {'posted.tweet_id': {$in: req.session.user.following.question_ids}}
