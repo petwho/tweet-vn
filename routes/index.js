@@ -9,7 +9,7 @@ module.exports = function (app) {
     if (!req.session.user.password) {
       return res.render('users/new_password');
     }
-    if (req.session.user.following.topic_ids.length < 1) {
+    if (req.session.user.following.topic_ids.length < 5) {
       return res.redirect('/topics/index');
     }
     return res.render('questions_answers/index', {notification_count: req.notification_count});

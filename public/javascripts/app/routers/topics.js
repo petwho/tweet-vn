@@ -59,7 +59,7 @@ define([
 
       // update remain num
       self.$instruction.find('.step-1 a').text(self.template({
-        primary_topic_remain: 1 - appView.topics.followingPrimaryCount().length
+        primary_topic_remain: 5 - appView.topics.followingPrimaryCount().length
       }));
 
       self.$instruction.find('.step-3 a').text(self.template());
@@ -76,7 +76,7 @@ define([
     },
 
     validateFollowingPrimaryTopic: function () {
-      return (appView.topics.followingPrimaryCount().length >= 1) ? true : false;
+      return (appView.topics.followingPrimaryCount().length >= 5) ? true : false;
     },
 
     step1: function () {
