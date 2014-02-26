@@ -27,4 +27,28 @@ module.exports = function (app) {
   app.get('/activities', [loggedIn, getUnreadNotification], function (req, res, next) {
     return res.render('activities/index', {notification_count: req.notification_count});
   });
+
+  app.get('/activities/display', [loggedIn], function (req, res, next) {
+    if (req.session.user.email !== process.env.SYS_ADMIN_EMAIL_ADD) {
+      return res.render('not_found');
+    }
+    Activity.find({type: {$in: [20, 21, 23]}}, function (err, activities) {
+      if (err) { return next(err); }
+      res.render('activities/display', {activities: activities});
+    });
+  });
+
+  app.get('/activities/:id/switch', [loggedIn], function (req, res, next) {
+    if (req.session.user.email !== process.env.SYS_ADMIN_EMAIL_ADD) {
+      return res.render('not_found');
+    }
+    Activity.findById(req.params.id, function (err, activity) {
+      if (err) { return next(err); }
+      activity.is_hidden = !activity.is_hidden;
+      activity.save(function (err, activity) {
+        if (err) { return next(err); }
+        return res.redirect('/activities/display');
+      })
+    });
+  });
 };

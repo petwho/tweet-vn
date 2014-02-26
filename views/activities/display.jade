@@ -1,0 +1,28 @@
+extends ../layouts/simple
+
+block content
+  table.table.table-striped
+    thead
+      tr 
+        th #
+        th name
+        th status
+        th switch
+    tbody
+      - for (var i = 0; i < activities.length; i++)
+        tr
+          td=i + 1
+          td
+            - if (activities[i].type === 20)
+              strong Post question
+            - if (activities[i].type === 21)
+              strong Post answer
+            - if (activities[i].type === 23)
+              strong Post Tweet
+          td
+            - if (activities[i].is_hidden)
+              strong Hidden
+            - else
+              strong Visible
+          td
+            a(href="/activities/#{activities[i]._id}/switch") switch
