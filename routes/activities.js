@@ -32,7 +32,8 @@ module.exports = function (app) {
     if (req.session.user.email !== process.env.SYS_ADMIN_EMAIL_ADD) {
       return res.render('not_found');
     }
-    Activity.find({type: {$in: [20, 21, 23]}}).populate('posted.question_id posted.answer_id posted.tweet_id')
+    Activity.find({type: {$in: [20, 21, 23]}}).sort({created_at: -1})
+      .populate('posted.question_id posted.answer_id posted.tweet_id')
       .exec(function (err, activities) {
         if (err) { return next(err); }
         res.render('activities/display', {activities: activities});
