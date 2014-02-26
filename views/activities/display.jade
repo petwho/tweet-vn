@@ -6,19 +6,25 @@ block content
       tr 
         th #
         th name
+        th content
         th status
         th switch
     tbody
       - for (var i = 0; i < activities.length; i++)
         tr
           td=i + 1
-          td
-            - if (activities[i].type === 20)
+          - if (activities[i].type === 20)
+            td
               strong Post question
-            - if (activities[i].type === 21)
+            td= activities[i].posted.question_id.title
+          - if (activities[i].type === 21)
+            td
               strong Post answer
-            - if (activities[i].type === 23)
+            td= activities[i].posted.answer_id.content
+          - if (activities[i].type === 23)
+            td
               strong Post Tweet
+            td= activities[i].posted.tweet_id.content
           td
             - if (activities[i].is_hidden)
               strong Hidden
