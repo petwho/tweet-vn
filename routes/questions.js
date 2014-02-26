@@ -1,4 +1,4 @@
-var loggedIn, loggedInAjax, loadUser, loadTopics, async, util, validateTopics, validateQuestion, updateTitle, updateTopics,
+var loggedIn, loggedInAjax, loadUser, loadTopics, getUnreadNotification, async, util, validateTopics, validateQuestion, updateTitle, updateTopics,
   Activity, Question, Topic, Notification, Log, User, Answer;
 
 loggedIn = require('./middleware/logged_in');
@@ -48,12 +48,11 @@ module.exports = function (app) {
       {topic_ids: {$in: req.session.user.following.topic_ids}},
       {_id: {$in: req.session.user.following.question_ids}}
     ]}).populate({
-        path  : 'topic_ids',
-        select: 'name picture follower_count'
-      })
-      .exec(function (err, question) {
-        return res.json(200, question);
-      });
+      path  : 'topic_ids',
+      select: 'name picture follower_count'
+    }).exec(function (err, question) {
+      return res.json(200, question);
+    });
   });
 
   app.get('/questions/:id', function (req, res, next) {
@@ -388,5 +387,19 @@ module.exports = function (app) {
       updateTitle(req, res, next);
       break;
     }
+  });
+
+  app.get('/questions/:id/switch', [loggedIn], function (req, res, next) {
+    if (req.session.user.email !== process.env.SYS_ADMIN_EMAIL_ADD) {
+      return res.render('not_found');
+    }
+    Question.findById(req.params.id, function (err, question) {
+      if (err) { return next(err); }
+      question.is_open = !question.is_open;
+      question.save(function (err, question) {
+        if (err) {return next(err); }
+        res.send('Question open status has been changed to ' + question.is_open.toString());
+      });
+    });
   });
 };
