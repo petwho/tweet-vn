@@ -28,4 +28,5 @@ require([
   'bootstrap', 'share/add_question', 'share/search', 'share/analytic'
 ], function (Backbone, appView) {
   $('.sub-menu li.notifications').addClass('active');
+  $('.spinner-large').css({visibility: 'hidden'});
 });

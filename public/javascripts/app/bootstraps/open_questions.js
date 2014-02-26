@@ -33,4 +33,5 @@ require([
 ], function (Backbone, AppView) {
   $('.sub-menu li.open-questions').addClass('active');
   new AppView();
+  $('.spinner-large').css({visibility: 'hidden'});
 });
