@@ -8,7 +8,9 @@ var oauth2Client, googleapis, Facebook,
   Comment = require('../data/models/comment'),
   Activity = require('../data/models/activity'),
   Notification = require('../data/models/notification'),
+  AWS = require('aws-sdk'),
   async = require('async'),
+  fs = require('fs'),
   request = require('request'),
   randomString = require('./middleware/random_string');
 
@@ -399,5 +401,35 @@ module.exports = function (app) {
 
   app.get('/@:username/settings', [loggedIn, restrictUserToSelf.byRequestParamUsername], function (req, res, next) {
     res.render('users/settings');
+  });
+
+  app.post('/@:username/change-picture', [loggedIn, restrictUserToSelf.byRequestParamUsername], function (req, res, next) {
+    if (req.files.picture.type !== 'image/png' && req.files.picture.type !== 'image/jpeg') {
+      return res.send(404, 'File type is not allow');
+    }
+
+    if (req.files.picture.size > 300 * 1024) {
+      return res.send(404, 'File size exceeds 100 kb');
+    }
+    fs.readFile(req.files.picture.path, function (err, data) {
+      var s3;
+      AWS.config.update({
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+        region: process.env.AWS_REGION
+      });
+
+      s3 = new AWS.S3();
+      s3.client.putObject({
+        ACL: 'public-read',
+        Bucket: process.env.AWS_BUCKET_NAME,
+        ContentType: 'image/jpeg',
+        Key: 'pictures/users/' + req.session.user.username + '.jpg',
+        Body: data
+      }, function (err, data) {
+        if (err) { return next(err); }
+        res.redirect('back');
+      });
+    });
   });
 };

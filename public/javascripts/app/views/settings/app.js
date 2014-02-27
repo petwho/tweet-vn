@@ -3,7 +3,9 @@ define(['backbone', 'jquery', 'spinner'], function (Backbone, $, spinner) {
     el: '#settings',
 
     events: {
-      'submit form': 'updatePwd'
+      'submit form.change-password-form': 'updatePwd',
+      'click .upload-btn': 'showDialog',
+      'change .upload-input': 'savePicture'
     },
 
     initialize: function () {
@@ -54,6 +56,14 @@ define(['backbone', 'jquery', 'spinner'], function (Backbone, $, spinner) {
           window.location.href="/login";
         }
       });
+    },
+
+    showDialog: function (e) {
+      $('.upload-input').trigger('click');
+    },
+
+    savePicture: function (e) {
+      $('#submit-picture-btn').trigger('click');
     }
   });
 

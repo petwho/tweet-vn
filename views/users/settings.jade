@@ -6,7 +6,14 @@ block content
       .row
         .col-xs-2 Picture
         .col-xs-10
-          img(src=session.user.picture)
+          img.profile-picture(src=session.user.picture, width="200", height="200")
+          .upload-btn.btn
+            span.glyphicon.glyphicon-pencil
+            span &nbsp; Chỉnh sửa ảnh
+          form.upload-form.hidden(method="post", enctype="multipart/form-data", action="/@#{session.user.username}/change-picture")
+            input.upload-input(type="file", name="picture")
+            input(type="hidden", value=csrfToken, name="_csrf")
+            input#submit-picture-btn(type="submit")
       .row
         .col-xs-2 Email
         .col-xs-10
