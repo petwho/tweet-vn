@@ -411,6 +411,7 @@ module.exports = function (app) {
     if (req.files.picture.size > 300 * 1024) {
       return res.send(404, 'File size exceeds 100 kb');
     }
+
     fs.readFile(req.files.picture.path, function (err, data) {
       var s3;
       AWS.config.update({
@@ -428,7 +429,13 @@ module.exports = function (app) {
         Body: data
       }, function (err, data) {
         if (err) { return next(err); }
-        res.redirect('back');
+        User.findById(req.session.user._id, function (err, user) {
+          user.has_photo = true;
+          user.save(function (err, user) {
+            req.session.user = user;
+            res.redirect('back');
+          });
+        });
       });
     });
   });
